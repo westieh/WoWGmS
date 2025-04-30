@@ -1,0 +1,55 @@
+﻿@page
+@model ViewApplicationsModel
+@using WoW.Model
+
+<h2>Indsendte Ansøgninger</h2>
+
+@if (Model.Applications == null || !Model.Applications.Any())
+{
+    <p>Der er endnu ingen ansøgninger.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Discord</th>
+                <th>Character</th>
+                <th>Class</th>
+                <th>Role</th>
+                <th>Note</th>
+                <th>Godkendt</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model.Applications)
+            {
+                <tr>
+                    <td>@app.DiscordName</td>
+                    <td>@app.CharacterName</td>
+                    <td>@app.Class</td>
+                    <td>@app.Role</td>
+                    <td>
+                        <form method="post" asp-page-handler="UpdateNote">
+                            <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
+                            <input type="text" name="Note" value="@app.Note" />
+                            <button type="submit">Gem</button>
+                        </form>
+                        
+                    </td>
+                    <td>
+                        @(app.Approved ? "Ja" : "Nej")
+                        <form method="post" asp-page-handler="ToggleApproval">
+                            <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
+                            <select name="Approved">
+                                <option value="true" selected="@app.Approved">Ja</option>
+                                <option value="false" selected="@(!app.Approved)">Nej</option>
+                            </select>
+                            <button type="submit">Opdater status</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
