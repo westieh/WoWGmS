@@ -66,6 +66,8 @@ namespace WoW.Model
 
 			targetMember.Rank = newRank;
 			return targetMember;
+
+            Console.WriteLine(123);
 		}
 	}
 }
