@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WoW.Model; // tilføj dette hvis Application-modellen er her
+using WoW.Model;
+using WoWGMS.Repository; // tilføj dette hvis Application-modellen er her
 
 public class CreateApplicationModel : PageModel
 {

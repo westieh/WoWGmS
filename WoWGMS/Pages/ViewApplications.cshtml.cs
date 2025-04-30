@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Collections.Generic;
 using WoW.Model;
+using WoWGMS.Repository;
 
 public class ViewApplicationsModel : PageModel
 {

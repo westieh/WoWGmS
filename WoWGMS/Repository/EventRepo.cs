@@ -1,4 +1,6 @@
-﻿namespace WoW.Model
+﻿using WoW.Model;
+
+namespace WoWGMS.Repository
 {
     public class EventRepo
     {
