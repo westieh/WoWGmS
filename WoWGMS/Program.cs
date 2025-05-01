@@ -1,7 +1,12 @@
+using WoWGMS.Repository;
+using WoWGMS.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<IMemberService, MemberService>();
+builder.Services.AddSingleton<MemberRepo>();
 
 var app = builder.Build();
 

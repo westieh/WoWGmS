@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using WoW.Model;
 
 namespace WoWGMS.Repository
 {
     public class MemberRepo
     {
-        private List<Member> _members = new List<Member>();
+        private readonly List<Member> _members = new List<Member>();
+
+        public MemberRepo()
+        {
+            _members.AddRange(MockData.MockMember.GetMockMembers());
+        }
 
         public Member AddMember(Member member)
         {
@@ -15,25 +21,20 @@ namespace WoWGMS.Repository
 
         public Member? GetMember(int memberId)
         {
-            foreach (Member member in _members)
-            {
-                if (member.MemberId == memberId) return member;
-            }
-            return null;
+            return _members.FirstOrDefault(m => m.MemberId == memberId);
         }
 
-        //UpdateMember gør brug af lambda
-        public Member? UpdateMember(int memberId, Member member)
+        public Member? UpdateMember(int memberId, Member updatedMember)
         {
-            var existingMember = _members.FirstOrDefault(m => m.MemberId == memberId);
+            var existingMember = _members.FirstOrDefault(m => m.MemberId == updatedMember.MemberId);
 
             if (existingMember != null)
             {
-                existingMember.MemberId = memberId;
-                existingMember.Name = member.Name;
-                existingMember.Rank = member.Rank;
+                existingMember.Name = updatedMember.Name;
+                existingMember.Rank = updatedMember.Rank;
                 return existingMember;
             }
+
             return null;
         }
 
@@ -45,6 +46,7 @@ namespace WoWGMS.Repository
                 _members.Remove(member);
                 return member;
             }
+
             return null;
         }
 
@@ -52,23 +54,5 @@ namespace WoWGMS.Repository
         {
             return new List<Member>(_members);
         }
-
-        public Member? ChangeMemberRank(int actingMemberId, int targetMemberId, Rank newRank)
-        {
-            var actingMember = _members.FirstOrDefault(m => m.MemberId == actingMemberId);
-            var targetMember = _members.FirstOrDefault(m => m.MemberId == targetMemberId);
-
-            if (actingMember == null || targetMember == null)
-                return null;
-
-            if (actingMember.Rank != Rank.Officer)
-                throw new UnauthorizedAccessException("Only officers can change ranks.");
-
-            targetMember.Rank = newRank;
-            return targetMember;
-
-            Console.WriteLine(123);
-        }
     }
 }
-

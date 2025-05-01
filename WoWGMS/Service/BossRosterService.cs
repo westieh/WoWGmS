@@ -2,7 +2,6 @@
 using WoW.Model;
 using WoW.MockData;
 
-{
     public class BossRosterService : IBossRosterServicecs
     {
     public List<BossRoster> _bossRosters;

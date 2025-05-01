@@ -1,0 +1,27 @@
+﻿@page
+@using WoW.Model
+@model GetAllMembersModel
+
+<h2>Officers</h2>
+<ul>
+    @foreach (var officer in Model.Officers)
+    {
+        <li>@officer.Name</li>
+    }
+</ul>
+
+<h2>Raiders</h2>
+<ul>
+    @foreach (var raider in Model.Raiders)
+    {
+        <li>@raider.Name</li>
+    }
+</ul>
+
+<h2>Trialists</h2>
+<ul>
+    @foreach (var trialist in Model.Trialists)
+    {
+        <li>@trialist.Name</li>
+    }
+</ul>
