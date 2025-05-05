@@ -23,7 +23,13 @@
         {
             return $"Character: Name = {CharacterName}, Class = {Class}, Role = {Role}";
         }
+        public void IncrementBossKill(BossName boss)
+        {
+            if (BossKills.ContainsKey(boss))
+                BossKills[boss]++;
+        }
 
-        
+
+
     }
 }

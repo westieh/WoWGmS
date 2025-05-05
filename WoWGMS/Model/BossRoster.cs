@@ -4,16 +4,17 @@
     {
         public int RosterId { get; set; }
         public List<Character> Participants { get; set; } = new List<Character>();
-        public string BossName { get; set; }
+        public BossName BossName {  get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime InstanceTime { get; set; }
+        public bool IsProcessed { get; set; } = false;
 
-       public BossRoster() { }
-        public BossRoster(int rosterId, List<Character> participants, string bossName, DateTime creationDate, DateTime instanceTime)
+        public BossRoster() { }
+        public BossRoster(int rosterId, List<Character> participants, BossName boss, DateTime creationDate, DateTime instanceTime)
         {
             RosterId = rosterId;
             Participants = participants;
-            BossName = bossName;
+            BossName = boss;
             CreationDate = creationDate;
             InstanceTime = instanceTime;
         }
@@ -26,5 +27,6 @@
             }
             Participants.Add(character);
         }
+        
     }
 }
