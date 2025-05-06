@@ -27,6 +27,33 @@
             }
             Participants.Add(character);
         }
-        
+
+        public bool RemoveFromRoster(Character character)
+        {
+            if (Participants.Contains(character))
+            {
+                Participants.Remove(character);
+                return true;
+            }
+            return false;
+        }
+
+        public bool CheckRosterBalance()
+        {
+            bool hasTank = Participants.Any(p => p.Role == Role.Tank);
+            bool hasHealer = Participants.Any(p => p.Role == Role.Healer);
+            bool hasRangedDps = Participants.Any(p => p.Role == Role.RangedDPS);
+            bool hasMeleeDps = Participants.Any(p => p.Role == Role.MeleeDPS);
+
+            return hasTank && hasHealer && hasRangedDps && hasMeleeDps;
+        }
+
+        private void UniqueMemberCheck(Character character)
+        {
+            if (Participants.Any(p => p.CharacterName == character.CharacterName))
+            {
+                throw new InvalidOperationException($"Member with the character name {character.CharacterName} is already in the roster.");
+            }
+        }
     }
 }
