@@ -1,0 +1,154 @@
+﻿@page
+@model WoWGMS.Pages.BossRosterModel
+@{
+    ViewData["Title"] = "Boss Roster";
+}
+
+@{
+    ViewData["Title"] = "Boss Roster";
+    Layout = null; // Optional: Remove if you're using a shared layout
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Boss Roster Management</title>
+    <style>
+        body {
+            background-color: #1e1e2f;
+            color: #f0f0f0;
+            font-family: "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            justify-content: space-between;
+        }
+
+        .card {
+            background-color: #2a2a3d;
+            border-radius: 10px;
+            padding: 20px;
+            width: 45%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        button {
+            background-color: #4e88ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            button:hover {
+                background-color: #3a6edc;
+            }
+
+        .member-rank {
+            font-size: 0.9em;
+            color: #bbb;
+        }
+
+        form {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Boss Roster Management</h1>
+
+    <div class="container">
+        <!-- Available Members -->
+        <div class="card">
+            <h2>Available Members</h2>
+
+            <h3>Officers</h3>
+            <ul>
+                @foreach (var member in Model.Officers)
+                {
+                    <li>
+                        <span>@member.Name <span class="member-rank">(Officer)</span></span>
+                        <form method="post">
+                            <input type="hidden" name="SelectedMemberId" value="@member.MemberId" />
+                            <button type="submit">Add</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+
+            <h3>Raiders</h3>
+            <ul>
+                @foreach (var member in Model.Raiders)
+                {
+                    <li>
+                        <span>@member.Name <span class="member-rank">(Raider)</span></span>
+                        <form method="post">
+                            <input type="hidden" name="SelectedMemberId" value="@member.MemberId" />
+                            <button type="submit">Add</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+
+            <h3>Trialists</h3>
+            <ul>
+                @foreach (var member in Model.Trialists)
+                {
+                    <li>
+                        <span>@member.Name <span class="member-rank">(Trialist)</span></span>
+                        <form method="post">
+                            <input type="hidden" name="SelectedMemberId" value="@member.MemberId" />
+                            <button type="submit">Add</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Boss Roster -->
+        <div class="card">
+            <h2>Boss Roster</h2>
+            @if (BossRosterModel.Roster.Any())
+            {
+                <ul>
+                    @foreach (var member in BossRosterModel.Roster)
+                    {
+                        <li>
+                            <span>@member.Name <span class="member-rank">(@member.Rank)</span></span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No members in the roster yet.</p>
+            }
+        </div>
+    </div>
+</body>
+</html>

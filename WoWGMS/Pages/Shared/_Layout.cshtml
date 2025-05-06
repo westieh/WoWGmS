@@ -7,47 +7,125 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WoW.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            background-color: #1e1e2f;
+            color: #f0f0f0;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        a.nav-link {
+            color: #ccc !important;
+        }
+
+            a.nav-link:hover {
+                color: #fff !important;
+            }
+
+        header nav {
+            background-color: #2a2a3d !important;
+            border-bottom: 1px solid #444;
+        }
+
+        footer {
+            background-color: #2a2a3d;
+            color: #aaa;
+            border-top: 1px solid #444;
+        }
+
+        .container, .card {
+            background-color: #2a2a3d;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+
+        .card {
+            padding: 15px;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            background-color: #4e88ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+
+            button:hover {
+                background-color: #3a6edc;
+            }
+
+        .member-rank {
+            font-size: 0.9em;
+            color: #bbb;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">WoW</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand text-light" asp-area="" asp-page="/Index">WoW</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/CreateApplication">Apply</a>
+                            <a class="nav-link" asp-page="/CreateApplication">Apply</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/ViewApplications">Ansøgninger</a>
+                            <a class="nav-link" asp-page="/ViewApplications">Ansøgninger</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link" asp-page="/Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Shared/GetAllMembers">Medlemmer</a>
+                            <a class="nav-link" asp-page="/Shared/GetAllMembers">Medlemmer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/BossRoster">Boss Roster</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-center py-3">
         <div class="container">
-            &copy; 2025 - WoW - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - WoW - <a class="text-light" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 

@@ -5,6 +5,61 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <img src="~/images/TheShadowstalkersBanner.webp" alt="The Shadowstalkers Banner" class="img-fluid shadow banner-img" />
 </div>
+
+<div class="text-white mt-4 p-4 bg-dark rounded-3 shadow">
+    <h1 class="display-5 fw-bold text-center">Welcome to The Shadowstalkers</h1>
+    <p class="lead text-center">Guild Management System</p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <a class="text-decoration-none" asp-page="/BossRoster">
+            <div class="card bg-secondary text-white shadow-lg">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Boss Roster</h4>
+                    <p class="card-text">View and organize upcoming raid rosters.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="text-decoration-none" asp-page="/Shared/GetAllMembers">
+            <div class="card bg-secondary text-white shadow-lg">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Members</h4>
+                    <p class="card-text">Browse guild members by rank.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="text-decoration-none" asp-page="/ViewApplications">
+            <div class="card bg-secondary text-white shadow-lg">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Applications</h4>
+                    <p class="card-text">Review and approve new applications.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #121212;
+    }
+
+    .banner-img {
+        max-height: 300px;
+        object-fit: contain;
+        margin-top: 20px;
+        border-radius: 10px;
+    }
+
+    .card:hover {
+        background-color: #343a40;
+        transition: background-color 0.3s;
+    }
+</style>
