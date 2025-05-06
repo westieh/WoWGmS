@@ -111,6 +111,28 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/BossRoster">Boss Roster</a>
                         </li>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-page="/Admin/Applications/Index">Admin Panel</a>
+                            </li>
+                        }
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Admin/Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <form method="post" asp-page="/Logout">
+                                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                </form>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
