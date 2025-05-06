@@ -3,10 +3,22 @@ using WoWGMS.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication("MyCookieAuth")
+    .AddCookie("MyCookieAuth", options =>
+    {
+        options.LoginPath = "/Admin/Login";
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IMemberService, MemberService>();
 builder.Services.AddSingleton<MemberRepo>();
+builder.Services.AddSingleton<ApplicationRepo>();
 
 var app = builder.Build();
 
@@ -23,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
