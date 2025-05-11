@@ -2,26 +2,8 @@
 @using WoW.Model
 
 @model CreateApplicationModel
+<div style="text-align: center;">
+    <h2>Send an application</h2>
+</div>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdXw4EZufH15AYxEdPWWWpYgD_qeVeo7ySkfAgm47iKqa0oHw/viewform?embedded=true" width="1280" height="1200" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 
-<h2>Send en ansøgning</h2>
-
-<form method="post">
-    <div>
-        <label>Discord navn:</label>
-        <input asp-for="Application.DiscordName" />
-    </div>
-    <div>
-        <label>Character navn:</label>
-        <input asp-for="Application.CharacterName" />
-    </div>
-    <div>
-            <label>Klasse:</label>
-            <select asp-for="Application.Class" asp-items="Html.GetEnumSelectList<Class>()"></select>
-    </div>
-    <div>
-        <label>Foretrukken rolle:</label>
-        <select asp-for="Application.Role" asp-items="Html.GetEnumSelectList<Role>()"></select>
-    </div>
-
-    <button type="submit">Send ansøgning</button>
-</form>
