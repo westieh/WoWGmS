@@ -1,5 +1,6 @@
 using WoWGMS.Repository;
 using WoWGMS.Service;
+using WowGMSBackend.WowDBContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IMemberService, MemberService>();
 builder.Services.AddSingleton<MemberRepo>();
 builder.Services.AddSingleton<ApplicationRepo>();
+builder.Services.AddDbContext<WowDBContext>();
 
 var app = builder.Build();
 

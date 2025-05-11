@@ -1,23 +1,37 @@
-﻿namespace WoW.Model
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WoW.Model
 {
     public class Character
     {
+        [Key]
+        public string Id { get; set; } //Påkrævet for at migration fungerer
+        [Required]
+        [MaxLength(12)]
         public string CharacterName { get; set; }
+        [Required]
+        [MaxLength(50)]
         public string RealmName { get; set; }
         public Class Class { get; set; }
         public Role Role { get; set; }
+        [NotMapped]
+        [Required]
         public Dictionary<BossName, int> BossKills { get; set; }
 
+        public Character() 
+        {
+            BossKills = Enum.GetValues(typeof(BossName))
+                    .Cast<BossName>()
+                    .ToDictionary(boss => boss, boss => 0); 
+        }
         public Character(string _name, Class _class, Role _role)
         {
             CharacterName = _name;
             Class = _class;
             Role = _role;
-            BossKills = Enum.GetValues(typeof(BossName))
-                    .Cast<BossName>()
-                    .ToDictionary(boss => boss, boss => 0);
-
         }
+
 
         public override string ToString()
         {

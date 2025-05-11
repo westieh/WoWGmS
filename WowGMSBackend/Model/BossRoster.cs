@@ -1,8 +1,12 @@
 ﻿namespace WoW.Model
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 {
     public class BossRoster
     {
+        [Key]
         public int RosterId { get; set; }
+        [Required]
         public List<Character> Participants { get; set; } = new List<Character>();
         public BossName BossName {  get; set; }
         public DateTime CreationDate { get; set; }
