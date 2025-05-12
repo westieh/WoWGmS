@@ -1,6 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using WoWGMS.Repository;
 using WoWGMS.Service;
-using WowGMSBackend.WowDBContext;
+using WowGMSBackend.DBContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IMemberService, MemberService>();
 builder.Services.AddSingleton<MemberRepo>();
 builder.Services.AddSingleton<ApplicationRepo>();
-builder.Services.AddDbContext<WowDBContext>();
+
+builder.Services.AddDbContext<WowDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.MigrationsAssembly("WowGMSBackend")
+    )
+);
 
 var app = builder.Build();
 
@@ -43,3 +50,4 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+

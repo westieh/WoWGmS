@@ -7,7 +7,7 @@ using WoWGMS.Repository;
 
 public class ViewApplicationsModel : PageModel
 {
-    public List<Application> Applications { get; set; }
+    public List<Application>? Applications { get; set; }
 
     public void OnGet()
     {
@@ -18,7 +18,7 @@ public class ViewApplicationsModel : PageModel
     public int ApplicationId { get; set; }
 
     [BindProperty]
-    public string Note { get; set; }
+    public string? Note { get; set; }
     [BindProperty]
     public bool Approved { get; set; }
 

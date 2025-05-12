@@ -1,21 +1,28 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using WoW.Model;
-using Microsoft.EntityFrameworkCore;
-
-
-namespace WowGMSBackend.WowDBContext
+namespace WowGMSBackend.DBContext
 {
-    public class WowDBContext : DbContext
+    public class WowDbContext : DbContext
     {
+        public WowDbContext(DbContextOptions<WowDbContext> options)
+            : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer(@"Data Source=mssql14.unoeuro.com;Initial Catalog=mam015_zealand_dk_db_wowgms;User ID=mam015_zealand_dk;Password=34RGdnB5zpcyEm2Hr6Ax; TrustServerCertificate=true");
+            if (!options.IsConfigured)
+            {
+                options.UseSqlServer(@"Data Source=mssql14.unoeuro.com;Initial Catalog=mam015_zealand_dk_db_wowgms;User ID=mam015_zealand_dk;Password=34RGdnB5zpcyEm2Hr6Ax;TrustServerCertificate=true");
+            }
         }
+
         public DbSet<Application> Applications { get; set; }
         public DbSet<BossRoster> BossRosters { get; set; }
         public DbSet<Character> Characters { get; set; }
@@ -27,8 +34,18 @@ namespace WowGMSBackend.WowDBContext
 
             modelBuilder.Entity<BossRoster>().HasKey(e => e.RosterId);
             modelBuilder.Entity<Character>().HasKey(c => c.CharacterName);
-            //modelBuilder.Entity<Character>().HasNoKey(); //Mangler løsning uden key
+
+            modelBuilder.Entity<Application>()
+                .Property(a => a.ServerName)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Application>()
+                .Property(a => a.Class)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Application>()
+                .Property(a => a.Role)
+                .HasConversion<string>();
         }
     }
 }
-

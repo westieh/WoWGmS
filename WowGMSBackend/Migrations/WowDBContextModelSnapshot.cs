@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WowGMSBackend.WowDBContext;
+using WowGMSBackend.DBContext;
 
 #nullable disable
 
 namespace WowGMSBackend.Migrations
 {
-    [DbContext(typeof(WowDBContext))]
+    [DbContext(typeof(WowDbContext))]
     partial class WowDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -34,25 +34,28 @@ namespace WowGMSBackend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CharacterName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Class")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Class")
-                        .HasColumnType("int");
-
                     b.Property<string>("DiscordName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProcessedByMemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProcessedByMemberId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("ServerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("SubmissionDate")
                         .HasColumnType("datetime2");
@@ -92,7 +95,8 @@ namespace WowGMSBackend.Migrations
             modelBuilder.Entity("WoW.Model.Character", b =>
                 {
                     b.Property<string>("CharacterName")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<int?>("BossRosterRosterId")
                         .HasColumnType("int");
@@ -105,7 +109,8 @@ namespace WowGMSBackend.Migrations
 
                     b.Property<string>("RealmName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
@@ -127,7 +132,8 @@ namespace WowGMSBackend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("Rank")
                         .HasColumnType("int");
@@ -141,9 +147,7 @@ namespace WowGMSBackend.Migrations
                 {
                     b.HasOne("WoW.Model.Member", "ProcessedBy")
                         .WithMany()
-                        .HasForeignKey("ProcessedByMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProcessedByMemberId");
 
                     b.Navigation("ProcessedBy");
                 });
