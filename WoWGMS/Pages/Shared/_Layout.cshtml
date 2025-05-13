@@ -100,22 +100,22 @@
                             <a class="nav-link" asp-page="/CreateApplication">Apply</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/ViewApplications">Ansøgninger</a>
+                            <a class="nav-link" asp-page="/ViewApplications">Applications</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Shared/GetAllMembers">Medlemmer</a>
+                            <a class="nav-link" asp-page="/Shared/GetAllMembers">Members</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/BossRoster">Boss Roster</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Privacy">Privacy</a>
                         </li>
 
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-danger" asp-page="/Admin/Applications/Index">Admin Panel</a>
+                                <a class="nav-link text-danger" asp-page="/Admin/Dashboard/Index">Admin Page</a>
                             </li>
                         }
 
