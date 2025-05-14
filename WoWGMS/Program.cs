@@ -28,7 +28,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IMemberService, MemberService>();
 builder.Services.AddSingleton<MemberRepo>();
 builder.Services.AddSingleton<ApplicationRepo>();
-builder.Services.AddSingleton<IRosterRepository, IRosterRepository>();
+builder.Services.AddSingleton<IRosterRepository, BossRosterRepo>();
 builder.Services.AddHostedService<BossKillCheckerService>();
 builder.Services.AddDbContext<WowDbContext>(options =>
     options.UseSqlServer(
