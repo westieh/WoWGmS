@@ -22,7 +22,6 @@ namespace WoWGMS.Pages.Shared
         {
             // Hent alle medlemmer
             var members = _memberService.GetMembers();
-
             // Opdel medlemmerne baseret på deres rang
             Officers = members.Where(m => m.Rank == Rank.Officer).ToList();
             Raiders = members.Where(m => m.Rank == Rank.Raider).ToList();

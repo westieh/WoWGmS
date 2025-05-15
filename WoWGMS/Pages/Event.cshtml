@@ -1,0 +1,49 @@
+﻿@page
+@model WoWGMS.Pages.EventModel
+@{
+    ViewData["Title"] = "Event";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Raid Event</title>
+    <style>
+
+
+        .roster-card {
+            background-color: ThreeDLightShadow;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Event</h1>
+    <p>-</p>
+
+    <div class="roster-card">
+        <h2>Boss Roster</h2>
+        @if (BossRosterModel.Roster.Any())
+        {
+            <ul>
+                @foreach (var member in BossRosterModel.Roster)
+                {
+                    <li>
+                        <span class="member-name">@member.Name</span>
+                        <span class="member-rank">(@member.Rank)</span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No members added to the boss roster yet.</p>
+        }
+    </div>
+</body>
+</html>
