@@ -1,159 +1,71 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using WoW.Model;
+using WowGMSBackend.DBContext;
+using WowGMSBackend.Model;
 namespace WoWGMS.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ApplicationController : ControllerBase
     {
+        private readonly WowDbContext _context;
+
+        public ApplicationController(WowDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpPost]
         public IActionResult ReceiveApplication([FromBody] RawApplicationDto raw)
         {
             try
             {
-                var parsed = new ApplicationDto
+                if (!Enum.TryParse<ServerName>(Sanitize(raw.ServerName), true, out var serverName) ||
+                    !Enum.TryParse<Class>(Sanitize(raw.Class), true, out var charClass) ||
+                    !Enum.TryParse<Role>(Sanitize(raw.MainRole), true, out var mainRole))
                 {
-                    DiscordUsername = raw.DiscordUsername,
-                    CharacterName = raw.CharacterName,
-                    ServerName = Enum.Parse<ServerName>(Sanitize(raw.ServerName), true),
-                    Class = Enum.Parse<Class>(Sanitize(raw.Class), true),
-                    MainRole = Enum.Parse<MainRole>(Sanitize(raw.MainRole), true)
+                    return BadRequest(new { error = "Invalid enum values" });
+                }
+
+                var application = new Application
+                {
+                    DiscordName = raw.DiscordName ?? string.Empty,
+                    CharacterName = raw.CharacterName ?? string.Empty,
+                    ServerName = serverName,
+                    Class = charClass,
+                    Role = mainRole,
+                    SubmissionDate = DateTime.Now
                 };
 
-                // Process or save parsed data here
-                Console.WriteLine($"New application: {parsed.DiscordUsername}, {parsed.CharacterName}, {parsed.ServerName}, {parsed.Class}, {parsed.MainRole}");
+                _context.Applications.Add(application);
+                _context.SaveChanges();
 
-                return Ok(new { status = "Application received" });
+                return Ok(new { status = "Application saved" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = "Invalid data received", details = ex.Message });
+                return BadRequest(new { error = "Data error", details = ex.Message });
             }
         }
 
-        // Simple sanitizer: removes spaces
         private string Sanitize(string? input)
         {
             return (input ?? string.Empty)
                    .Replace(" ", "")
+                   .Replace("-", "")
+                   .Replace("’", "")
+                   .Replace("'", "")
                    .Trim();
         }
     }
 
     public class RawApplicationDto
     {
-        public string? DiscordUsername { get; set; }
+        public string? DiscordName { get; set; }
         public string? CharacterName { get; set; }
         public string? ServerName { get; set; }
         public string? Class { get; set; }
         public string? MainRole { get; set; }
-    }
-
-    public class ApplicationDto
-    {
-        public string? DiscordUsername { get; set; }
-        public string? CharacterName { get; set; }
-        public ServerName ServerName { get; set; }
-        public Class Class { get; set; }
-        public MainRole MainRole { get; set; }
-    }
-
-    // Enums
-    public enum Class { Mage, Warrior, Rogue, Monk, Priest, DeathKnight, Evoker, Druid, Warlock, Paladin, Hunter, Shaman, DemonHunter }
-    public enum MainRole { Tank, Healer, MeleeDPS, RangedDPS }
-    public enum ServerName
-        {
-        Aegwynn,
-        Antonidas,
-        Archimonde,
-        ArgentDawn,
-        Aggramar,
-        AlAkir,
-        Alexstrasza,
-        Alleria,
-        Alonsus,
-        Anetheron,
-        Anubarak,
-        Area52,
-        Arthas,
-        AzjolNerub,
-        Blackrock,
-        Blackmoore,
-        Bloodhoof,
-        ChamberOfAspects,
-        ChantsEternels,
-        ConfrerieDuThorium,
-        Dalaran,
-        DefiasBrotherhood,
-        Destromath,
-        DieAldor,
-        Doomhammer,
-        Draenor,
-        Drakthul,
-        DunModr,
-        DunMorogh,
-        Elune,
-        EmeraldDream,
-        Eonar,
-        Eredar,
-        Exodar,
-        Frostwhisper,
-        Frostwolf,
-        Garrosh,
-        GrimBatol,
-        Hyjal,
-        Illidan,
-        KaelThas,
-        Kargath,
-        Kazzak,
-        Khazgoroth,
-        KhazModan,
-        Kilrogg,
-        KultDerVerdammten,
-        Lightbringer,
-        Lothar,
-        Magtheridon,
-        MalGanis,
-        Malfurion,
-        Medivh,
-        Moonglade,
-        Nemesis,
-        Nordrassil,
-        Onyxia,
-        Outland,
-        Ragnaros,
-        Ravencrest,
-        Sanguino,
-        Sargeras,
-        Shadowsong,
-        ShatteredHand,
-        Silvermoon,
-        Stormrage,
-        Stormreaver,
-        Stormscale,
-        Sunstrider,
-        Sylvanas,
-        TarrenMill,
-        TheMaelstrom,
-        Thunderhorn,
-        TwilightsHammer,
-        Tyrande,
-        Uldaman,
-        TwistingNether,
-        WellOfEternity,
-        Ysera,
-        Ysondre,
-        ZirkelDesCenarius,
-        Разувий,
-        ПиратскаяБухта,
-        КорольЛич,
-        Азурегос,
-        ВечнаяПесня,
-        Гордунни,
-        Дракономор,
-        РевущийФьорд,
-        СвежевательДуш,
-        СтражСмерти,
-        ЯсеневыйЛес
     }
 }
