@@ -4,28 +4,13 @@
     ViewData["Title"] = "Boss Roster";
 }
 
-@{
-    ViewData["Title"] = "Boss Roster";
-    Layout = null; // Optional: Remove if you're using a shared layout
-}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>Boss Roster Management</title>
     <style>
-        body {
-            background-color: #1e1e2f;
-            color: #f0f0f0;
-            font-family: "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
 
-        h1, h2, h3 {
-            color: #ffffff;
-        }
 
         .container {
             display: flex;
@@ -34,49 +19,14 @@
         }
 
         .card {
-            background-color: #2a2a3d;
+            background-color: black;
             border-radius: 10px;
             padding: 20px;
             width: 45%;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border: 2px solid white;
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
-        }
-
-        button {
-            background-color: #4e88ff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-            button:hover {
-                background-color: #3a6edc;
-            }
-
-        .member-rank {
-            font-size: 0.9em;
-            color: #bbb;
-        }
-
-        form {
-            margin: 0;
-        }
     </style>
 </head>
 <body>

@@ -1,0 +1,60 @@
+﻿@page
+@model WoWGMS.Pages.Admin.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Applications";
+}
+
+<h2>Applications</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Character Name</th>
+            <th>Discord Name</th>
+            <th>Class</th>
+            <th>Role</th>
+            <th>Approved</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Model.Applications)
+        {
+            <tr>
+                <td>@app.CharacterName</td>
+                <td>@app.DiscordName</td>
+                <td>@app.Class</td>
+                <td>@app.Role</td>
+                <td>@(app.Approved ? "✔️" : "❌")</td>
+                <td>
+                    <a asp-page="./Applications/Edit" asp-route-id="@app.ApplicationId">Edit</a> |
+                    <a asp-page="./Applications/Delete" asp-route-id="@app.ApplicationId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Members</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Rank</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Model.Members)
+        {
+            <tr>
+                <td>@app.Name</td>
+                <td>@app.Rank</td>
+                <td>
+                    <a asp-page="./Members/Edit" asp-route-id="@app.MemberId">Edit</a> |
+                    <a asp-page="./Members/Delete" asp-route-id="@app.MemberId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

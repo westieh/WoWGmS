@@ -1,0 +1,17 @@
+﻿@page "{id:int}"
+@model WoWGMS.Pages.Admin.Dashboard.Members.DeleteModel
+@{
+    ViewData["Title"] = "Delete Member";
+}
+
+<h2>Delete Member</h2>
+
+<div>
+    <p>Are you sure you want to delete <strong>@Model.Member.Name</strong>?</p>
+
+    <form method="post">
+        <input type="hidden" asp-for="Member.MemberId" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="../Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
