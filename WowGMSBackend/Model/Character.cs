@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WoW.Model
@@ -6,7 +7,8 @@ namespace WoW.Model
     public class Character
     {
         [Key]
-        public string Id { get; set; } //Påkrævet for at migration fungerer
+        
+        public int Id { get; set; } //Påkrævet for at migration fungerer
         [Required]
         [MaxLength(12)]
         public string CharacterName { get; set; }
@@ -15,6 +17,10 @@ namespace WoW.Model
         public string RealmName { get; set; }
         public Class Class { get; set; }
         public Role Role { get; set; }
+        public Member Owner { get; set; }
+        
+        [ForeignKey("Owner")]
+        public int OwnerId { get; set; }
         [NotMapped]
         [Required]
         public Dictionary<BossName, int> BossKills { get; set; }

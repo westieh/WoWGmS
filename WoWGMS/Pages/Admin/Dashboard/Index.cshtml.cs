@@ -22,7 +22,7 @@ namespace WoWGMS.Pages.Admin.Dashboard
 
         public void OnGet()
         {
-            Applications = _applicationRepo.GetAllApplications();
+            Applications = _applicationRepo.GetApplications();
             Members = _memberRepo.GetMembers();
         }
     }

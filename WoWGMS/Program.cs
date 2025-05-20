@@ -24,6 +24,9 @@ builder.Services.AddHttpClient("RaiderIO", client =>
     client.BaseAddress = new Uri("https://raider.io");
 });
 // Add services to the container.
+builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+
+builder.Services.AddSingleton<MemberService>();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IMemberService, MemberService>();
 builder.Services.AddSingleton<MemberRepo>();

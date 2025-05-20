@@ -9,16 +9,21 @@ namespace WoW.Model
         [Required]
         [MaxLength(20)]
         public string Name { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
         [Required]
         public Rank Rank { get; set; }
 
         public Member() { }
 
-        public Member(int _memberId, string _name, Rank _rank)
+        public Member(int memberId, string name, string password, Rank rank)
         {
-            MemberId = _memberId;
-            Name = _name;
-            Rank = _rank;
+            MemberId = memberId;
+            Name = name;
+            Password = password;
+            Rank = rank;
         }
 
         public override string ToString()

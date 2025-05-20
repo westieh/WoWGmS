@@ -2,11 +2,21 @@
 @model ViewApplicationsModel
 @using WoW.Model
 
-<h2>Indsendte Ansøgninger</h2>
+<style>
+    table, th, td {
+        color: white;
+    }
+
+    input[type="text"], select, button {
+        color: black;
+    }
+</style>
+
+<h2 style="color:white;">Indsendte Ansøgninger</h2>
 
 @if (Model.Applications == null || !Model.Applications.Any())
 {
-    <p>Der er endnu ingen ansøgninger.</p>
+    <p style="color:white;">Der er endnu ingen ansøgninger.</p>
 }
 else
 {
@@ -35,15 +45,14 @@ else
                             <input type="text" name="Note" value="@app.Note" />
                             <button type="submit">Gem</button>
                         </form>
-                        
                     </td>
                     <td>
                         @(app.Approved ? "Ja" : "Nej")
                         <form method="post" asp-page-handler="ToggleApproval">
                             <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
                             <select name="Approved">
-                                <option value="true" selected="@app.Approved">Ja</option>
-                                <option value="false" selected="@(!app.Approved)">Nej</option>
+                                <option value="true" selected="@(app.Approved ? "selected" : null)">Ja</option>
+                                <option value="false" selected="@(!app.Approved ? "selected" : null)">Nej</option>
                             </select>
                             <button type="submit">Opdater status</button>
                         </form>

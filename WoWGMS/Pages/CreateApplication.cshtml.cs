@@ -1,12 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WoW.Model;
-using WoWGMS.Repository; // tilføj dette hvis Application-modellen er her
+using WowGMSBackend.Service;  // use service namespace
 
 public class CreateApplicationModel : PageModel
 {
+    private readonly IApplicationService _applicationService;
+
+    public CreateApplicationModel(IApplicationService applicationService)
+    {
+        _applicationService = applicationService;
+    }
+
     [BindProperty]
     public Application Application { get; set; }
+
+    public IActionResult OnGet()
+    {
+        return Page();
+    }
 
     public IActionResult OnPost()
     {
@@ -18,7 +30,7 @@ public class CreateApplicationModel : PageModel
         Application.SubmissionDate = DateTime.Now;
         Application.Approved = false;
 
-        ApplicationRepo.Applications.Add(Application);
+        _applicationService.SubmitApplication(Application);
 
         return RedirectToPage("/Index");
     }
