@@ -30,6 +30,7 @@ builder.Services.AddSingleton<MemberRepo>();
 builder.Services.AddSingleton<ApplicationRepo>();
 builder.Services.AddSingleton<IRosterRepository, BossRosterRepo>();
 builder.Services.AddHostedService<BossKillCheckerService>();
+builder.Services.AddScoped(typeof(IDBService<>), typeof(DbGenericService<>));
 builder.Services.AddDbContext<WowDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),

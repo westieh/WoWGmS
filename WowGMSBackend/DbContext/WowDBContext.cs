@@ -10,10 +10,10 @@ namespace WowGMSBackend.DBContext
 {
     public class WowDbContext : DbContext
     {
-        //public WowDbContext(DbContextOptions<WowDbContext> options)
-        //    : base(options)
-        //{
-        //}
+        public WowDbContext(DbContextOptions<WowDbContext> options)
+            : base(options)
+        {
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

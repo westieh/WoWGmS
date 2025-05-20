@@ -10,54 +10,44 @@ namespace WowGMSBackend.Service
 {
     public class DbGenericService<T> : IDBService<T> where T : class
     {
+        private readonly WowDbContext _context;
+        public DbGenericService(WowDbContext context)
+        {
+            _context = context;
+        }
+
         public async Task AddObjectAsync(T obj)
         {
-            using (var context = new WowDbContext())
-            {
-                context.Set<T>().Add(obj);
-                await context.SaveChangesAsync();
-            }
+            _context.Set<T>().Add(obj);
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteObjectAsync(T obj)
         {
-            using (var context = new WowDbContext())
-            {
-                context.Set<T>().Remove(obj);
-                await context.SaveChangesAsync();
-            }
+                _context.Set<T>().Remove(obj);
+                await _context.SaveChangesAsync();
         }
+
         public async Task UpdateObjectAsync(T obj)
-        {
-            using (var context = new WowDbContext())
             {
-                context.Set<T>().Update(obj);
-                await context.SaveChangesAsync();
+                _context.Set<T>().Update(obj);
+                await _context.SaveChangesAsync();
             }
-        }
         public async Task<IEnumerable<T>> GetAllObjectsAsync()
-        {
-            using (var context = new WowDbContext())
             {
-                return await context.Set<T>().AsNoTracking().ToListAsync();
+                return await _context.Set<T>().AsNoTracking().ToListAsync();
             }
-        }
+
         public async Task<T> GetObjectByIdAsync(params object[] keyValues)
-        {
-            using (var context = new WowDbContext())
             {
-                return await context.Set<T>().FindAsync(keyValues);
+                return await _context.Set<T>().FindAsync(keyValues);
             }
-        }
         public async Task SaveObjects(List<T> objects)
-        {
-            using (var context = new WowDbContext())
             {
                 foreach (T obj in objects)
                 {
-                    context.Set<T>().Add(obj);
-                    context.SaveChanges();
+                    _context.Set<T>().Add(obj);
+                    _context.SaveChanges();
                 }
             }
         }
     }
-}
