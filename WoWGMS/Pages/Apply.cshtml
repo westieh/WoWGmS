@@ -1,0 +1,37 @@
+﻿@page
+@model ApplyModel
+@using WoW.Model
+@using WowGMSBackend.Model
+@{
+    ViewData["Title"] = "Ansøg om medlemskab";
+}
+
+<h2>Ansøg om medlemskab</h2>
+
+<form method="post">
+    <div>
+        <label>Character Name</label>
+        <input asp-for="Application.CharacterName" class="form-control" />
+    </div>
+    <div>
+        <label>Discord Name</label>
+        <input asp-for="Application.DiscordName" class="form-control" />
+    </div>
+    <div>
+        <label>Password</label>
+        <input asp-for="Application.Password" type="password" class="form-control" />
+    </div>
+    <div>
+        <label>Class</label>
+        <select asp-for="Application.Class" asp-items="Html.GetEnumSelectList<Class>()" class="form-control"></select>
+    </div>
+    <div>
+        <label>Role</label>
+        <select asp-for="Application.Role" asp-items="Html.GetEnumSelectList<Role>()" class="form-control"></select>
+    </div>
+    <div>
+        <label>Server</label>
+        <select asp-for="Application.ServerName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Send Ansøgning</button>
+</form>

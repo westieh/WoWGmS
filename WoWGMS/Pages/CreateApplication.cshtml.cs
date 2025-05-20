@@ -20,18 +20,18 @@ public class CreateApplicationModel : PageModel
         return Page();
     }
 
-    public IActionResult OnPost()
-    {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
+    //public IActionResult OnPost()
+    //{
+    //    if (!ModelState.IsValid)
+    //    {
+    //        return Page();
+    //    }
 
-        Application.SubmissionDate = DateTime.Now;
-        Application.Approved = false;
+    //    Application.SubmissionDate = DateTime.Now;
+    //    Application.Approved = false;
 
-        _applicationService.SubmitApplication(Application);
+    //    _applicationService.SubmitApplication(Application);
 
-        return RedirectToPage("/Index");
-    }
+    //    return RedirectToPage("/Index");
+    //}
 }
