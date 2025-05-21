@@ -3,10 +3,10 @@
 @using WoW.Model
 @using WowGMSBackend.Model
 @{
-    ViewData["Title"] = "Ansøg om medlemskab";
+    ViewData["Title"] = "Apply for membership";
 }
 
-<h2>Ansøg om medlemskab</h2>
+<h2>Apply for membership</h2>
 
 <form method="post">
     <div>
@@ -17,10 +17,10 @@
         <label>Discord Name</label>
         <input asp-for="Application.DiscordName" class="form-control" />
     </div>
-    <div>
+    @* <div>
         <label>Password</label>
         <input asp-for="Application.Password" type="password" class="form-control" />
-    </div>
+    </div> *@
     <div>
         <label>Class</label>
         <select asp-for="Application.Class" asp-items="Html.GetEnumSelectList<Class>()" class="form-control"></select>
@@ -33,5 +33,5 @@
         <label>Server</label>
         <select asp-for="Application.ServerName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
     </div>
-    <button type="submit" class="btn btn-primary mt-2">Send Ansøgning</button>
+    <button type="submit" class="btn btn-primary mt-2">Send application</button>
 </form>

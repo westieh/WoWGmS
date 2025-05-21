@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,6 +8,7 @@ using WoWGMS.Repository;
 using WowGMSBackend.MockData;
 using WowGMSBackend.Service;
 
+[Authorize(Roles = "Admin")]
 public class ViewApplicationsModel : PageModel
 {
     private readonly IApplicationService _applicationService;

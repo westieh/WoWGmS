@@ -103,13 +103,10 @@
                             <a class="nav-link" asp-page="/Event">Todays Event</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Shared/GetAllMembers">Medlemmer</a>
+                            <a class="nav-link" asp-page="/Shared/GetAllMembers">Members</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/Apply">Apply</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ViewApplications">Admin</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/Privacy">Privacy</a>
@@ -138,9 +135,15 @@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-page="/ViewApplications">Ansøgninger</a>
+                                <a class="nav-link" asp-page="/ViewApplications">Applications</a>
                             </li>
                         }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/ViewApplications">Submitted applications</a>
+                            </li>
+                        })
 
                         @if (!User.Identity.IsAuthenticated)
                         {

@@ -12,11 +12,11 @@
     }
 </style>
 
-<h2 style="color:white;">Indsendte Ansøgninger</h2>
+<h2 style="color:white;">Submitted applications</h2>
 
 @if (Model.Applications == null || !Model.Applications.Any())
 {
-    <p style="color:white;">Der er endnu ingen ansøgninger.</p>
+    <p style="color:white;">No applications yet.</p>
 }
 else
 {
@@ -28,7 +28,7 @@ else
                 <th>Class</th>
                 <th>Role</th>
                 <th>Note</th>
-                <th>Godkendt</th>
+                <th>Approved</th>
             </tr>
         </thead>
         <tbody>
@@ -47,14 +47,14 @@ else
                         </form>
                     </td>
                     <td>
-                        @(app.Approved ? "Ja" : "Nej")
+                        @(app.Approved ? "Yes" : "No")
                         <form method="post" asp-page-handler="ToggleApproval">
                             <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
                             <select name="Approved">
-                                <option value="true" selected="@(app.Approved ? "selected" : null)">Ja</option>
-                                <option value="false" selected="@(!app.Approved ? "selected" : null)">Nej</option>
+                                <option value="true" selected="@(app.Approved ? "selected" : null)">Yes</option>
+                                <option value="false" selected="@(!app.Approved ? "selected" : null)">No</option>
                             </select>
-                            <button type="submit">Opdater status</button>
+                            <button type="submit">Update status</button>
                         </form>
                     </td>
                 </tr>
