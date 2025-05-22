@@ -1,8 +1,8 @@
-﻿namespace WoW.Service;
-using WoW.Model;
-using WoW.MockData;
+﻿namespace WowGMSBackend.Service;
+using WowGMSBackend.Model;
+using WowGMSBackend.MockData;
 
-    public class BossRosterService : IBossRosterServicecs
+public class BossRosterService : IBossRosterServicecs
     {
     public List<BossRoster> _bossRosters;
 

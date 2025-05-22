@@ -1,6 +1,6 @@
-﻿using WoW.Model;
+﻿using WowGMSBackend.Model;
 
-namespace WoWGMS.Service
+namespace WowGMSBackend.Service
 {
     public interface IMemberService
     {

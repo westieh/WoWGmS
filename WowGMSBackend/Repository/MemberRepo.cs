@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WoW.Model;
+using WowGMSBackend.Model;
 
-namespace WoWGMS.Repository
+namespace WowGMSBackend.Repository
 {
     public class MemberRepo
     {
         private readonly List<Member> _members = new List<Member>();
+
 
         public MemberRepo()
         {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WoW.Model;
+using WowGMSBackend.Model;
 using WowGMSBackend.Service;  // use service namespace
 
 public class CreateApplicationModel : PageModel

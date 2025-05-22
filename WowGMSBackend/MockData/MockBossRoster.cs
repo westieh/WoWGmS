@@ -1,7 +1,7 @@
-﻿namespace WoW.MockData;
-using WoW.Model;
+﻿namespace WowGMSBackend.MockData;
+using WowGMSBackend.Model;
 
-    public class MockBossRoster
+public class MockBossRoster
     {
     private static List<BossRoster> bossRosters = new List<BossRoster>()
     {

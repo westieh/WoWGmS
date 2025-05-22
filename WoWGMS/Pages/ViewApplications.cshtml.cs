@@ -1,73 +1,52 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Collections.Generic;
-using WoW.Model;
 using WoWGMS.Repository;
-using WowGMSBackend.MockData;
-using WowGMSBackend.Service;
+using WowGMSBackend.Model;
 
-[Authorize(Roles = "Admin")]
 public class ViewApplicationsModel : PageModel
 {
-    private readonly IApplicationService _applicationService;
-
-    public ViewApplicationsModel(IApplicationService applicationService)
-    {
-        _applicationService = applicationService;
-    }
-
-    [BindProperty]
     public List<Application> Applications { get; set; }
 
+    public void OnGet()
+    {
+
+        Applications = ApplicationRepo.Applications;
+    }
     [BindProperty]
     public int ApplicationId { get; set; }
 
     [BindProperty]
     public string Note { get; set; }
-
     [BindProperty]
     public bool Approved { get; set; }
 
-    public void OnGet()
-    {
-        Applications = _applicationService.GetAllApplications();
-    }
 
     public IActionResult OnPostUpdateNote()
     {
-        var application = _applicationService.GetAllApplications()
-            .FirstOrDefault(a => a.ApplicationId == ApplicationId);
+        var appToEdit = ApplicationRepo.Applications.FirstOrDefault(a => a.ApplicationId == ApplicationId);
 
-        if (application != null)
+        if (appToEdit != null)
         {
-            application.Note = Note;
+            appToEdit.Note = Note;
         }
 
-        Applications = _applicationService.GetAllApplications();
-        return Page();
+        return RedirectToPage(); // reloads the same page
     }
-
     public IActionResult OnPostToggleApproval()
     {
-        var application = _applicationService.GetAllApplications()
+        var appToUpdate = ApplicationRepo.Applications
             .FirstOrDefault(a => a.ApplicationId == ApplicationId);
 
-        if (application != null)
+        if (appToUpdate != null)
         {
-            if (Approved && !application.Approved)
-            {
-                _applicationService.ApproveApplication(application);
-            }
-            else if (!Approved && application.Approved)
-            {
-                application.Approved = false;
-                // Optional: remove the member again if needed
-            }
+            appToUpdate.Approved = Approved;
         }
 
-        Applications = _applicationService.GetAllApplications();
-        return Page();
+        return RedirectToPage();
     }
+
+
+
 }

@@ -1,10 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using WoWGMS.Repository;
-using WoWGMS.Service;
-using WowGMSBackend.Model;
-using WowGMSBackend.Service;
-using WowGMSBackend.DBContext;
 using WowGMSBackend.Repository;
+using WowGMSBackend.Service;
+using WowGMSBackend.Model;
+using WowGMSBackend.DBContext;
 
 var builder = WebApplication.CreateBuilder(args);
 

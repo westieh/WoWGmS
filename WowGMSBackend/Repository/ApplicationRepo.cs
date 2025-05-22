@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using WoW.MockData;
-using WoW.Model;
+using WowGMSBackend.MockData;
+using WowGMSBackend.Model;
 
-namespace WoWGMS.Repository
+namespace WowGMSBackend.Repository
 {
     public class ApplicationRepo
     {

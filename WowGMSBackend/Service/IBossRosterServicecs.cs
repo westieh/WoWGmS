@@ -1,6 +1,6 @@
-﻿using WoW.Model;
+﻿using WowGMSBackend.Model;
 
-namespace WoW.Service
+namespace WowGMSBackend.Service
 {
     public interface IBossRosterServicecs
     {

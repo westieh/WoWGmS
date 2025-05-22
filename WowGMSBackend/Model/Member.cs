@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WoW.Model
+namespace WowGMSBackend.Model
 {
     public class Member
     {

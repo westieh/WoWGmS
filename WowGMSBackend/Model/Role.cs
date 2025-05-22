@@ -1,4 +1,4 @@
-﻿namespace WoW.Model
+﻿namespace WowGMSBackend.Model
 {
     public enum Role
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WoW.Model;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Service
 {

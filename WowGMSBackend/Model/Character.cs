@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WoW.Model
+namespace WowGMSBackend.Model
 {
     public class Character
     {

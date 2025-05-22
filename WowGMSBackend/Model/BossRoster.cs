@@ -1,4 +1,6 @@
-﻿namespace WoW.Model
+﻿using WowGMSBackend.Model;
+
+namespace WowGMSBackend.Model
 { 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

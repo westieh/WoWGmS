@@ -1,8 +1,8 @@
-﻿using WoW.Model;
-using WoWGMS.MockData;
-using WoWGMS.Repository;
+﻿using WowGMSBackend.Model;
+using WowGMSBackend.MockData;
+using WowGMSBackend.Repository;
 
-namespace WoWGMS.Service
+namespace WowGMSBackend.Service
 {
     public class MemberService : IMemberService
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using WoW.Model;
-using WoWGMS.Repository;
+using WowGMSBackend.Repository;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Service
 {
