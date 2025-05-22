@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using WoW.Model;
-using WowGMSBackend.DBContext;
 using WowGMSBackend.Model;
+using WowGMSBackend.DBContext;
 namespace WoWGMS.Controllers
 {
     [ApiController]
