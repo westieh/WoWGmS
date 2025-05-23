@@ -1,7 +1,9 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WowGMSBackend.Service;
 using WoW.Model;
+using WoWGMS.Service;
+using WowGMSBackend.Service;
 
 namespace WoWGMS.Pages
 {
@@ -19,7 +21,7 @@ namespace WoWGMS.Pages
 
         public void OnGet()
         {
-            // tom, vis form
+            // Display empty form on GET
         }
 
         public IActionResult OnPost()
@@ -29,14 +31,15 @@ namespace WoWGMS.Pages
                 return Page();
             }
 
-            Application.SubmissionDate = DateTime.Now;
+            // Set default values (just to be safe)
             Application.Approved = false;
             Application.Note = null;
             Application.ProcessedBy = null;
 
-            _applicationService.AddApplication(Application);
+            // Submit through service (ensures ID and timestamp are set)
+            _applicationService.SubmitApplication(Application);
 
-            return RedirectToPage("ApplySuccess");
+            return Page();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using WoW.MockData;
 using WoW.Model;
 
@@ -10,7 +11,7 @@ namespace WoWGMS.Repository
 
         public ApplicationRepo()
         {
-            _applications = MockApplications.Get();  // Initialize with your mock data
+            _applications = MockApplications.Get();  // Initialize with mock data
         }
 
         public List<Application> GetApplications()
@@ -33,7 +34,6 @@ namespace WoWGMS.Repository
             var existing = _applications.FirstOrDefault(a => a.ApplicationId == updatedApplication.ApplicationId);
             if (existing == null) return false;
 
-            // Update fields
             existing.CharacterName = updatedApplication.CharacterName;
             existing.DiscordName = updatedApplication.DiscordName;
             existing.Class = updatedApplication.Class;

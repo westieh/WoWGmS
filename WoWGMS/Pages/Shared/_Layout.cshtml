@@ -126,24 +126,14 @@
                                 <a class="nav-link text-danger" asp-page="/Admin/Applications/Index">Admin Panel</a>
                             </li>
                         }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-danger" asp-page="/BossRoster">Boss Roster</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/ViewApplications">Applications</a>
-                            </li>
-                        }
+                       
+                        
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" href="/ViewApplications">Submitted applications</a>
                             </li>
-                        })
+                        }
 
                         @if (!User.Identity.IsAuthenticated)
                         {

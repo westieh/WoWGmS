@@ -1,21 +1,24 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Collections.Generic;
 using WoW.Model;
 using WoWGMS.Repository;
+using WoWGMS.Service;
 using WowGMSBackend.MockData;
 using WowGMSBackend.Service;
 
-[Authorize(Roles = "Admin")]
 public class ViewApplicationsModel : PageModel
 {
     private readonly IApplicationService _applicationService;
+    private readonly IMemberService _memberService;
+    private readonly ICharacterService _characterService;
 
-    public ViewApplicationsModel(IApplicationService applicationService)
+    public ViewApplicationsModel(IApplicationService applicationService, IMemberService memberService, ICharacterService characterService)
     {
         _applicationService = applicationService;
+        _memberService = memberService;
+        _characterService = characterService;
     }
 
     [BindProperty]
@@ -58,16 +61,43 @@ public class ViewApplicationsModel : PageModel
         {
             if (Approved && !application.Approved)
             {
+                // Approve the application
                 _applicationService.ApproveApplication(application);
+
+                // Check if member already exists
+                var existingMembers = _memberService.GetMembers();
+                bool alreadyMember = existingMembers.Any(m => m.Name == application.DiscordName);
+
+                if (!alreadyMember)
+                {
+                    // Add the member
+                    var newMember = _memberService.AddMember(new Member
+                    {
+                        Name = application.DiscordName,
+                        Password = application.Password,
+                        Rank = Rank.Trialist
+                    });
+
+                    // Add the character for that member
+                    _characterService.AddCharacter(new Character
+                    {
+                        MemberId = newMember.MemberId, // Link character to member
+                        CharacterName = application.CharacterName,
+                        RealmName = application.ServerName,
+                        Class = application.Class,
+                        Role = application.Role
+                    });
+                }
             }
             else if (!Approved && application.Approved)
             {
+                // Un-approve if needed (optional logic)
                 application.Approved = false;
-                // Optional: remove the member again if needed
             }
         }
 
         Applications = _applicationService.GetAllApplications();
         return Page();
     }
+
 }

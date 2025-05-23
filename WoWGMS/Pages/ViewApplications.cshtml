@@ -12,11 +12,11 @@
     }
 </style>
 
-<h2 style="color:white;">Submitted applications</h2>
+<h2 style="color:white;">Submitted Applications</h2>
 
 @if (Model.Applications == null || !Model.Applications.Any())
 {
-    <p style="color:white;">No applications yet.</p>
+    <p style="color:white;">Der er endnu ingen ansøgninger.</p>
 }
 else
 {
@@ -25,10 +25,11 @@ else
             <tr>
                 <th>Discord</th>
                 <th>Character</th>
+                    <th>RealmName</th>
                 <th>Class</th>
                 <th>Role</th>
                 <th>Note</th>
-                <th>Approved</th>
+                <th>Godkendt</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@ else
                 <tr>
                     <td>@app.DiscordName</td>
                     <td>@app.CharacterName</td>
+                    <td>@app.ServerName</td>
                     <td>@app.Class</td>
                     <td>@app.Role</td>
                     <td>
@@ -47,12 +49,12 @@ else
                         </form>
                     </td>
                     <td>
-                        @(app.Approved ? "Yes" : "No")
+                        @(app.Approved ? "Ja" : "Nej")
                         <form method="post" asp-page-handler="ToggleApproval">
                             <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
                             <select name="Approved">
-                                <option value="true" selected="@(app.Approved ? "selected" : null)">Yes</option>
-                                <option value="false" selected="@(!app.Approved ? "selected" : null)">No</option>
+                                <option value="true" selected="@(app.Approved ? "selected" : null)">Ja</option>
+                                <option value="false" selected="@(!app.Approved ? "selected" : null)">Nej</option>
                             </select>
                             <button type="submit">Update status</button>
                         </form>

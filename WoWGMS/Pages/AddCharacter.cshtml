@@ -1,0 +1,77 @@
+﻿@page
+@using WoW.Model
+@model WoWGMS.Pages.AddCharacterModel
+@{
+    ViewData["Title"] = "Create Character";
+    Layout = "_Layout";
+}
+
+<h2>Create a New Character</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Character.CharacterName"></label>
+        <input asp-for="Character.CharacterName" class="form-control" />
+        <span asp-validation-for="Character.CharacterName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Character.RealmName"></label>
+        <input asp-for="Character.RealmName" class="form-control" />
+        <span asp-validation-for="Character.RealmName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Character.Class"></label>
+        <select asp-for="Character.Class" class="form-control" asp-items="Html.GetEnumSelectList<Class>()"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Character.Role"></label>
+        <select asp-for="Character.Role" class="form-control" asp-items="Html.GetEnumSelectList<Role>()"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Add Character</button>
+</form>
+
+<hr />
+
+<h3>Your Characters</h3>
+
+@if (Model.CharactersForMember != null && Model.CharactersForMember.Any())
+{
+    <table class="table table-striped table-dark mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Realm</th>
+                <th>Class</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var character in Model.CharactersForMember)
+            {
+                <tr>
+                    <td>@character.CharacterName</td>
+                    <td>@character.RealmName</td>
+                    <td>@character.Class</td>
+                    <td>@character.Role</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>You don't have any characters yet.</p>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,36 +1,35 @@
 ﻿using WoW.Model;
-using WoWGMS.MockData;
 using WoWGMS.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WoWGMS.Service
 {
     public class MemberService : IMemberService
     {
         private readonly MemberRepo _memberRepo;
-        private readonly MockMember mockmember;
 
-        // Initialize members from mock data
-        public List<Member> Members { get; } = MockMember.GetMockMembers();
+        public MemberService(MemberRepo memberRepo)
+        {
+            _memberRepo = memberRepo;
+        }
 
-        // Validate login by name and password (case insensitive for name)
         public Member? ValidateLogin(string? name, string? password)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(password))
                 return null;
 
-            return Members.FirstOrDefault(m =>
+            var members = _memberRepo.GetMembers();
+            return members.FirstOrDefault(m =>
                 m.Name.Equals(name.Trim(), StringComparison.OrdinalIgnoreCase) &&
                 m.Password == password);
         }
 
         public int GenerateNextMemberId()
         {
-            return Members.Any() ? Members.Max(m => m.MemberId) + 1 : 1;
-        }
-
-        public MemberService(MemberRepo memberRepo)
-        {
-            _memberRepo = memberRepo;
+            var members = _memberRepo.GetMembers();
+            return members.Any() ? members.Max(m => m.MemberId) + 1 : 1;
         }
 
         public Member AddMember(Member member)
@@ -53,9 +52,6 @@ namespace WoWGMS.Service
 
         public Member? UpdateMember(int memberId, Member updatedMember)
         {
-            var existing = _memberRepo.GetMember(memberId);
-            if (existing == null) return null;
-
             return _memberRepo.UpdateMember(memberId, updatedMember);
         }
 

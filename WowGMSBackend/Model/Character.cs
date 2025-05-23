@@ -14,13 +14,13 @@ namespace WoW.Model
         public string CharacterName { get; set; }
         [Required]
         [MaxLength(50)]
-        public string RealmName { get; set; }
+        public ServerName RealmName { get; set; }
         public Class Class { get; set; }
         public Role Role { get; set; }
-        public Member Owner { get; set; }
+        public Member Member { get; set; }
         
-        [ForeignKey("Owner")]
-        public int OwnerId { get; set; }
+        [ForeignKey("Member")]
+        public int MemberId { get; set; }
         [NotMapped]
         [Required]
         public Dictionary<BossName, int> BossKills { get; set; }
@@ -31,11 +31,12 @@ namespace WoW.Model
                     .Cast<BossName>()
                     .ToDictionary(boss => boss, boss => 0); 
         }
-        public Character(string _name, Class _class, Role _role)
+        public Character(string _name, Class _class, Role _role, ServerName _realmName)
         {
             CharacterName = _name;
             Class = _class;
             Role = _role;
+            RealmName = _realmName;
         }
 
 

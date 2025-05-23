@@ -1,16 +1,23 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WoW.Model;
+using WowGMSBackend.Repository;
 
 namespace WoWGMS.Pages
 {
     public class EventModel : PageModel
     {
-        public List<Member> Roster { get; set; }
+        private readonly IRosterRepository _rosterRepo;
+
+        public EventModel(IRosterRepository rosterRepo)
+        {
+            _rosterRepo = rosterRepo;
+        }
+
+        public List<BossRoster> BossRosters { get; set; } = new();
 
         public void OnGet()
         {
-            Roster = BossRosterModel.Roster;
+            BossRosters = _rosterRepo.GetAll().ToList();
         }
     }
 }

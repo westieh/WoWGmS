@@ -1,37 +1,52 @@
 ﻿@page
-@model ApplyModel
-@using WoW.Model
-@using WowGMSBackend.Model
+@using WoW.Model;
+@model WoWGMS.Pages.ApplyModel
 @{
-    ViewData["Title"] = "Apply for membership";
+    ViewData["Title"] = "Apply to Guild";
 }
 
-<h2>Apply for membership</h2>
+<h2 style="color: white;">Ansøgning</h2>
 
 <form method="post">
-    <div>
-        <label>Character Name</label>
-        <input asp-for="Application.CharacterName" class="form-control" />
-    </div>
-    <div>
-        <label>Discord Name</label>
+    <div class="form-group">
+        <label asp-for="Application.DiscordName" style="color:white;"></label>
         <input asp-for="Application.DiscordName" class="form-control" />
+        <span asp-validation-for="Application.DiscordName" class="text-danger"></span>
     </div>
-    @* <div>
-        <label>Password</label>
-        <input asp-for="Application.Password" type="password" class="form-control" />
-    </div> *@
-    <div>
-        <label>Class</label>
+
+    <div class="form-group">
+        <label asp-for="Application.CharacterName" style="color:white;"></label>
+        <input asp-for="Application.CharacterName" class="form-control" />
+        <span asp-validation-for="Application.CharacterName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Application.Class" style="color:white;"></label>
         <select asp-for="Application.Class" asp-items="Html.GetEnumSelectList<Class>()" class="form-control"></select>
+        <span asp-validation-for="Application.Class" class="text-danger"></span>
     </div>
-    <div>
-        <label>Role</label>
+
+    <div class="form-group">
+        <label asp-for="Application.Role" style="color:white;"></label>
         <select asp-for="Application.Role" asp-items="Html.GetEnumSelectList<Role>()" class="form-control"></select>
+        <span asp-validation-for="Application.Role" class="text-danger"></span>
     </div>
-    <div>
-        <label>Server</label>
+
+    <div class="form-group">
+        <label asp-for="Application.ServerName" style="color:white;"></label>
         <select asp-for="Application.ServerName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
+        <span asp-validation-for="Application.ServerName" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary mt-2">Send application</button>
+
+    <div class="form-group">
+        <label asp-for="Application.Password" style="color:white;"></label>
+        <input asp-for="Application.Password" type="password" class="form-control" />
+        <span asp-validation-for="Application.Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Send Ansøgning</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

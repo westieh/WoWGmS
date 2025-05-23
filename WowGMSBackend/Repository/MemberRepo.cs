@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using WoW.Model;
+using WoWGMS.MockData;
 
 namespace WoWGMS.Repository
 {
     public class MemberRepo
     {
-        private readonly List<Member> _members = new List<Member>();
+        private readonly List<Member> _members;
 
         public MemberRepo()
         {
-            _members.AddRange(MockData.MockMember.GetMockMembers());
+            _members = new List<Member>(MockMember.GetMockMembers());
         }
 
         public Member AddMember(Member member)
@@ -26,12 +27,13 @@ namespace WoWGMS.Repository
 
         public Member? UpdateMember(int memberId, Member updatedMember)
         {
-            var existingMember = _members.FirstOrDefault(m => m.MemberId == updatedMember.MemberId);
+            var existingMember = _members.FirstOrDefault(m => m.MemberId == memberId);
 
             if (existingMember != null)
             {
                 existingMember.Name = updatedMember.Name;
                 existingMember.Rank = updatedMember.Rank;
+                existingMember.Password = updatedMember.Password;
                 return existingMember;
             }
 
@@ -52,7 +54,7 @@ namespace WoWGMS.Repository
 
         public List<Member> GetMembers()
         {
-            return new List<Member>(_members);
+            return new List<Member>(_members); // return a copy
         }
     }
 }
