@@ -15,7 +15,7 @@ else
     foreach (var roster in Model.BossRosters)
     {
         <div class="roster-card mb-4">
-            <h4>@roster.BossName</h4>
+            <h4>@roster.BossDisplayName</h4>
             <p><strong>Time:</strong> @roster.InstanceTime.ToString("g")</p>
             <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
 

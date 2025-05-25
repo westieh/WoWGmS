@@ -1,12 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WowGMSBackend.Model;
-
+﻿
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace WowGMSBackend.Model
 {
     public class Application
     {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ApplicationId { get; set; }
+        [Required]
+        [MaxLength(12)]
         public string? CharacterName { get; set; }
+        [Required]
+        [MaxLength(30)]
         public string? DiscordName { get; set; }
         public string? Password { get; set; }
         public Class Class { get; set; }

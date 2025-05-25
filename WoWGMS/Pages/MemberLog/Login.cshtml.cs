@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Security.Claims;
-using WoWGMS.Service;
+using WowGMSBackend.Service;
 using Microsoft.Identity.Client;
 
 namespace WoWGMS.Pages.MemberLog

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WoW.Model;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Service
 {
@@ -14,7 +14,7 @@ namespace WowGMSBackend.Service
         List<Character> GetCharacters();
         Character? UpdateCharacter(int id, Character updated);
         Character? DeleteCharacter(int id);
-        void IncrementBossKill(int characterId, BossName boss);
+        void IncrementBossKill(int characterId, string bossSlug);
         List<Character> GetCharactersByMemberId(int memberId);
     }
 }

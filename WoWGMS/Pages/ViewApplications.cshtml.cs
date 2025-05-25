@@ -11,7 +11,7 @@ public class ViewApplicationsModel : PageModel
     private readonly IApplicationService _applicationService;
     private readonly IMemberService _memberService;
     private readonly ICharacterService _characterService;
-
+    public List<Application> Applications { get; set; } = new();
     public ViewApplicationsModel(IApplicationService applicationService, IMemberService memberService, ICharacterService characterService)
     {
         _applicationService = applicationService;
@@ -32,40 +32,29 @@ public class ViewApplicationsModel : PageModel
     public bool Approved { get; set; }
 
 
-    public IActionResult OnPostUpdateNote()
-    {
-        var appToEdit = _applicationService.GetApplicationById(ApplicationId);
-
-        if (appToEdit != null)
-        {
-            appToEdit.Note = Note;
-            _applicationService.UpdateApplication(appToEdit);
-        }
-
-        return RedirectToPage(); // reloads the same page
-    }
+    
     public IActionResult OnPostToggleApproval()
     {
         var appToUpdate = _applicationService.GetApplicationById(ApplicationId);
 
-        if (application != null)
+        if (appToUpdate != null)
         {
-            if (Approved && !application.Approved)
+            if (Approved && !appToUpdate.Approved)
             {
                 // Approve the application
-                _applicationService.ApproveApplication(application);
+                _applicationService.ApproveApplication(appToUpdate);
 
                 // Check if member already exists
                 var existingMembers = _memberService.GetMembers();
-                bool alreadyMember = existingMembers.Any(m => m.Name == application.DiscordName);
+                bool alreadyMember = existingMembers.Any(m => m.Name == appToUpdate.DiscordName);
 
                 if (!alreadyMember)
                 {
                     // Add the member
                     var newMember = _memberService.AddMember(new Member
                     {
-                        Name = application.DiscordName,
-                        Password = application.Password,
+                        Name = appToUpdate.DiscordName,
+                        Password = appToUpdate.Password,
                         Rank = Rank.Trialist
                     });
 
@@ -73,17 +62,17 @@ public class ViewApplicationsModel : PageModel
                     _characterService.AddCharacter(new Character
                     {
                         MemberId = newMember.MemberId, // Link character to member
-                        CharacterName = application.CharacterName,
-                        RealmName = application.ServerName,
-                        Class = application.Class,
-                        Role = application.Role
+                        CharacterName = appToUpdate.CharacterName,
+                        RealmName = appToUpdate.ServerName,
+                        Class = appToUpdate.Class,
+                        Role = appToUpdate.Role
                     });
                 }
             }
-            else if (!Approved && application.Approved)
+            else if (!Approved && appToUpdate.Approved)
             {
                 // Un-approve if needed (optional logic)
-                application.Approved = false;
+                appToUpdate.Approved = false;
             }
         }
 

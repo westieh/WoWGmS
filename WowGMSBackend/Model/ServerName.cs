@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WoW.Model
+namespace WowGMSBackend.Model
 {
     public enum ServerName
     {

@@ -21,22 +21,18 @@ builder.Services.AddHttpClient("RaiderIO", client =>
 {
     client.BaseAddress = new Uri("https://raider.io");
 });
-builder.Services.AddSingleton<MemberRepo>();
+builder.Services.AddScoped<MemberRepo>();
 
 
 // Add services to the container.
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IRosterService, RosterService>();
 
-builder.Services.AddScoped<CharacterRepo>(sp =>
-{
-    var memberRepo = sp.GetRequiredService<MemberRepo>();
-    return new CharacterRepo(memberRepo.GetMembers());
-});
 
-//builder.Services.AddSingleton<ICharacterService, CharacterService>();
+
+builder.Services.AddScoped<MemberRepo>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-
+builder.Services.AddScoped<CharacterRepo>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IMemberService, MemberService>();

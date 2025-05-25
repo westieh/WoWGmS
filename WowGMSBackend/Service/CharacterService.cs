@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WoW.Model;
+using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
+using WowGMSBackend.Service;
 
 namespace WowGMSBackend.Service
 {
@@ -42,10 +43,10 @@ namespace WowGMSBackend.Service
             return _repo.DeleteCharacter(id);
         }
 
-        public void IncrementBossKill(int characterId, BossName boss)
+        public void IncrementBossKill(int characterId, string bossSlug)
         {
             var character = _repo.GetCharacter(characterId);
-            character?.IncrementBossKill(boss);
+            character?.IncrementBossKill(bossSlug);
         }
 
         public List<Character> GetCharactersByMemberId(int memberId)

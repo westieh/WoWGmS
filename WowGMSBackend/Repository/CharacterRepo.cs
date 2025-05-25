@@ -1,42 +1,44 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WoW.Model;
+using WowGMSBackend.DBContext;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Repository
 {
     public class CharacterRepo
     {
-        private readonly List<Character> _characters = new();
-        private int _currentId = 0;
+        private readonly WowDbContext _context;
+        
 
-        public CharacterRepo(List<Member> members)
+        public CharacterRepo(WowDbContext context)
         {
-            _characters = new List<Character>(MockData.MockCharacter.GetMockCharacters(members));
+            _context = context ;
         }
 
         public Character AddCharacter(Character character)
         {
-            character.Id = ++_currentId;
-            _characters.Add(character);
+            _context.Characters.Add(character);
+            _context.SaveChanges();
             return character;
         }
 
         public Character? GetCharacter(int id)
         {
-            return _characters.FirstOrDefault(c => c.Id == id);
+            return _context.Characters.Include(c => c.Member).FirstOrDefault(c => c.Id == id);
         }
 
         public List<Character> GetCharacters()
         {
-            return new List<Character>(_characters);
+            return _context.Characters.Include(c => c.Member).ToList();
         }
 
         public Character? UpdateCharacter(int id, Character updated)
         {
-            var existing = _characters.FirstOrDefault(c => c.Id == id);
+            var existing = _context.Characters.FirstOrDefault(c => c.Id == id);
             if (existing != null)
             {
                 existing.CharacterName = updated.CharacterName;
@@ -45,6 +47,8 @@ namespace WowGMSBackend.Repository
                 existing.Role = updated.Role;
                 existing.MemberId = updated.MemberId;
                 existing.Member = updated.Member;
+
+                _context.SaveChanges();
                 return existing;
             }
             return null;
@@ -52,10 +56,11 @@ namespace WowGMSBackend.Repository
 
         public Character? DeleteCharacter(int id)
         {
-            var character = _characters.FirstOrDefault(c => c.Id == id);
+            var character = _context.Characters.FirstOrDefault(c => c.Id == id);
             if (character != null)
             {
-                _characters.Remove(character);
+                _context.Characters.Remove(character);
+                _context.SaveChanges();
                 return character;
             }
             return null;
@@ -63,7 +68,7 @@ namespace WowGMSBackend.Repository
 
         public List<Character> GetCharactersByMemberId(int memberId)
         {
-            return _characters.Where(c => c.MemberId == memberId).ToList();
+            return _context.Characters.Where(c => c.MemberId == memberId).ToList();
         }
     }
 }

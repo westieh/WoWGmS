@@ -31,7 +31,7 @@ public class RosterService : IRosterService
         if (roster == null) return;
 
         var toRemove = roster.Participants
-            .FirstOrDefault(c => c.CharacterName == characterName && c.RealmName == realmName);
+            .FirstOrDefault(c => c.CharacterName == characterName && c.RealmName.ToString() == realmName);
 
         if (toRemove != null)
         {

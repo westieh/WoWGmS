@@ -10,5 +10,6 @@ namespace WowGMSBackend.Service
         List<Application> GetAllApplications();
         List<Application> GetPendingApplications();
         void AddApplication(Application application);
+        Application? GetApplicationById(int id);
     }
 }

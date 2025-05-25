@@ -47,8 +47,6 @@ namespace WowGMSBackend.Service
 
         public void SubmitApplication(Application application)
         {
-            var applications = _applicationRepo.GetApplications();
-            application.ApplicationId = applications.Any() ? applications.Max(a => a.ApplicationId) + 1 : 1;
             application.SubmissionDate = DateTime.Now;
             _applicationRepo.AddApplication(application);
         }
