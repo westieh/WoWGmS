@@ -12,8 +12,8 @@ using WowGMSBackend.DBContext;
 namespace WowGMSBackend.Migrations
 {
     [DbContext(typeof(WowDbContext))]
-    [Migration("20250511004215_WowGMS")]
-    partial class WowGMS
+    [Migration("20250525024254_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace WowGMSBackend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WoW.Model.Application", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.Application", b =>
                 {
                     b.Property<int>("ApplicationId")
                         .ValueGeneratedOnAdd()
@@ -37,25 +37,31 @@ namespace WowGMSBackend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CharacterName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Class")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Class")
-                        .HasColumnType("int");
-
                     b.Property<string>("DiscordName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProcessedByMemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProcessedByMemberId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("ServerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("SubmissionDate")
                         .HasColumnType("datetime2");
@@ -67,7 +73,7 @@ namespace WowGMSBackend.Migrations
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("WoW.Model.BossRoster", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.BossRoster", b =>
                 {
                     b.Property<int>("RosterId")
                         .ValueGeneratedOnAdd()
@@ -75,8 +81,9 @@ namespace WowGMSBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RosterId"));
 
-                    b.Property<int>("BossName")
-                        .HasColumnType("int");
+                    b.Property<string>("BossDisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -87,15 +94,20 @@ namespace WowGMSBackend.Migrations
                     b.Property<bool>("IsProcessed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RaidSlug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("RosterId");
 
                     b.ToTable("BossRosters");
                 });
 
-            modelBuilder.Entity("WoW.Model.Character", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.Character", b =>
                 {
                     b.Property<string>("CharacterName")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<int?>("BossRosterRosterId")
                         .HasColumnType("int");
@@ -103,12 +115,16 @@ namespace WowGMSBackend.Migrations
                     b.Property<int>("Class")
                         .HasColumnType("int");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("RealmName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
@@ -117,10 +133,12 @@ namespace WowGMSBackend.Migrations
 
                     b.HasIndex("BossRosterRosterId");
 
+                    b.HasIndex("OwnerId");
+
                     b.ToTable("Characters");
                 });
 
-            modelBuilder.Entity("WoW.Model.Member", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.Member", b =>
                 {
                     b.Property<int>("MemberId")
                         .ValueGeneratedOnAdd()
@@ -129,6 +147,11 @@ namespace WowGMSBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberId"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -140,25 +163,31 @@ namespace WowGMSBackend.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("WoW.Model.Application", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.Application", b =>
                 {
-                    b.HasOne("WoW.Model.Member", "ProcessedBy")
+                    b.HasOne("WowGMSBackend.Model.Member", "ProcessedBy")
                         .WithMany()
-                        .HasForeignKey("ProcessedByMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProcessedByMemberId");
 
                     b.Navigation("ProcessedBy");
                 });
 
-            modelBuilder.Entity("WoW.Model.Character", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.Character", b =>
                 {
-                    b.HasOne("WoW.Model.BossRoster", null)
+                    b.HasOne("WowGMSBackend.Model.BossRoster", null)
                         .WithMany("Participants")
                         .HasForeignKey("BossRosterRosterId");
+
+                    b.HasOne("WowGMSBackend.Model.Member", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("WoW.Model.BossRoster", b =>
+            modelBuilder.Entity("WowGMSBackend.Model.BossRoster", b =>
                 {
                     b.Navigation("Participants");
                 });

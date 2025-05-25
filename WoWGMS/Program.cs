@@ -22,15 +22,18 @@ builder.Services.AddHttpClient("RaiderIO", client =>
     client.BaseAddress = new Uri("https://raider.io");
 });
 // Add services to the container.
-builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IRosterService, RosterService>();
 
-builder.Services.AddSingleton<MemberService>();
+builder.Services.AddScoped<MemberService>();
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IMemberService, MemberService>();
-builder.Services.AddSingleton<MemberRepo>();
-builder.Services.AddSingleton<ApplicationRepo>();
-builder.Services.AddSingleton<IRosterRepository, BossRosterRepo>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<MemberRepo>();
+builder.Services.AddScoped<IRosterRepository, BossRosterRepo>();
 builder.Services.AddHostedService<BossKillCheckerService>();
+
+builder.Services.AddScoped<ApplicationRepo>();
+
 builder.Services.AddScoped(typeof(IDBService<>), typeof(DbGenericService<>));
 builder.Services.AddDbContext<WowDbContext>(options =>
     options.UseSqlServer(

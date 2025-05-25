@@ -2,17 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Collections.Generic;
-using WoWGMS.Repository;
+using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
+using WowGMSBackend.Service;
 
 public class ViewApplicationsModel : PageModel
 {
+    private readonly IApplicationService _applicationService;
     public List<Application> Applications { get; set; }
 
+    public ViewApplicationsModel(IApplicationService applicationService)
+    {
+        _applicationService = applicationService;
+    }
     public void OnGet()
     {
 
-        Applications = ApplicationRepo.Applications;
+        Applications = _applicationService.GetAllApplications();
     }
     [BindProperty]
     public int ApplicationId { get; set; }
@@ -25,23 +31,24 @@ public class ViewApplicationsModel : PageModel
 
     public IActionResult OnPostUpdateNote()
     {
-        var appToEdit = ApplicationRepo.Applications.FirstOrDefault(a => a.ApplicationId == ApplicationId);
+        var appToEdit = _applicationService.GetApplicationById(ApplicationId);
 
         if (appToEdit != null)
         {
             appToEdit.Note = Note;
+            _applicationService.UpdateApplication(appToEdit);
         }
 
         return RedirectToPage(); // reloads the same page
     }
     public IActionResult OnPostToggleApproval()
     {
-        var appToUpdate = ApplicationRepo.Applications
-            .FirstOrDefault(a => a.ApplicationId == ApplicationId);
+        var appToUpdate = _applicationService.GetApplicationById(ApplicationId);
 
         if (appToUpdate != null)
         {
             appToUpdate.Approved = Approved;
+            _applicationService.UpdateApplication(appToUpdate);
         }
 
         return RedirectToPage();

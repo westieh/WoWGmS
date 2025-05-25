@@ -6,7 +6,7 @@ namespace WowGMSBackend.Service
 {
     public class ApplicationService : IApplicationService
     {
-        public ApplicationRepo _applicationRepo { get; private set; }
+        private readonly ApplicationRepo _applicationRepo;
 
         public ApplicationService(ApplicationRepo applicationRepo)
         {

@@ -10,5 +10,7 @@ namespace WowGMSBackend.Service
         Member? DeleteMember(int memberId);
         List<Member> GetMembers();
         Member? ChangeMemberRank(int actingMemberId, int targetMemberId, Rank newRank);
+        Member? ValidateLogin(string name, string password);
     }
+
 }

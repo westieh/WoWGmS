@@ -7,26 +7,22 @@ namespace WowGMSBackend.Service
     public class MemberService : IMemberService
     {
         private readonly MemberRepo _memberRepo;
-        private readonly MockMember mockmember;
+        
 
-        // Initialize members from mock data
-        public List<Member> Members { get; } = MockMember.GetMockMembers();
+        
 
         // Validate login by name and password (case insensitive for name)
         public Member? ValidateLogin(string? name, string? password)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(password))
                 return null;
+            var allMembers = _memberRepo.GetMembers();
 
-            return Members.FirstOrDefault(m =>
+            return allMembers.FirstOrDefault(m =>
                 m.Name.Equals(name.Trim(), StringComparison.OrdinalIgnoreCase) &&
                 m.Password == password);
         }
 
-        public int GenerateNextMemberId()
-        {
-            return Members.Any() ? Members.Max(m => m.MemberId) + 1 : 1;
-        }
 
         public MemberService(MemberRepo memberRepo)
         {
