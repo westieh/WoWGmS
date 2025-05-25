@@ -14,6 +14,7 @@ namespace WowGMSBackend.Model
         [Required]
         [MaxLength(30)]
         public string? DiscordName { get; set; }
+        [Required]
         public string? Password { get; set; }
         public Class Class { get; set; }
         public Role Role { get; set; }

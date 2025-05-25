@@ -46,6 +46,8 @@ namespace WowGMSBackend.DBContext
             modelBuilder.Entity<Application>()
                 .Property(a => a.Role)
                 .HasConversion<string>();
+            
+    
         }
     }
 }

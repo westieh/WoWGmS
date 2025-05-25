@@ -13,7 +13,6 @@ namespace WowGMSBackend.Model
         [MaxLength(12)]
         public string CharacterName { get; set; }
         [Required]
-        [MaxLength(50)]
         public ServerName RealmName { get; set; }
         public Class Class { get; set; }
         public Role Role { get; set; }

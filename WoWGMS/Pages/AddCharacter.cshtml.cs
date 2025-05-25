@@ -53,6 +53,19 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPost()
         {
+            if (!ModelState.IsValid)
+            {
+                foreach (var kvp in ModelState)
+                {
+                    foreach (var error in kvp.Value.Errors)
+                    {
+                        Console.WriteLine($"Model error on '{kvp.Key}': {error.ErrorMessage}");
+                    }
+                }
+
+                Console.WriteLine("Exiting early due to invalid model state");
+                return Page();
+            }
             var memberId = LoggedInMemberId;
             if (memberId == null)
             {
@@ -66,12 +79,7 @@ namespace WoWGMS.Pages
                 ModelState.AddModelError(string.Empty, "Member not found.");
                 return Page();
             }
-
-            if (!ModelState.IsValid)
-            {
-                CharactersForMember = _characterService.GetCharactersByMemberId(memberId.Value);
-                return Page();
-            }
+            
 
             Character.MemberId = memberId.Value;
             Character.Member = member;

@@ -49,9 +49,9 @@ namespace WowGMSBackend.Migrations
                 {
                     ApplicationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CharacterName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DiscordName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CharacterName = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
+                    DiscordName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Class = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ServerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -76,10 +76,10 @@ namespace WowGMSBackend.Migrations
                 {
                     CharacterName = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
-                    RealmName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RealmName = table.Column<int>(type: "int", maxLength: 50, nullable: false),
                     Class = table.Column<int>(type: "int", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
-                    OwnerId = table.Column<int>(type: "int", nullable: false),
+                    MemberId = table.Column<int>(type: "int", nullable: false),
                     BossRosterRosterId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -91,8 +91,8 @@ namespace WowGMSBackend.Migrations
                         principalTable: "BossRosters",
                         principalColumn: "RosterId");
                     table.ForeignKey(
-                        name: "FK_Characters_Members_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_Characters_Members_MemberId",
+                        column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "MemberId",
                         onDelete: ReferentialAction.Cascade);
@@ -109,9 +109,9 @@ namespace WowGMSBackend.Migrations
                 column: "BossRosterRosterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Characters_OwnerId",
+                name: "IX_Characters_MemberId",
                 table: "Characters",
-                column: "OwnerId");
+                column: "MemberId");
         }
 
         /// <inheritdoc />

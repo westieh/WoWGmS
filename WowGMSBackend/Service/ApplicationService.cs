@@ -24,16 +24,6 @@ namespace WowGMSBackend.Service
         public void ApproveApplication(Application application)
         {
             if (application.Approved) return;
-
-            var newMember = new Member
-            {
-                MemberId = _memberService.GenerateNextMemberId(),
-                Name = application.DiscordName,
-                Password = application.Password,
-                Rank = Rank.Trialist
-            };
-
-            _memberService.AddMember(newMember);
             application.Approved = true;
             application.SubmissionDate = DateTime.Now;
 

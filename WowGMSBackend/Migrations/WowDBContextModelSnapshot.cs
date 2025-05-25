@@ -34,19 +34,24 @@ namespace WowGMSBackend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CharacterName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Class")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DiscordName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProcessedByMemberId")
@@ -157,6 +162,15 @@ namespace WowGMSBackend.Migrations
                     b.HasKey("MemberId");
 
                     b.ToTable("Members");
+
+                    b.HasData(
+                        new
+                        {
+                            MemberId = 1,
+                            Name = "admin",
+                            Password = "password123",
+                            Rank = 2
+                        });
                 });
 
             modelBuilder.Entity("WowGMSBackend.Model.Application", b =>

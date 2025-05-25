@@ -25,11 +25,6 @@ namespace WowGMSBackend.Service
                 m.Password == password);
         }
 
-        public int GenerateNextMemberId()
-        {
-            var members = _memberRepo.GetMembers();
-            return members.Any() ? members.Max(m => m.MemberId) + 1 : 1;
-        }
 
         public Member AddMember(Member member)
         {

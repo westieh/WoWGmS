@@ -48,16 +48,24 @@ else
                             <button type="submit">Gem</button>
                         </form>
                     </td>
-                    <td>
-                        @(app.Approved ? "Ja" : "Nej")
-                        <form method="post" asp-page-handler="ToggleApproval">
-                            <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
+                     <td>
+                    @(app.Approved ? "Ja" : "Nej")
+                     <form method="post" asp-page-handler="ToggleApproval">
+                         <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
                             <select name="Approved">
-                                <option value="true" selected="@(app.Approved ? "selected" : null)">Ja</option>
-                                <option value="false" selected="@(!app.Approved ? "selected" : null)">Nej</option>
+                                @if (app.Approved)
+                                {
+                                    <option value="true" selected>Ja</option>
+                                    <option value="false">Nej</option>
+                                }
+                                else
+                                {
+                                    <option value="true">Ja</option>
+                                    <option value="false" selected>Nej</option>
+                                }
                             </select>
-                            <button type="submit">Update status</button>
-                        </form>
+                        <button type="submit">Update status</button>
+                    </form>
                     </td>
                 </tr>
             }

@@ -51,7 +51,22 @@ builder.Services.AddDbContext<WowDbContext>(options =>
 );
 
 var app = builder.Build();
+// SEED TEST ADMIN USER
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<WowDbContext>();
 
+    if (!db.Members.Any(m => m.Name == "admin"))
+    {
+        db.Members.Add(new Member
+        {
+            Name = "admin",
+            Password = "password123", // hash if needed
+            Rank = Rank.Officer
+        });
+        db.SaveChanges();
+    }
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -12,7 +12,7 @@ using WowGMSBackend.DBContext;
 namespace WowGMSBackend.Migrations
 {
     [DbContext(typeof(WowDbContext))]
-    [Migration("20250525024254_InitialCreate")]
+    [Migration("20250525195121_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -37,19 +37,24 @@ namespace WowGMSBackend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CharacterName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Class")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DiscordName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProcessedByMemberId")
@@ -118,13 +123,12 @@ namespace WowGMSBackend.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("OwnerId")
+                    b.Property<int>("MemberId")
                         .HasColumnType("int");
 
-                    b.Property<string>("RealmName")
-                        .IsRequired()
+                    b.Property<int>("RealmName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
@@ -133,7 +137,7 @@ namespace WowGMSBackend.Migrations
 
                     b.HasIndex("BossRosterRosterId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("MemberId");
 
                     b.ToTable("Characters");
                 });
@@ -178,13 +182,13 @@ namespace WowGMSBackend.Migrations
                         .WithMany("Participants")
                         .HasForeignKey("BossRosterRosterId");
 
-                    b.HasOne("WowGMSBackend.Model.Member", "Owner")
+                    b.HasOne("WowGMSBackend.Model.Member", "Member")
                         .WithMany()
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("WowGMSBackend.Model.BossRoster", b =>
