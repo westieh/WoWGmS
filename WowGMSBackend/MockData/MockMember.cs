@@ -1,6 +1,6 @@
-﻿using WoW.Model;
+﻿using WowGMSBackend.Model;
 
-namespace WoWGMS.MockData
+namespace WowGMSBackend.MockData
 {
     public class MockMember
     {

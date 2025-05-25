@@ -1,37 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using WoW.MockData;
-using WoW.Model;
+using WowGMSBackend.DBContext;
+using WowGMSBackend.MockData;
+using WowGMSBackend.Model;
 
-namespace WoWGMS.Repository
+namespace WowGMSBackend.Repository
 {
     public class ApplicationRepo
     {
-        private readonly List<Application> _applications;
+        private readonly WowDbContext _context;
 
-        public ApplicationRepo()
+        public ApplicationRepo(WowDbContext context)
         {
-            _applications = MockApplications.Get();  // Initialize with mock data
+            _context = context;
         }
 
         public List<Application> GetApplications()
         {
-            return _applications;
+            return _context.Applications.ToList();
         }
 
         public Application? GetApplicationById(int id)
         {
-            return _applications.FirstOrDefault(a => a.ApplicationId == id);
+            return _context.Applications.FirstOrDefault(a => a.ApplicationId == id);
         }
 
         public void AddApplication(Application application)
         {
-            _applications.Add(application);
+            _context.Applications.Add(application);
+            _context.SaveChanges();
         }
 
         public bool UpdateApplication(Application updatedApplication)
         {
-            var existing = _applications.FirstOrDefault(a => a.ApplicationId == updatedApplication.ApplicationId);
+            var existing = _context.Applications.FirstOrDefault(a => a.ApplicationId == updatedApplication.ApplicationId);
             if (existing == null) return false;
 
             existing.CharacterName = updatedApplication.CharacterName;
@@ -42,14 +43,17 @@ namespace WoWGMS.Repository
             existing.Approved = updatedApplication.Approved;
             existing.ProcessedBy = updatedApplication.ProcessedBy;
             existing.SubmissionDate = updatedApplication.SubmissionDate;
+            _context.SaveChanges();
             return true;
+
         }
 
         public bool DeleteApplication(int id)
         {
-            var application = _applications.FirstOrDefault(a => a.ApplicationId == id);
+            var application = _context.Applications.FirstOrDefault(a => a.ApplicationId == id);
             if (application == null) return false;
-            _applications.Remove(application);
+            _context.Applications.Remove(application);
+            _context.SaveChanges();
             return true;
         }
     }

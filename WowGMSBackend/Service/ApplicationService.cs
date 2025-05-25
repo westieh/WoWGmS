@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using WoW.Model;
-using WoWGMS.Repository;
-using WoWGMS.Service;
+using WowGMSBackend.Repository;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Service
 {

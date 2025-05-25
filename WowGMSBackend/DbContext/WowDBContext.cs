@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
-using WoW.Model;
+using WowGMSBackend.Model;
 namespace WowGMSBackend.DBContext
 {
     public class WowDbContext : DbContext

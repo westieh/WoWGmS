@@ -1,39 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WoW.Model;
-using WoWGMS.MockData;
+using WowGMSBackend.DBContext;
+using WowGMSBackend.Model;
 
-namespace WoWGMS.Repository
+namespace WowGMSBackend.Repository
 {
     public class MemberRepo
     {
-        private readonly List<Member> _members;
-
-        public MemberRepo()
+        private readonly WowDbContext _context;
+        public MemberRepo(WowDbContext context)
         {
-            _members = new List<Member>(MockMember.GetMockMembers());
+            _context = context;
         }
+
 
         public Member AddMember(Member member)
         {
-            _members.Add(member);
+            _context.Members.Add(member);
+            _context.SaveChanges();
             return member;
         }
 
         public Member? GetMember(int memberId)
         {
-            return _members.FirstOrDefault(m => m.MemberId == memberId);
+            return _context.Members.FirstOrDefault(m => m.MemberId == memberId);
         }
 
         public Member? UpdateMember(int memberId, Member updatedMember)
         {
-            var existingMember = _members.FirstOrDefault(m => m.MemberId == memberId);
+            var existingMember = _context.Members.FirstOrDefault(m => m.MemberId == memberId); 
 
             if (existingMember != null)
             {
                 existingMember.Name = updatedMember.Name;
                 existingMember.Rank = updatedMember.Rank;
-                existingMember.Password = updatedMember.Password;
+                _context.SaveChanges();
                 return existingMember;
             }
 
@@ -42,10 +43,11 @@ namespace WoWGMS.Repository
 
         public Member? DeleteMember(int memberId)
         {
-            var member = _members.FirstOrDefault(m => m.MemberId == memberId);
+            var member = _context.Members.FirstOrDefault(m => m.MemberId == memberId);
             if (member != null)
             {
-                _members.Remove(member);
+                _context.Members.Remove(member);
+                _context.SaveChanges();
                 return member;
             }
 
@@ -54,7 +56,7 @@ namespace WoWGMS.Repository
 
         public List<Member> GetMembers()
         {
-            return new List<Member>(_members); // return a copy
+            return _context.Members.ToList();
         }
     }
 }

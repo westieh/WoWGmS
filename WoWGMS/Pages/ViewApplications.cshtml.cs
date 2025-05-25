@@ -2,10 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using System.Collections.Generic;
-using WoW.Model;
-using WoWGMS.Repository;
-using WoWGMS.Service;
-using WowGMSBackend.MockData;
+using WowGMSBackend.Repository;
+using WowGMSBackend.Model;
 using WowGMSBackend.Service;
 
 public class ViewApplicationsModel : PageModel
@@ -20,42 +18,35 @@ public class ViewApplicationsModel : PageModel
         _memberService = memberService;
         _characterService = characterService;
     }
+    public void OnGet()
+    {
 
-    [BindProperty]
-    public List<Application> Applications { get; set; }
-
+        Applications = _applicationService.GetAllApplications();
+    }
     [BindProperty]
     public int ApplicationId { get; set; }
 
     [BindProperty]
     public string Note { get; set; }
-
     [BindProperty]
     public bool Approved { get; set; }
 
-    public void OnGet()
-    {
-        Applications = _applicationService.GetAllApplications();
-    }
 
     public IActionResult OnPostUpdateNote()
     {
-        var application = _applicationService.GetAllApplications()
-            .FirstOrDefault(a => a.ApplicationId == ApplicationId);
+        var appToEdit = _applicationService.GetApplicationById(ApplicationId);
 
-        if (application != null)
+        if (appToEdit != null)
         {
-            application.Note = Note;
+            appToEdit.Note = Note;
+            _applicationService.UpdateApplication(appToEdit);
         }
 
-        Applications = _applicationService.GetAllApplications();
-        return Page();
+        return RedirectToPage(); // reloads the same page
     }
-
     public IActionResult OnPostToggleApproval()
     {
-        var application = _applicationService.GetAllApplications()
-            .FirstOrDefault(a => a.ApplicationId == ApplicationId);
+        var appToUpdate = _applicationService.GetApplicationById(ApplicationId);
 
         if (application != null)
         {
@@ -96,8 +87,7 @@ public class ViewApplicationsModel : PageModel
             }
         }
 
-        Applications = _applicationService.GetAllApplications();
-        return Page();
+        return RedirectToPage();
     }
 
 }

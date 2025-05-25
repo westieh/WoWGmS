@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WoW.Model
+namespace WowGMSBackend.Model
 {
     public class Character
     {
@@ -23,13 +23,11 @@ namespace WoW.Model
         public int MemberId { get; set; }
         [NotMapped]
         [Required]
-        public Dictionary<BossName, int> BossKills { get; set; }
+        public Dictionary<string, int> BossKills { get; set; } = new();
 
         public Character() 
         {
-            BossKills = Enum.GetValues(typeof(BossName))
-                    .Cast<BossName>()
-                    .ToDictionary(boss => boss, boss => 0); 
+            BossKills = new Dictionary<string, int>();
         }
         public Character(string _name, Class _class, Role _role, ServerName _realmName)
         {
@@ -44,10 +42,13 @@ namespace WoW.Model
         {
             return $"Character: Name = {CharacterName}, Class = {Class}, Role = {Role}";
         }
-        public void IncrementBossKill(BossName boss)
+        public void IncrementBossKill(string bossSlug)
         {
-            if (BossKills.ContainsKey(boss))
-                BossKills[boss]++;
+            if (BossKills.ContainsKey(bossSlug))
+                BossKills[bossSlug]++;
+            else
+                BossKills[bossSlug] = 1;
+
         }
 
 

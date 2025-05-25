@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WoWGMS.Repository;
-using WoW.Model;
+using WowGMSBackend.Repository;
+using WowGMSBackend.Model;
 
 namespace WoWGMS.Pages.Admin.Dashboard.Members
 {

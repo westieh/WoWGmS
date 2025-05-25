@@ -9,19 +9,21 @@ using System.Net.Http;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
 using System.Text.Json;
+using WowGMSBackend.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WowGMSBackend.Service
 {
     public class BossKillCheckerService : BackgroundService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IRosterRepository _rosterRepo;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _config;
 
-        public BossKillCheckerService(IHttpClientFactory httpClientFactory, IRosterRepository rosterRepo, IConfiguration config)
+        public BossKillCheckerService(IHttpClientFactory httpClientFactory, IServiceScopeFactory socpeFactory, IConfiguration config)
         {
             _httpClientFactory = httpClientFactory;
-            _rosterRepo = rosterRepo;
+            _scopeFactory = socpeFactory;
             _config = config;
         }
 
@@ -35,6 +37,8 @@ namespace WowGMSBackend.Service
         }
         private async Task CheckBossKills()
         {
+            using var scope = _scopeFactory.CreateScope();
+            var _rosterRepo = scope.ServiceProvider.GetRequiredService<IRosterRepository>();
             var client = _httpClientFactory.CreateClient("RaiderIO");
 
             var roster = _rosterRepo
@@ -45,8 +49,10 @@ namespace WowGMSBackend.Service
 
             if (roster != null)
             {
-                var url = BuildUrl(roster.BossName.ToString());
-                var response = await client.GetAsync(url);
+                var boss = roster.GetBoss();
+                if (boss == null) return;
+
+                var url = UrlBuilder.BuildBossKillUrl(_config, boss.Slug, roster.RaidSlug); var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode) return;
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -59,17 +65,6 @@ namespace WowGMSBackend.Service
                     _rosterRepo.MarkAsProcessed(roster.RosterId);
             }
 
-        }
-        private string BuildUrl(string bossSlug)
-        {
-            return $"/api/v1/guilds/boss-kill" +
-                   $"?region={_config["RaiderIO:Region"]}" +
-                   $"&realm={_config["RaiderIO:Realm"]}" +
-                   $"&guild={_config["RaiderIO:Guild"]}" +
-                   $"&raid={_config["RaiderIO:Raid"]}" +
-                   $"&boss={bossSlug}" +
-                   $"&difficulty={_config["RaiderIO:Difficulty"]}" +
-                   $"&access_key={_config["RaiderIO:AccessKey"]}";
         }
     }
 }

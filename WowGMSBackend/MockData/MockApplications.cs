@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using WoW.Model;
+using WowGMSBackend.Model;
 
-namespace WoW.MockData
+namespace WowGMSBackend.MockData
 {
     public static class MockApplications
     {

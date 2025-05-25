@@ -1,10 +1,8 @@
-﻿using WoW.Model;
-using WoWGMS.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using WowGMSBackend.Model;
 
-namespace WoWGMS.Service
+using WowGMSBackend.Repository;
+
+namespace WowGMSBackend.Service
 {
     public class MemberService : IMemberService
     {
@@ -19,6 +17,7 @@ namespace WoWGMS.Service
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(password))
                 return null;
+            var allMembers = _memberRepo.GetMembers();
 
             var members = _memberRepo.GetMembers();
             return members.FirstOrDefault(m =>

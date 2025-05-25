@@ -1,54 +1,65 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WoW.MockData;
-using WoW.Model;
+using WowGMSBackend.DBContext;
+using WowGMSBackend.MockData;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Repository
 {
     public class BossRosterRepo : IRosterRepository
     {
-        private static List<BossRoster> _bossRosters = MockBossRoster.GetBossRoster();
-        private static int _nextId = 1;
+        private readonly WowDbContext _context;
+        public BossRosterRepo(WowDbContext context)
+        {
+            _context = context;
+        }
 
         public IEnumerable<BossRoster> GetAll()
         {
-            return _bossRosters;
+            return _context.BossRosters.Include(r => r.Participants).ToList();
         }
         public void MarkAsProcessed(int rosterId)
         {
-            var roster = _bossRosters.FirstOrDefault(r => r.RosterId == rosterId);
+            var roster = _context.BossRosters.Include(r => r.Participants).FirstOrDefault(r => r.RosterId == rosterId);
             if (roster == null || roster.IsProcessed)
                 return;
 
+            var boss = roster.GetBoss();
+            if (boss == null) return;
+
             foreach (var character in roster.Participants)
             {
-                character.IncrementBossKill(roster.BossName);
+                character.IncrementBossKill(boss.Slug);
             }
 
             roster.IsProcessed = true;
         }
         public BossRoster? GetById(int id)
         {
-            return _bossRosters.FirstOrDefault(r => r.RosterId == id);
+            return _context.BossRosters
+            .Include(r => r.Participants)
+            .FirstOrDefault(r => r.RosterId == id);
         }
 
         public BossRoster Add(BossRoster roster)
         {
-            roster.RosterId = _nextId++;
             roster.CreationDate = DateTime.Now;
-            _bossRosters.Add(roster);
+            _context.BossRosters.Add(roster);
+            _context.SaveChanges();
             return roster;
         }
 
         public BossRoster? Update(BossRoster updated)
         {
-            var existing = GetById(updated.RosterId);
+            var existing = _context.BossRosters.Find(updated.RosterId);
             if (existing != null)
             {
-                existing.BossName = updated.BossName;
+                existing.RaidSlug = updated.RaidSlug;
+                existing.BossDisplayName = updated.BossDisplayName;
                 existing.InstanceTime = updated.InstanceTime;
                 existing.IsProcessed = updated.IsProcessed;
                 return existing;
@@ -58,10 +69,11 @@ namespace WowGMSBackend.Repository
 
         public BossRoster? Delete(int id)
         {
-            var roster = GetById(id);
+            var roster = _context.BossRosters.Find(id);
             if (roster != null)
             {
-                _bossRosters.Remove(roster);
+                _context.BossRosters.Remove(roster);
+                _context.SaveChanges();
                 return roster;
             }
             return null;

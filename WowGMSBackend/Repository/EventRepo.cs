@@ -1,6 +1,6 @@
-﻿using WoW.Model;
+﻿using WowGMSBackend.Model;
 
-namespace WoWGMS.Repository
+namespace WowGMSBackend.Repository
 {
     public class EventRepo
     {

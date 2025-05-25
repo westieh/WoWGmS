@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WoWGMS.Repository;
-
+using WowGMSBackend.Model;
+using WowGMSBackend.Repository;
 namespace WoWGMS.Pages.Admin.Dashboard
 {
     [Authorize(Roles = "Admin")]
@@ -17,8 +17,8 @@ namespace WoWGMS.Pages.Admin.Dashboard
             _memberRepo = memberRepo;
         }
 
-        public List<WoW.Model.Application> Applications { get; set; }
-        public List<WoW.Model.Member> Members { get; set; }
+        public List<Application> Applications { get; set; }
+        public List<Member> Members { get; set; }
 
         public void OnGet()
         {

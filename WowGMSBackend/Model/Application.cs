@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using WowGMSBackend.Model;
 
-namespace WoW.Model
+namespace WowGMSBackend.Model
 {
     public class Application
     {
