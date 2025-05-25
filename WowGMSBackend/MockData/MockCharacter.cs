@@ -17,19 +17,19 @@ namespace WowGMSBackend.MockData
         {
             Id = 1,
             MemberId = members[0].MemberId,
-            Member = members[0]
+            //Member = members[0]
         },
         new Character("Jaina", Class.Mage, Role.RangedDPS, ServerName.Aegwynn) // Assuming Kul Tiras is not in enum, use closest or add
         {
             Id = 2,
             MemberId = members[1].MemberId,
-            Member = members[1]
+            //Member = members[1]
         },
         new Character("Anduin", Class.Priest, Role.Healer, ServerName.Stormrage) // Using Stormrage as example
         {
             Id = 3,
             MemberId = members[2].MemberId,
-            Member = members[2]
+            //Member = members[2]
         }
     };
         }

@@ -82,7 +82,7 @@ namespace WoWGMS.Pages
             
 
             Character.MemberId = memberId.Value;
-            Character.Member = member;
+           
 
             _characterService.AddCharacter(Character);
 

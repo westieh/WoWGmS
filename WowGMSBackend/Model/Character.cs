@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace WowGMSBackend.Model
 {
     public class Character
     {
         [Key]
-        
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } //Påkrævet for at migration fungerer
         [Required]
         [MaxLength(12)]
@@ -16,6 +18,7 @@ namespace WowGMSBackend.Model
         public ServerName RealmName { get; set; }
         public Class Class { get; set; }
         public Role Role { get; set; }
+        [ValidateNever]
         public Member Member { get; set; }
         
         [ForeignKey("Member")]

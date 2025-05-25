@@ -75,8 +75,9 @@ namespace WowGMSBackend.Migrations
                 columns: table => new
                 {
                     CharacterName = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    RealmName = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RealmName = table.Column<int>(type: "int", nullable: false),
                     Class = table.Column<int>(type: "int", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     MemberId = table.Column<int>(type: "int", nullable: false),

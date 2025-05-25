@@ -12,8 +12,8 @@ using WowGMSBackend.DBContext;
 namespace WowGMSBackend.Migrations
 {
     [DbContext(typeof(WowDbContext))]
-    [Migration("20250525201755_SeededAdminUser")]
-    partial class SeededAdminUser
+    [Migration("20250525223130_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -121,13 +121,15 @@ namespace WowGMSBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("MemberId")
                         .HasColumnType("int");
 
                     b.Property<int>("RealmName")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<int>("Role")
@@ -165,15 +167,6 @@ namespace WowGMSBackend.Migrations
                     b.HasKey("MemberId");
 
                     b.ToTable("Members");
-
-                    b.HasData(
-                        new
-                        {
-                            MemberId = 1,
-                            Name = "admin",
-                            Password = "password123",
-                            Rank = 2
-                        });
                 });
 
             modelBuilder.Entity("WowGMSBackend.Model.Application", b =>
