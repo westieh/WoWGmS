@@ -28,11 +28,12 @@ namespace WowGMSBackend.Registry
             }
 
         };
-        public static Boss? GetBoss(string raidSlug, string bossSlug)
+        public static Boss? GetBossByDisplayName(string raidSlug, string displayName)
         {
             var raid = Raids.FirstOrDefault(r => r.Slug.Equals(raidSlug, StringComparison.OrdinalIgnoreCase));
             if (raid == null) return null;
-            return raid.Bosses.FirstOrDefault(b => b.Slug.Equals(bossSlug, StringComparison.OrdinalIgnoreCase));
+
+            return raid.Bosses.FirstOrDefault(b => b.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

@@ -13,6 +13,7 @@ namespace WoWGMS.Pages
             _rosterRepo = rosterRepo;
         }
 
+        public List<Character> MyCharacters { get; set; } = new();
         public List<BossRoster> BossRosters { get; set; } = new();
 
         public void OnGet()

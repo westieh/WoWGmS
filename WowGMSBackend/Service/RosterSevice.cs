@@ -59,6 +59,15 @@ public class RosterService : IRosterService
         roster.IsProcessed = true;
         _rosterRepo.Update(roster);
     }
+    public bool CheckRosterBalance(BossRoster roster)
+    {
+        bool hasTank = roster.Participants.Any(p => p.Role == Role.Tank);
+        bool hasHealer = roster.Participants.Any(p => p.Role == Role.Healer);
+        bool hasRangedDps = roster.Participants.Any(p => p.Role == Role.RangedDPS);
+        bool hasMeleeDps = roster.Participants.Any(p => p.Role == Role.MeleeDPS);
+
+        return hasTank && hasHealer && hasRangedDps && hasMeleeDps;
+    }
     public IEnumerable<BossRoster> GetUnprocessedRostersBefore(DateTime utcNow)
     {
         return _rosterRepo

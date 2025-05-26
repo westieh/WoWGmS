@@ -56,7 +56,7 @@ namespace WowGMSBackend.Service
 
         public List<Character> GetAllCharacters()
         {
-            return _repo.GetAllCharacters();
+            return _repo.GetCharacters();
         }
     }
 }
