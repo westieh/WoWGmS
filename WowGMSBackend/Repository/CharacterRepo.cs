@@ -70,5 +70,14 @@ namespace WowGMSBackend.Repository
         {
             return _context.Characters.Where(c => c.MemberId == memberId).ToList();
         }
+
+
+        public List<Character> GetAllCharacters()
+        {
+            return _context.Characters.AsNoTracking().ToList();
+        }
+
+       
+
     }
 }

@@ -37,6 +37,7 @@ namespace WowGMSBackend.Repository
             }
 
             roster.IsProcessed = true;
+            _context.SaveChanges();
         }
         public BossRoster? GetById(int id)
         {
@@ -62,6 +63,7 @@ namespace WowGMSBackend.Repository
                 existing.BossDisplayName = updated.BossDisplayName;
                 existing.InstanceTime = updated.InstanceTime;
                 existing.IsProcessed = updated.IsProcessed;
+                _context.SaveChanges();
                 return existing;
             }
             return null;
@@ -78,5 +80,38 @@ namespace WowGMSBackend.Repository
             }
             return null;
         }
-    }
+        // Add a character participant to a roster
+        public void AddParticipant(int rosterId, Character character)
+        {
+            var roster = _context.BossRosters
+                .Include(r => r.Participants)
+                .FirstOrDefault(r => r.RosterId == rosterId);
+
+            if (roster == null) return;
+
+            // Avoid adding duplicate character names (optional)
+            if (roster.Participants.Any(p => p.CharacterName == character.CharacterName))
+                return;
+
+            roster.Participants.Add(character);
+            _context.SaveChanges();
+        }
+
+        // Remove a character participant from a roster
+        public void RemoveParticipant(int rosterId, int characterId)
+        {
+            var roster = _context.BossRosters
+                .Include(r => r.Participants)
+                .FirstOrDefault(r => r.RosterId == rosterId);
+
+            if (roster == null) return;
+
+            var participant = roster.Participants.FirstOrDefault(p => p.Id == characterId);
+            if (participant != null)
+            {
+                roster.Participants.Remove(participant);
+                _context.SaveChanges();
+            }
+        }
 }
+    }
