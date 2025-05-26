@@ -6,33 +6,61 @@
 
 <h1>Raid Events</h1>
 
-@if (Model.BossRosters == null || !Model.BossRosters.Any())
+@if (!Model.BossRosters.Any())
 {
-    <p>No boss rosters found.</p>
+    <p>No events available.</p>
 }
 else
 {
     foreach (var roster in Model.BossRosters)
     {
-        <div class="roster-card mb-4">
-            <h4>@roster.BossDisplayName</h4>
-            <p><strong>Time:</strong> @roster.InstanceTime.ToString("g")</p>
-            <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>@roster.BossDisplayName</h4>
+                <small>@roster.InstanceTime.ToString("g")</small>
+            </div>
+            <div class="card-body">
+                <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
 
-            <h5>Participants:</h5>
-            @if (roster.Participants != null && roster.Participants.Any())
-            {
-                <ul>
-                    @foreach (var character in roster.Participants)
-                    {
-                        <li>@character.CharacterName (@character.RealmName) - @character.Class / @character.Role</li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p><em>No participants.</em></p>
-            }
+                @if (roster.Participants != null && roster.Participants.Any())
+                {
+                    <ul>
+                        @foreach (var p in roster.Participants)
+                        {
+                            <li>@p.CharacterName (@p.RealmName) - @p.Class / @p.Role</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p><em>No participants yet.</em></p>
+                }
+
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#interestForm-@roster.RosterId" aria-expanded="false" aria-controls="interestForm-@roster.RosterId">
+                    Show Interest
+                </button>
+
+                <div class="collapse mt-3" id="interestForm-@roster.RosterId">
+                    <form method="post" asp-page-handler="SignUp">
+                        <input type="hidden" name="SelectedRosterId" value="@roster.RosterId" />
+
+                        <div class="form-group">
+                            <label for="SelectedCharacterId-@roster.RosterId">Select Your Character:</label>
+                            <select id="SelectedCharacterId-@roster.RosterId" name="SelectedCharacterId" class="form-control" required>
+                                <option value="">-- Select Character --</option>
+                                @foreach (var character in Model.MyCharacters)
+                                {
+                                    <option value="@character.Id">
+                                        @character.CharacterName (@character.Class / @character.Role)
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success mt-2">Confirm Interest</button>
+                    </form>
+                </div>
+            </div>
         </div>
     }
 }

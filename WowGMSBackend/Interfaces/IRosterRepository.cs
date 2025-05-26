@@ -12,7 +12,7 @@ namespace WowGMSBackend.Interfaces
         IEnumerable<BossRoster> GetAll();
         BossRoster? GetById(int id);
         BossRoster Add(BossRoster roster);
-        BossRoster Update(BossRoster roster);
+        BossRoster? Update(BossRoster updated);
         BossRoster? Delete(int id);
 
 

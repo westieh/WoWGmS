@@ -11,5 +11,7 @@ namespace WowGMSBackend.Interfaces
         List<Application> GetPendingApplications();
         void AddApplication(Application application);
         Application? GetApplicationById(int id);
+        
+
     }
 }

@@ -1,0 +1,86 @@
+﻿@page
+@model WoWGMS.Pages.RosterModel
+@{
+    ViewData["Title"] = "Create & Manage Boss Roster";
+}
+
+<h1>Create Boss Roster</h1>
+
+<form method="post" asp-page-handler="CreateRoster">
+    <div class="form-group">
+        <label>Raid Slug</label>
+        <input asp-for="NewRoster.RaidSlug" class="form-control" />
+        <span asp-validation-for="NewRoster.RaidSlug" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Boss Display Name</label>
+        <input asp-for="NewRoster.BossDisplayName" class="form-control" />
+        <span asp-validation-for="NewRoster.BossDisplayName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Create Roster</button>
+</form>
+
+<hr />
+
+<h2>All Boss Rosters</h2>
+@if (!Model.AllRosters.Any())
+{
+    <p>No rosters created yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var roster in Model.AllRosters)
+        {
+            <li>
+                <a asp-page="./Roster" asp-route-rosterId="@roster.RosterId">@roster.BossDisplayName</a>
+                (Raid: @roster.RaidSlug)
+            </li>
+        }
+    </ul>
+}
+
+@if (Model.CreatedRoster != null)
+{
+    <hr />
+    <h2>Manage Roster: @Model.CreatedRoster.BossDisplayName</h2>
+
+    <h4>Participants</h4>
+    @if (Model.CreatedRoster.Participants.Any())
+    {
+        <ul>
+            @foreach (var p in Model.CreatedRoster.Participants)
+            {
+                <li>
+                    @p.CharacterName (@p.Class)
+                    <form method="post" asp-page-handler="RemoveParticipant" style="display:inline">
+                        <input type="hidden" name="rosterId" value="@Model.CreatedRoster.RosterId" />
+                        <input type="hidden" name="characterId" value="@p.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No participants added yet.</p>
+    }
+
+    <h4>Add Participant</h4>
+    <form method="post" asp-page-handler="AddParticipant">
+        <input type="hidden" name="rosterId" value="@Model.CreatedRoster.RosterId" />
+        <select name="CharacterId" class="form-select" required>
+            <option value="">-- Select Character --</option>
+            @foreach (var c in Model.AllCharacters)
+            {
+                <option value="@c.Id">@c.CharacterName (@c.Class)</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary mt-2">Add Participant</button>
+    </form>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

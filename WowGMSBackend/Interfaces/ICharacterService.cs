@@ -16,5 +16,6 @@ namespace WowGMSBackend.Interfaces
         Character? DeleteCharacter(int id);
         void IncrementBossKill(int characterId, string bossSlug);
         List<Character> GetCharactersByMemberId(int memberId);
+
     }
 }
