@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
-using WowGMSBackend.Service;
+using WowGMSBackend.Interfaces;
 
 public class ViewApplicationsModel : PageModel
 {
@@ -57,7 +57,7 @@ public class ViewApplicationsModel : PageModel
                         Password = appToUpdate.Password,
                         Rank = Rank.Trialist
                     });
-                    Console.WriteLine($"CHARACTER: {appToUpdate.CharacterName}, {appToUpdate.Class}, {appToUpdate.Role}");
+                    
 
                     // Add the character for that member
                     _characterService.AddCharacter(new Character

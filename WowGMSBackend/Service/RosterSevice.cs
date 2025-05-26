@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WowGMSBackend.DBContext;
+using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
-using WowGMSBackend.Service;
 public class RosterService : IRosterService
 {
     private readonly WowDbContext _context;

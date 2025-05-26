@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
-using WowGMSBackend.Service;
 
 namespace WowGMSBackend.Service
 {
-   public class CharacterService : ICharacterService
+    public class CharacterService : ICharacterService
     {
         private readonly CharacterRepo _repo;
 

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
-
-using WowGMSBackend.Repository;
 
 namespace WoWGMS.Pages
 {

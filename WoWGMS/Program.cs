@@ -3,6 +3,7 @@ using WowGMSBackend.Repository;
 using WowGMSBackend.Service;
 using WowGMSBackend.Model;
 using WowGMSBackend.DBContext;
+using WowGMSBackend.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,7 @@ builder.Services.AddScoped<IRosterService, RosterService>();
 
 
 builder.Services.AddScoped<MemberRepo>();
-builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<CharacterService>();
 builder.Services.AddScoped<CharacterRepo>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddRazorPages();

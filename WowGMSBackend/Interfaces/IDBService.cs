@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WowGMSBackend.Service
+namespace WowGMSBackend.Interfaces
 {
     public interface IDBService<T> where T : class
     {
