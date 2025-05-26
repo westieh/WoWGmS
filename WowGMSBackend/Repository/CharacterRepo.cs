@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Model;
-
+using WowGMSBackend.Interfaces;
 namespace WowGMSBackend.Repository
 {
-    public class CharacterRepo
+    public class CharacterRepo : ICharacterRepo
     {
         private readonly WowDbContext _context;
         

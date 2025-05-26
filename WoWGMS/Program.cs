@@ -22,7 +22,7 @@ builder.Services.AddHttpClient("RaiderIO", client =>
 {
     client.BaseAddress = new Uri("https://raider.io");
 });
-builder.Services.AddScoped<MemberRepo>();
+
 
 
 // Add services to the container.
@@ -31,13 +31,13 @@ builder.Services.AddScoped<IRosterService, RosterService>();
 
 
 
-builder.Services.AddScoped<MemberRepo>();
+builder.Services.AddScoped<IMemberRepo, MemberRepo>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<CharacterRepo>();
+builder.Services.AddScoped<ICharacterRepo, CharacterRepo>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IMemberService, MemberService>();
-builder.Services.AddScoped<MemberRepo>();
-builder.Services.AddScoped<IRosterRepository, BossRosterRepo>();
+
+builder.Services.AddScoped<IRosterRepository, RosterRepository>();
 builder.Services.AddHostedService<BossKillCheckerService>();
 
 builder.Services.AddScoped<IApplicationRepo, ApplicationRepo>();

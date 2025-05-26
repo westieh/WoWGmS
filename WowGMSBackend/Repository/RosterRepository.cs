@@ -11,10 +11,11 @@ using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Repository
 {
-    public class BossRosterRepo : IRosterRepository
+    public class RosterRepository : IRosterRepository
     {
         private readonly WowDbContext _context;
-        public BossRosterRepo(WowDbContext context)
+
+        public RosterRepository(WowDbContext context)
         {
             _context = context;
         }
@@ -23,27 +24,12 @@ namespace WowGMSBackend.Repository
         {
             return _context.BossRosters.Include(r => r.Participants).ToList();
         }
-        public void MarkAsProcessed(int rosterId)
-        {
-            var roster = _context.BossRosters.Include(r => r.Participants).FirstOrDefault(r => r.RosterId == rosterId);
-            if (roster == null || roster.IsProcessed)
-                return;
 
-            var boss = roster.GetBoss();
-            if (boss == null) return;
-
-            foreach (var character in roster.Participants)
-            {
-                character.IncrementBossKill(boss.Slug);
-            }
-
-            roster.IsProcessed = true;
-        }
         public BossRoster? GetById(int id)
         {
             return _context.BossRosters
-            .Include(r => r.Participants)
-            .FirstOrDefault(r => r.RosterId == id);
+                .Include(r => r.Participants)
+                .FirstOrDefault(r => r.RosterId == id);
         }
 
         public BossRoster Add(BossRoster roster)
@@ -56,15 +42,21 @@ namespace WowGMSBackend.Repository
 
         public BossRoster? Update(BossRoster updated)
         {
-            var existing = _context.BossRosters.Find(updated.RosterId);
+            var existing = _context.BossRosters
+                .Include(r => r.Participants)
+                .FirstOrDefault(r => r.RosterId == updated.RosterId);
+
             if (existing != null)
             {
                 existing.RaidSlug = updated.RaidSlug;
                 existing.BossDisplayName = updated.BossDisplayName;
                 existing.InstanceTime = updated.InstanceTime;
                 existing.IsProcessed = updated.IsProcessed;
+
+                _context.SaveChanges();
                 return existing;
             }
+
             return null;
         }
 
@@ -77,6 +69,7 @@ namespace WowGMSBackend.Repository
                 _context.SaveChanges();
                 return roster;
             }
+
             return null;
         }
     }

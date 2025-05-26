@@ -10,6 +10,11 @@ namespace WowGMSBackend.Interfaces
     public interface IRosterRepository
     {
         IEnumerable<BossRoster> GetAll();
-        void MarkAsProcessed(int rosterId);
+        BossRoster? GetById(int id);
+        BossRoster Add(BossRoster roster);
+        BossRoster Update(BossRoster roster);
+        BossRoster? Delete(int id);
+
+
     }
 }
