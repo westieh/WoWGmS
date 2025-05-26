@@ -15,6 +15,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
         public string RaidSlug { get; set; }
         public string BossDisplayName { get; set; }
+
+        public string BossSlug { get; set; }   
         public DateTime CreationDate { get; set; }
         public DateTime InstanceTime { get; set; }
         public bool IsProcessed { get; set; } = false;
@@ -30,7 +32,7 @@ using System.ComponentModel.DataAnnotations.Schema;
             InstanceTime = instanceTime;
         }
         public Boss? GetBoss() =>
-        RaidRegistry.GetBoss(RaidSlug, BossDisplayName);
+            RaidRegistry.GetBossByDisplayName(RaidSlug, BossDisplayName);
 
 
 

@@ -35,7 +35,7 @@ namespace WowGMSBackend.Service
                 await Task.Delay(TimeSpan.FromHours(2), stoppingToken);
             }
         }
-        private async Task CheckBossKills()
+        protected internal virtual async Task CheckBossKills()
         {
             using var scope = _scopeFactory.CreateScope();
             var _rosterRepo = scope.ServiceProvider.GetRequiredService<IRosterService>();

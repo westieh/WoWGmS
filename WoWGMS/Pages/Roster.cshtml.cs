@@ -5,7 +5,7 @@ using System.Linq;
 using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Service;
-
+using WowGMSBackend.Interfaces;
 namespace WoWGMS.Pages
 {
     public class RosterModel : PageModel
@@ -135,7 +135,7 @@ namespace WoWGMS.Pages
         private void LoadPageData()
         {
             AllRosters = _rosterRepo.GetAll().ToList();
-            AllCharacters = _characterService.GetAllCharacters();
+            AllCharacters = _characterService.GetCharacters();
 
             if (RosterId.HasValue)
             {
