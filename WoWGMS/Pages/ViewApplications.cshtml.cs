@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
-using WowGMSBackend.Service;
+using WowGMSBackend.Interfaces;
 
 public class ViewApplicationsModel : PageModel
 {

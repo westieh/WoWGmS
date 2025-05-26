@@ -1,4 +1,5 @@
-﻿using WowGMSBackend.Model;
+﻿using WowGMSBackend.Interfaces;
+using WowGMSBackend.Model;
 
 using WowGMSBackend.Repository;
 

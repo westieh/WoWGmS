@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WowGMSBackend.Model;
 
-namespace WowGMSBackend.Service
+namespace WowGMSBackend.Interfaces
 {
     public interface IApplicationService
     {

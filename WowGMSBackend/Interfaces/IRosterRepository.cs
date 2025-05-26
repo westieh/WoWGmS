@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WowGMSBackend.Model;
 
-namespace WowGMSBackend.Repository
+namespace WowGMSBackend.Interfaces
 {
     public interface IRosterRepository
     {

@@ -3,6 +3,7 @@ using WowGMSBackend.Repository;
 using WowGMSBackend.Service;
 using WowGMSBackend.Model;
 using WowGMSBackend.DBContext;
+using WowGMSBackend.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

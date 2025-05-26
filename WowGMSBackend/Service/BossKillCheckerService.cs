@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
-using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
 using System.Text.Json;
 using WowGMSBackend.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using WowGMSBackend.Interfaces;
 
 namespace WowGMSBackend.Service
 {

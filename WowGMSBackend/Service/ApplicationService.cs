@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
+using WowGMSBackend.Interfaces;
 
 namespace WowGMSBackend.Service
 {
