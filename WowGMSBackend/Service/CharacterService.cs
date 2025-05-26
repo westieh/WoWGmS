@@ -53,5 +53,10 @@ namespace WowGMSBackend.Service
         {
             return _repo.GetCharactersByMemberId(memberId);
         }
+
+        public List<Character> GetAllCharacters()
+        {
+            return _repo.GetAllCharacters();
+        }
     }
 }

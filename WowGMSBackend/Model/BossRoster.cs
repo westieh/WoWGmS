@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int RosterId { get; set; }
         [Required]
         public List<Character> Participants { get; set; } = new List<Character>();
+
         public string RaidSlug { get; set; }
         public string BossDisplayName { get; set; }
         public DateTime CreationDate { get; set; }
