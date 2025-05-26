@@ -7,9 +7,9 @@ namespace WowGMSBackend.Service
 {
     public class MemberService : IMemberService
     {
-        private readonly MemberRepo _memberRepo;
+        private readonly IMemberRepo _memberRepo;
 
-        public MemberService(MemberRepo memberRepo)
+        public MemberService(IMemberRepo memberRepo)
         {
             _memberRepo = memberRepo;
         }
