@@ -32,16 +32,15 @@ builder.Services.AddScoped<IRosterService, RosterService>();
 
 
 builder.Services.AddScoped<MemberRepo>();
-builder.Services.AddScoped<CharacterService>();
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<CharacterRepo>();
-builder.Services.AddScoped<MemberService>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<MemberRepo>();
 builder.Services.AddScoped<IRosterRepository, BossRosterRepo>();
 builder.Services.AddHostedService<BossKillCheckerService>();
 
-builder.Services.AddScoped<ApplicationRepo>();
+builder.Services.AddScoped<IApplicationRepo, ApplicationRepo>();
 
 builder.Services.AddScoped(typeof(IDBService<>), typeof(DbGenericService<>));
 builder.Services.AddDbContext<WowDbContext>(options =>

@@ -9,11 +9,11 @@ namespace WowGMSBackend.Service
 {
     public class ApplicationService : IApplicationService
     {
-        private readonly MemberService _memberService;
-        private readonly ApplicationRepo _applicationRepo;
-        private readonly CharacterService _characterService;
+        private readonly IMemberService _memberService;
+        private readonly IApplicationRepo _applicationRepo;
+        private readonly ICharacterService _characterService;
 
-        public ApplicationService(MemberService memberService, ApplicationRepo applicationRepo, CharacterService characterService)
+        public ApplicationService(IMemberService memberService, IApplicationRepo applicationRepo, ICharacterService characterService)
         {
             _memberService = memberService;
             _applicationRepo = applicationRepo;
@@ -49,8 +49,10 @@ namespace WowGMSBackend.Service
                     CharacterName = application.CharacterName!,
                     Class = application.Class,
                     Role = application.Role,
-                    MemberId = newMember.MemberId
+                    MemberId = newMember.MemberId,
+                    RealmName = application.ServerName
                 };
+                _characterService.AddCharacter(newCharacter);
             }
 
             _applicationRepo.UpdateApplication(application);

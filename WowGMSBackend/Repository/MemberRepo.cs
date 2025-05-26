@@ -2,10 +2,11 @@
 using System.Linq;
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Model;
+using WowGMSBackend.Interfaces;
 
 namespace WowGMSBackend.Repository
 {
-    public class MemberRepo
+    public class MemberRepo : IMemberRepo
     {
         private readonly WowDbContext _context;
         public MemberRepo(WowDbContext context)

@@ -2,10 +2,11 @@
 using WowGMSBackend.DBContext;
 using WowGMSBackend.MockData;
 using WowGMSBackend.Model;
+using WowGMSBackend.Interfaces;
 
 namespace WowGMSBackend.Repository
 {
-    public class ApplicationRepo
+    public class ApplicationRepo : IApplicationRepo
     {
         private readonly WowDbContext _context;
 

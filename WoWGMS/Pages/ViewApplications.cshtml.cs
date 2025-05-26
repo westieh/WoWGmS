@@ -42,33 +42,11 @@ public class ViewApplicationsModel : PageModel
             if (Approved && !appToUpdate.Approved)
             {
                 // Approve the application
+                // Member Created via Applicationservice
+                
                 _applicationService.ApproveApplication(appToUpdate);
 
-                // Check if member already exists
-                var existingMembers = _memberService.GetMembers();
-                bool alreadyMember = existingMembers.Any(m => m.Name == appToUpdate.DiscordName);
-
-                if (!alreadyMember)
-                {
-                    // Add the member
-                    var newMember = _memberService.AddMember(new Member
-                    {
-                        Name = appToUpdate.DiscordName,
-                        Password = appToUpdate.Password,
-                        Rank = Rank.Trialist
-                    });
-                    
-
-                    // Add the character for that member
-                    _characterService.AddCharacter(new Character
-                    {
-                        MemberId = newMember.MemberId, // Link character to member
-                        CharacterName = appToUpdate.CharacterName,
-                        RealmName = appToUpdate.ServerName,
-                        Class = appToUpdate.Class,
-                        Role = appToUpdate.Role
-                    });
-                }
+                
             }
             else if (!Approved && appToUpdate.Approved)
             {
