@@ -12,14 +12,18 @@ namespace WowGMSBackend.Helpers
     {
         public static string BuildBossKillUrl(IConfiguration config, string bossSlug, string raidSlug)
         {
-            return $"/api/v1/guilds/boss-kill" +
-           $"?region={config["RaiderIO:Region"]}" +
-           $"&realm={config["RaiderIO:Realm"]}" +
-           $"&guild={config["RaiderIO:Guild"]}" +
-           $"&raid={raidSlug}" +
-           $"&boss={bossSlug}" +
-           $"&difficulty={config["RaiderIO:Difficulty"]}" +
-           $"&access_key={config["RaiderIO:AccessKey"]}";
+            var baseUrl = config["RaiderIO:ApiBase"]?.TrimEnd('/');
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                throw new InvalidOperationException("Missing RaiderIO:ApiBase in config.");
+
+            return $"{baseUrl}/api/v1/guilds/boss-kill" +
+                   $"?region={config["RaiderIO:Region"]}" +
+                   $"&realm={config["RaiderIO:Realm"]}" +
+                   $"&guild={config["RaiderIO:Guild"]}" +
+                   $"&raid={raidSlug}" +
+                   $"&boss={bossSlug}" +
+                   $"&difficulty={config["RaiderIO:Difficulty"]}" +
+                   $"&access_key={config["RaiderIO:AccessKey"]}";
         }
     }
 }

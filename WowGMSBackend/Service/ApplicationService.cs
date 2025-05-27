@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Linq;
+using System;
 using System.Collections.Generic;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
@@ -8,13 +9,15 @@ namespace WowGMSBackend.Service
 {
     public class ApplicationService : IApplicationService
     {
-        private readonly MemberService _memberService;
-        private readonly ApplicationRepo _applicationRepo;
+        private readonly IMemberService _memberService;
+        private readonly IApplicationRepo _applicationRepo;
+        private readonly ICharacterService _characterService;
 
-        public ApplicationService(MemberService memberService, ApplicationRepo applicationRepo)
+        public ApplicationService(IMemberService memberService, IApplicationRepo applicationRepo, ICharacterService characterService)
         {
             _memberService = memberService;
             _applicationRepo = applicationRepo;
+            _characterService = characterService;
         }
 
         public void AddApplication(Application application)
@@ -25,8 +28,32 @@ namespace WowGMSBackend.Service
         public void ApproveApplication(Application application)
         {
             if (application.Approved) return;
+
             application.Approved = true;
             application.SubmissionDate = DateTime.Now;
+
+
+            var existingMembers = _memberService.GetMembers();
+            bool alreadyMember = existingMembers.Any(m => m.Name == application.DiscordName);
+            if (!alreadyMember)
+            {
+                var newMember = new Member
+                {
+                    Name = application.DiscordName!,
+                    Password = application.Password!,
+                    Rank = Rank.Trialist
+                };
+                _memberService.AddMember(newMember);
+                var newCharacter = new Character
+                {
+                    CharacterName = application.CharacterName!,
+                    Class = application.Class,
+                    Role = application.Role,
+                    MemberId = newMember.MemberId,
+                    RealmName = application.ServerName
+                };
+                _characterService.AddCharacter(newCharacter);
+            }
 
             _applicationRepo.UpdateApplication(application);
         }

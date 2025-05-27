@@ -11,9 +11,9 @@ namespace WowGMSBackend.Service
 {
     public class CharacterService : ICharacterService
     {
-        private readonly CharacterRepo _repo;
+        private readonly ICharacterRepo _repo;
 
-        public CharacterService(CharacterRepo repo)
+        public CharacterService(ICharacterRepo repo)
         {
             _repo = repo;
         }
@@ -56,7 +56,7 @@ namespace WowGMSBackend.Service
 
         public List<Character> GetAllCharacters()
         {
-            return _repo.GetAllCharacters();
+            return _repo.GetCharacters();
         }
     }
 }

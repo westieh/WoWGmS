@@ -35,25 +35,23 @@ namespace WowGMSBackend.Service
                 await Task.Delay(TimeSpan.FromHours(2), stoppingToken);
             }
         }
-        private async Task CheckBossKills()
+        protected internal virtual async Task CheckBossKills()
         {
             using var scope = _scopeFactory.CreateScope();
-            var _rosterRepo = scope.ServiceProvider.GetRequiredService<IRosterRepository>();
-            var client = _httpClientFactory.CreateClient("RaiderIO");
+            var _rosterRepo = scope.ServiceProvider.GetRequiredService<IRosterService>();
+            
 
-            var roster = _rosterRepo
-                .GetAll()
-                .Where(r => !r.IsProcessed && r.InstanceTime <= DateTime.UtcNow)
-                .OrderByDescending(r => r.InstanceTime)
-                .FirstOrDefault();
-
-            if (roster != null)
+            var rosters = _rosterRepo.GetUnprocessedRostersBefore(DateTime.UtcNow);
+            foreach (var roster in rosters)
             {
                 var boss = roster.GetBoss();
-                if (boss == null) return;
+                if (boss == null) continue;
 
-                var url = UrlBuilder.BuildBossKillUrl(_config, boss.Slug, roster.RaidSlug); var response = await client.GetAsync(url);
-                if (!response.IsSuccessStatusCode) return;
+                var url = UrlBuilder.BuildBossKillUrl(_config, boss.Slug, roster.RaidSlug);
+                var client = _httpClientFactory.CreateClient("RaiderIO");
+
+                var response = await client.GetAsync(url);
+                if (!response.IsSuccessStatusCode) continue;
 
                 var json = await response.Content.ReadAsStringAsync();
                 var data = JsonSerializer.Deserialize<BossKillResponse>(json, new JsonSerializerOptions
@@ -62,7 +60,9 @@ namespace WowGMSBackend.Service
                 });
 
                 if (data?.Kill?.IsSuccess == true && data.Kill.DefeatedAt <= DateTime.UtcNow)
-                    _rosterRepo.MarkAsProcessed(roster.RosterId);
+                {
+                    _rosterRepo.ProcessRoster(roster.RosterId);
+                }
             }
 
         }

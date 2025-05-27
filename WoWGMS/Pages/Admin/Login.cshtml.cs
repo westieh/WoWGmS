@@ -6,12 +6,12 @@ using System;
 using System.Security.Claims;
 using WowGMSBackend.Service;
 using Microsoft.Identity.Client;
-
+using WowGMSBackend.Interfaces;
 namespace WoWGMS.Pages.Admin
 {
     public class LoginModel : PageModel
     {
-        private readonly MemberService _memberService;
+        private readonly IMemberService _memberService;
 
         [BindProperty]
         public string? Username { get; set; }
@@ -21,7 +21,7 @@ namespace WoWGMS.Pages.Admin
 
         public string? ErrorMessage { get; set; }
 
-        public LoginModel(MemberService memberService)
+        public LoginModel(IMemberService memberService)
         {
             _memberService = memberService;
         }
