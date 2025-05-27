@@ -17,5 +17,9 @@ namespace WowGMSBackend.Interfaces
         void IncrementBossKill(int characterId, string bossSlug);
         List<Character> GetCharactersByMemberId(int memberId);
 
+        List<Character> GetAllCharactersWithMemberAndBossKills();
+
+        void AddBossKill(BossKill bossKill);
+
     }
 }

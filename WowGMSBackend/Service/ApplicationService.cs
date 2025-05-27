@@ -12,12 +12,14 @@ namespace WowGMSBackend.Service
         private readonly IMemberService _memberService;
         private readonly IApplicationRepo _applicationRepo;
         private readonly ICharacterService _characterService;
+        private readonly IBossKillService _bossKillService;
 
-        public ApplicationService(IMemberService memberService, IApplicationRepo applicationRepo, ICharacterService characterService)
+        public ApplicationService(IMemberService memberService, IApplicationRepo applicationRepo, ICharacterService characterService, IBossKillService bossKillService)
         {
             _memberService = memberService;
             _applicationRepo = applicationRepo;
             _characterService = characterService;
+            _bossKillService = bossKillService;
         }
 
         public void AddApplication(Application application)
@@ -32,9 +34,9 @@ namespace WowGMSBackend.Service
             application.Approved = true;
             application.SubmissionDate = DateTime.Now;
 
-
             var existingMembers = _memberService.GetMembers();
             bool alreadyMember = existingMembers.Any(m => m.Name == application.DiscordName);
+
             if (!alreadyMember)
             {
                 var newMember = new Member
@@ -44,6 +46,7 @@ namespace WowGMSBackend.Service
                     Rank = Rank.Trialist
                 };
                 _memberService.AddMember(newMember);
+
                 var newCharacter = new Character
                 {
                     CharacterName = application.CharacterName!,
@@ -52,11 +55,16 @@ namespace WowGMSBackend.Service
                     MemberId = newMember.MemberId,
                     RealmName = application.ServerName
                 };
-                _characterService.AddCharacter(newCharacter);
+
+                _characterService.AddCharacter(newCharacter); // Character now has an ID
+
+                // ✅ Delegate boss kill persistence to the BossKillService
+                _bossKillService.TransferFromApplication(application, newCharacter.Id);
             }
 
             _applicationRepo.UpdateApplication(application);
         }
+
 
         public List<Application> GetPendingApplications()
         {

@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
 using WowGMSBackend.Interfaces;
-
+using Microsoft.AspNetCore.Authorization;
+[Authorize(Roles = "Officer")]
 public class ViewApplicationsModel : PageModel
 {
     private readonly IApplicationService _applicationService;
@@ -20,8 +21,8 @@ public class ViewApplicationsModel : PageModel
     }
     public void OnGet()
     {
-
-        Applications = _applicationService.GetAllApplications();
+        Applications = _applicationService
+            .GetPendingApplications(); // already filters for !Approved
     }
     [BindProperty]
     public int ApplicationId { get; set; }

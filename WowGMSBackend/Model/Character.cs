@@ -23,13 +23,12 @@ namespace WowGMSBackend.Model
         
         [ForeignKey("Member")]
         public int MemberId { get; set; }
-        [NotMapped]
-        [Required]
-        public Dictionary<string, int> BossKills { get; set; } = new();
+        public List<BossKill> BossKills { get; set; } = new();
+
 
         public Character() 
         {
-            BossKills = new Dictionary<string, int>();
+            
         }
         public Character(string _name, Class _class, Role _role, ServerName _realmName)
         {
@@ -37,6 +36,7 @@ namespace WowGMSBackend.Model
             Class = _class;
             Role = _role;
             RealmName = _realmName;
+
         }
 
 
@@ -46,11 +46,19 @@ namespace WowGMSBackend.Model
         }
         public void IncrementBossKill(string bossSlug)
         {
-            if (BossKills.ContainsKey(bossSlug))
-                BossKills[bossSlug]++;
+            var existing = BossKills.FirstOrDefault(bk => bk.BossSlug == bossSlug);
+            if (existing != null)
+            {
+                existing.KillCount++;
+            }
             else
-                BossKills[bossSlug] = 1;
-
+            {
+                BossKills.Add(new BossKill
+                {
+                    BossSlug = bossSlug,
+                    KillCount = 1
+                });
+            }
         }
 
 

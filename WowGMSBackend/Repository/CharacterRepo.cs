@@ -22,6 +22,15 @@ namespace WowGMSBackend.Repository
         public Character AddCharacter(Character character)
         {
             _context.Characters.Add(character);
+            if (character.BossKills != null && character.BossKills.Any())
+            {
+                foreach (var kill in character.BossKills)
+                {
+                    kill.Character = character; // ensure FK is correct
+                }
+
+                _context.BossKills.AddRange(character.BossKills);
+            }
             _context.SaveChanges();
             return character;
         }
@@ -30,15 +39,25 @@ namespace WowGMSBackend.Repository
         {
             return _context.Characters.Include(c => c.Member).FirstOrDefault(c => c.Id == id);
         }
-
+        public void AddBossKill(BossKill bossKill)
+        {
+            _context.BossKills.Add(bossKill);
+            _context.SaveChanges();
+        }
         public List<Character> GetCharacters()
         {
-            return _context.Characters.Include(c => c.Member).ToList();
+            return _context.Characters
+         .Include(c => c.Member)
+         .Include(c => c.BossKills)
+         .ToList();
         }
 
         public Character? UpdateCharacter(int id, Character updated)
         {
-            var existing = _context.Characters.FirstOrDefault(c => c.Id == id);
+            var existing = _context.Characters
+                .Include(c => c.BossKills)  // ✅ Include the collection
+                .FirstOrDefault(c => c.Id == id);
+
             if (existing != null)
             {
                 existing.CharacterName = updated.CharacterName;
@@ -48,9 +67,22 @@ namespace WowGMSBackend.Repository
                 existing.MemberId = updated.MemberId;
                 existing.Member = updated.Member;
 
+                // ✅ Replace BossKills cleanly
+                existing.BossKills.Clear();
+                foreach (var kill in updated.BossKills)
+                {
+                    existing.BossKills.Add(new BossKill
+                    {
+                        BossSlug = kill.BossSlug,
+                        KillCount = kill.KillCount,
+                        CharacterId = existing.Id
+                    });
+                }
+
                 _context.SaveChanges();
                 return existing;
             }
+
             return null;
         }
 
@@ -76,8 +108,18 @@ namespace WowGMSBackend.Repository
         {
             return _context.Characters.AsNoTracking().ToList();
         }
+        public List<Character> GetCharactersByRoster(int rosterId)
+        {
+            return _context.Characters
+                .Include(c => c.BossKills)
+                .Where(c => _context.BossRosters
+                    .Where(r => r.RosterId == rosterId)
+                    .SelectMany(r => r.Participants)
+                    .Contains(c))
+                .ToList();
+        }
 
-       
+
 
     }
 }

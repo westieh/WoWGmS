@@ -22,7 +22,7 @@ namespace WowGMSBackend.Model
         public DateTime SubmissionDate { get; set; }
         public Member? ProcessedBy { get; set; }
         public string? Note { get; set; }
-        
+        public List<BossKill> BossKills { get; set; } = new();
         public bool Approved { get; set; }
         
     }

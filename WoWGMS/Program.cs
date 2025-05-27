@@ -30,6 +30,8 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IRosterService, RosterService>();
 
 
+builder.Services.AddScoped<IBossKillRepo, BossKillRepo>();
+builder.Services.AddScoped<IBossKillService, BossKillService>();
 
 builder.Services.AddScoped<IMemberRepo, MemberRepo>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();

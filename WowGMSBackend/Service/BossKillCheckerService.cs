@@ -61,7 +61,25 @@ namespace WowGMSBackend.Service
 
                 if (data?.Kill?.IsSuccess == true && data.Kill.DefeatedAt <= DateTime.UtcNow)
                 {
-                    _rosterRepo.ProcessRoster(roster.RosterId);
+                    foreach (var character in roster.Participants)
+                    {
+                        var kill = character.BossKills.FirstOrDefault(bk => bk.BossSlug == boss.Slug);
+                        if (kill != null)
+                        {
+                            kill.KillCount++;
+                        }
+                        else
+                        {
+                            character.BossKills.Add(new BossKill
+                            {
+                                BossSlug = boss.Slug,
+                                KillCount = 1,
+                                CharacterId = character.Id
+                            });
+                        }
+                    }
+
+                    _rosterRepo.Update(roster); // ensure SaveChanges() happens here
                 }
             }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WowGMSBackend.DBContext;
 
@@ -11,9 +12,11 @@ using WowGMSBackend.DBContext;
 namespace WowGMSBackend.Migrations
 {
     [DbContext(typeof(WowDbContext))]
-    partial class WowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250527031129_AddBossKillsProper")]
+    partial class AddBossKillsProper
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,23 +86,18 @@ namespace WowGMSBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApplicationId")
-                        .HasColumnType("int");
-
                     b.Property<string>("BossSlug")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("CharacterId")
+                    b.Property<int>("CharacterId")
                         .HasColumnType("int");
 
                     b.Property<int>("KillCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId");
 
                     b.HasIndex("CharacterId");
 
@@ -213,17 +211,11 @@ namespace WowGMSBackend.Migrations
 
             modelBuilder.Entity("WowGMSBackend.Model.BossKill", b =>
                 {
-                    b.HasOne("WowGMSBackend.Model.Application", "Application")
-                        .WithMany("BossKills")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("WowGMSBackend.Model.Character", "Character")
                         .WithMany("BossKills")
                         .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Application");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Character");
                 });
@@ -241,11 +233,6 @@ namespace WowGMSBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("WowGMSBackend.Model.Application", b =>
-                {
-                    b.Navigation("BossKills");
                 });
 
             modelBuilder.Entity("WowGMSBackend.Model.BossRoster", b =>

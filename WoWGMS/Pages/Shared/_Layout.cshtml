@@ -80,6 +80,13 @@
             color: white;
         }
 
+        
+
+        .dropdown-menu {
+            margin-top: 0.3rem;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
@@ -111,6 +118,12 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/Privacy">Privacy</a>
                         </li>
+                        @if (User.IsInRole("Officer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-page="/Admin/ManageCharacters">Manage Characters</a>
+                            </li>
+                        }
 
                             
 
@@ -126,15 +139,21 @@
                                 <a class="nav-link text-danger" asp-page="/roster">Admin Panel</a>
                             </li>
                         }
-                       
-                        
+
+
                         @if (User.IsInRole("Officer"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" href="/ViewApplications">Submitted applications</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="applicationsDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Applications
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="applicationsDropdown">
+                                    <li><a class="dropdown-item" asp-page="/ViewApplications">Submitted Applications</a></li>
+                                    <li><a class="dropdown-item" asp-page="/ViewApprovedApplications">Approved Applications</a></li>
+                                </ul>
                             </li>
                         }
-
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
@@ -177,3 +196,18 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script>
+    document.querySelectorAll('.nav-item.dropdown').forEach(function (dropdown) {
+        dropdown.addEventListener('mouseenter', function () {
+            let toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+            let dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(toggle);
+            dropdownInstance.show();
+        });
+
+        dropdown.addEventListener('mouseleave', function () {
+            let toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+            let dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(toggle);
+            dropdownInstance.hide();
+        });
+    });
+</script>

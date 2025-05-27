@@ -36,6 +36,7 @@ namespace WoWGMS.Pages.Admin
                 {
                     new Claim(ClaimTypes.Name, member.Name),
                     new Claim(ClaimTypes.Role, member.Rank.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, member.MemberId.ToString()),
                     new Claim("MemberId", member.MemberId.ToString())
                 };
 
@@ -45,6 +46,8 @@ namespace WoWGMS.Pages.Admin
                 await HttpContext.SignInAsync("MyCookieAuth", principal);
 
                 // Redirect to whatever page you want after login
+
+
                 return RedirectToPage("/Index");
             }
 

@@ -35,5 +35,11 @@ namespace WowGMSBackend.Registry
 
             return raid.Bosses.FirstOrDefault(b => b.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
         }
+
+        public static List<Boss> GetBossesForRaid(string raidSlug)
+        {
+            var raid = Raids.FirstOrDefault(r => r.Slug.Equals(raidSlug, StringComparison.OrdinalIgnoreCase));
+            return raid?.Bosses ?? new List<Boss>();
+        }
     }
 }

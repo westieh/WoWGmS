@@ -44,6 +44,7 @@ namespace WowGMSBackend.Repository
         {
             var existing = _context.BossRosters
                 .Include(r => r.Participants)
+                .ThenInclude(c => c.BossKills)
                 .FirstOrDefault(r => r.RosterId == updated.RosterId);
 
             if (existing != null)

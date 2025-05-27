@@ -42,6 +42,11 @@ namespace WoWGMS.Tests.Services
             _mockMemberService.Setup(m => m.AddMember(It.IsAny<Member>())).Verifiable();
             _mockCharacterService.Setup(c => c.AddCharacter(It.IsAny<Character>())).Verifiable();
             // Act
+            var bossKills = new Dictionary<string, int>
+            {
+                { "boss1", 5 },
+                { "boss2", 3 }
+            };
             _service.ApproveApplication(application);
             // Assert
             _mockApplicationrepo.Verify(a => a.UpdateApplication(application), Times.Once);
@@ -72,6 +77,7 @@ namespace WoWGMS.Tests.Services
             _mockMemberService.Setup(m => m.AddMember(It.IsAny<Member>())).Verifiable();
             _mockCharacterService.Setup(c => c.AddCharacter(It.IsAny<Character>())).Verifiable();
             // Act
+            
             _service.ApproveApplication(application);
             // Assert
             _mockApplicationrepo.Verify(a => a.UpdateApplication(application), Times.Once);
@@ -174,6 +180,7 @@ namespace WoWGMS.Tests.Services
             _mockMemberService.Setup(m => m.GetMembers()).Returns(new List<Member>());
             _mockApplicationrepo.Setup(a => a.UpdateApplication(It.IsAny<Application>())).Verifiable();
             // Act
+            
             _service.ApproveApplication(application);
             // Assert
             _mockApplicationrepo.Verify(a => a.UpdateApplication(It.Is<Application>(a => a.SubmissionDate != default)), Times.Once);
