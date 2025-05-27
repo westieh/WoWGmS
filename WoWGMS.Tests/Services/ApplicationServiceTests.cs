@@ -12,6 +12,7 @@ namespace WoWGMS.Tests.Services
         private readonly Mock<IApplicationRepo> _mockApplicationrepo;
         private readonly Mock<IMemberService> _mockMemberService;
         private readonly Mock<ICharacterService> _mockCharacterService;
+        private readonly Mock<IBossKillService> _mockBossKillService;
         private readonly ApplicationService _service;
 
         public ApplicationServiceTests()
@@ -19,7 +20,8 @@ namespace WoWGMS.Tests.Services
             _mockApplicationrepo = new Mock<IApplicationRepo>();
             _mockMemberService = new Mock<IMemberService>();
             _mockCharacterService = new Mock<ICharacterService>();
-            _service = new ApplicationService(_mockMemberService.Object, _mockApplicationrepo.Object, _mockCharacterService.Object);
+            _mockBossKillService = new Mock<IBossKillService>();
+            _service = new ApplicationService(_mockMemberService.Object, _mockApplicationrepo.Object, _mockCharacterService.Object, _mockBossKillService.Object);
         }
 
         [Fact]
