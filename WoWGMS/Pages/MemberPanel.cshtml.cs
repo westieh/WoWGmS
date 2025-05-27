@@ -4,26 +4,31 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
+using WowGMSBackend.Service;
+
 
 namespace WoWGMS.Pages
 {
     [Authorize(Roles = "Trialist,Raider,Officer")]
-    public class AddCharacterModel : PageModel
+    public class MemberPanelModel : PageModel
     {
         
         private readonly ICharacterService _characterService;
         private readonly IMemberService _memberService;
+        private readonly IBossKillService _bossKillService;
 
-        public AddCharacterModel(ICharacterService characterService, IMemberService memberService)
+        public MemberPanelModel(ICharacterService characterService, IMemberService memberService, IBossKillService bossKillService)
         {
             _characterService = characterService;
             _memberService = memberService;
+            _bossKillService = bossKillService;
         }
 
         [BindProperty]
         public Character Character { get; set; }
 
-        public List<Character> CharactersForMember { get; set; } = new();
+        public List<CharacterWithKill> CharactersForMember { get; set; } = new();
+
 
         // Helper property to get the logged-in member's ID from claims
         private int? LoggedInMemberId
@@ -47,7 +52,14 @@ namespace WoWGMS.Pages
             if (member == null)
                 return NotFound("Member not found.");
 
-            CharactersForMember = _characterService.GetCharactersByMemberId(memberId.Value);
+            CharactersForMember = _characterService
+                .GetCharactersByMemberId(memberId.Value)
+                .Select(c => new CharacterWithKill
+                    {
+                        Character = c,
+                        HighestKill = _bossKillService.GetMostKilledBossForCharacter(c.Id)
+                    })
+    .               ToList();
             return Page();
         }
 
@@ -90,5 +102,12 @@ namespace WoWGMS.Pages
 
             return RedirectToPage();
         }
+        public class CharacterWithKill
+        {
+            public Character Character { get; set; }
+            public BossKill? HighestKill { get; set; }
+        }
+
     }
+
 }

@@ -1,6 +1,6 @@
-﻿@page
+﻿@page "/MemberPanel"
 @using WowGMSBackend.Model
-@model WoWGMS.Pages.AddCharacterModel
+@model WoWGMS.Pages.MemberPanelModel
 @{
     ViewData["Title"] = "Create Character";
     Layout = "_Layout";
@@ -52,16 +52,27 @@
                 <th>Realm</th>
                 <th>Class</th>
                 <th>Role</th>
+                <th>Highest Kill</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var character in Model.CharactersForMember)
+            @foreach (var entry in Model.CharactersForMember)
             {
                 <tr>
-                    <td>@character.CharacterName</td>
-                    <td>@character.RealmName</td>
-                    <td>@character.Class</td>
-                    <td>@character.Role</td>
+                    <td>@entry.Character.CharacterName</td>
+                    <td>@entry.Character.RealmName</td>
+                    <td>@entry.Character.Class</td>
+                    <td>@entry.Character.Role</td>
+                    <td>
+                        @if (entry.HighestKill != null)
+                        {
+                            @entry.HighestKill.BossSlug
+                        }
+                        else
+                        {
+                            <span class="text-muted">None</span>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
