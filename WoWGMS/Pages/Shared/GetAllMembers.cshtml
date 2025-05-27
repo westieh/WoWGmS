@@ -6,7 +6,16 @@
 <ul>
     @foreach (var officer in Model.Officers)
     {
-        <li>@officer.Name</li>
+        <li>
+            @officer.Name
+            @if (User.IsInRole("Officer") || User.IsInRole("Admin"))
+            {
+                <span>
+                    <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@officer.MemberId" class="btn btn-sm btn-warning mx-1">Edit</a>
+                    <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@officer.MemberId" class="btn btn-sm btn-danger">Delete</a>
+                </span>
+            }
+        </li>
     }
 </ul>
 
@@ -14,7 +23,16 @@
 <ul>
     @foreach (var raider in Model.Raiders)
     {
-        <li>@raider.Name</li>
+        <li>
+            @raider.Name
+            @if (User.IsInRole("Officer") || User.IsInRole("Admin"))
+            {
+                <span>
+                    <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@raider.MemberId" class="btn btn-sm btn-warning mx-1">Edit</a>
+                    <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@raider.MemberId" class="btn btn-sm btn-danger">Delete</a>
+                </span>
+            }
+        </li>
     }
 </ul>
 
@@ -22,6 +40,15 @@
 <ul>
     @foreach (var trialist in Model.Trialists)
     {
-        <li>@trialist.Name</li>
+        <li>
+            @trialist.Name
+            @if (User.IsInRole("Officer") || User.IsInRole("Admin"))
+            {
+                <span>
+                    <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@trialist.MemberId" class="btn btn-sm btn-warning mx-1">Edit</a>
+                    <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@trialist.MemberId" class="btn btn-sm btn-danger">Delete</a>
+                </span>
+            }
+        </li>
     }
 </ul>

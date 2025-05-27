@@ -2,16 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
+using WowGMSBackend.Service;
+using WowGMSBackend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WoWGMS.Pages.Admin.Dashboard.Members
 {
+    [Authorize(Roles = "Officer,Admin")]
     public class DeleteModel : PageModel
     {
-        private readonly MemberRepo _repo;
+        private readonly IMemberService _memberService;
 
-        public DeleteModel(MemberRepo repo)
+        public DeleteModel(IMemberService memberService)
         {
-            _repo = repo;
+            _memberService = memberService;
         }
 
         [BindProperty]
@@ -19,7 +23,7 @@ namespace WoWGMS.Pages.Admin.Dashboard.Members
 
         public IActionResult OnGet(int id)
         {
-            Member = _repo.GetMember(id);
+            Member = _memberService.GetMember(id);
             if (Member == null)
                 return NotFound();
 
@@ -30,7 +34,7 @@ namespace WoWGMS.Pages.Admin.Dashboard.Members
         {
             try
             {
-                _repo.DeleteMember(Member.MemberId);
+                _memberService.DeleteMember(Member.MemberId);
             }
             catch (InvalidOperationException ex)
             {
@@ -38,7 +42,7 @@ namespace WoWGMS.Pages.Admin.Dashboard.Members
                 return Page();
             }
 
-            return RedirectToPage("../Index");
+            return RedirectToPage("/Shared/GetAllMembers");
         }
     }
 }

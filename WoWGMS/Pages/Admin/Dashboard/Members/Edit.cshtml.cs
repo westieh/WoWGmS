@@ -2,16 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Model;
+using WowGMSBackend.Service;
+using WowGMSBackend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WoWGMS.Pages.Admin.Dashboard.Members
 {
+    [Authorize(Roles = "Officer,Admin")]
     public class EditModel : PageModel
     {
-        private readonly MemberRepo _repo;
+        private readonly IMemberService _memberService;
 
-        public EditModel(MemberRepo repo)
+        public EditModel(IMemberService memberService)
         {
-            _repo = repo;
+            _memberService = memberService;
         }
 
         [BindProperty]
@@ -19,7 +23,7 @@ namespace WoWGMS.Pages.Admin.Dashboard.Members
 
         public IActionResult OnGet(int id)
         {
-            Member = _repo.GetMember(id);
+            Member = _memberService.GetMember(id);
             if (Member == null)
                 return NotFound();
 
@@ -31,7 +35,7 @@ namespace WoWGMS.Pages.Admin.Dashboard.Members
             if (!ModelState.IsValid)
                 return Page();
 
-            _repo.UpdateMember(Member.MemberId, Member);
+            _memberService.UpdateMember(Member.MemberId, Member);
             return RedirectToPage("/Admin/Dashboard/Index");
         }
     }

@@ -4,6 +4,7 @@
     {
         Trialist,
         Raider,
-        Officer
+        Officer,
+        Admin
     }
 }
