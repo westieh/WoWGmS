@@ -135,7 +135,7 @@ namespace WoWGMS.Pages
         private void LoadPageData()
         {
             AllRosters = _rosterRepo.GetAll().ToList();
-            AllCharacters = _characterService.GetAllCharacters();
+            AllCharacters = _characterService.GetCharacters();
 
             if (RosterId.HasValue)
             {
