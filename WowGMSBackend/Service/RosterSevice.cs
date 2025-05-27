@@ -2,6 +2,7 @@
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
+using WowGMSBackend.Repository;
 
 namespace WowGMSBackend.Service;
 public class RosterService : IRosterService
@@ -75,4 +76,9 @@ public class RosterService : IRosterService
             .Where(r => !r.IsProcessed && r.InstanceTime <= utcNow)
             .OrderByDescending(r => r.InstanceTime);
     }
+    public BossRoster? Update(BossRoster updated)
+    {
+        return _rosterRepo.Update(updated);
+    }
+
 }

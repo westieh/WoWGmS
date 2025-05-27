@@ -111,9 +111,12 @@ namespace WoWGMS.Tests.Services
             var expectedSlug = RaidRegistry
                 .GetBossByDisplayName("liberation-of-undermine", "Vexie and the Geargrinders")?.Slug;
             Console.WriteLine("Expected Slug: " + expectedSlug);
-            Console.WriteLine("Character BossKills Keys: " + string.Join(", ", character.BossKills.Keys));
+            Console.WriteLine("Character BossKills Slugs: " + string.Join(",", character.BossKills.Select(bk => bk.BossSlug)));
+
             Assert.NotNull(expectedSlug);
-            Assert.True(character.BossKills.ContainsKey(expectedSlug));
+            var kill = character.BossKills.FirstOrDefault(bk => bk.BossSlug == expectedSlug);
+            Assert.NotNull(kill);
+
             _mockRepo.Verify(r => r.Update(roster), Times.Once);
         }
 

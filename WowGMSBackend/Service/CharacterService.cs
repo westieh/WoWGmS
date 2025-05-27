@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,7 +43,10 @@ namespace WowGMSBackend.Service
         {
             return _repo.DeleteCharacter(id);
         }
-
+        public void AddBossKill(BossKill bossKill)
+        {
+            _repo.AddBossKill(bossKill);
+        }
         public void IncrementBossKill(int characterId, string bossSlug)
         {
             var character = _repo.GetCharacter(characterId);
@@ -55,6 +59,10 @@ namespace WowGMSBackend.Service
         }
 
         public List<Character> GetAllCharacters()
+        {
+            return _repo.GetCharacters();
+        }
+        public List<Character> GetAllCharactersWithMemberAndBossKills()
         {
             return _repo.GetCharacters();
         }

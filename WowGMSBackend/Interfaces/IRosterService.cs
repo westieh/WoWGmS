@@ -10,6 +10,7 @@ namespace WowGMSBackend.Interfaces
         bool CheckRosterBalance(BossRoster roster);
         void ProcessRoster(int rosterId);
         IEnumerable<BossRoster> GetUnprocessedRostersBefore(DateTime utcNow);
+        BossRoster? Update(BossRoster updated);
 
     }
 }

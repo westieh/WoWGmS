@@ -30,6 +30,8 @@ else
                 <th>Role</th>
                 <th>Note</th>
                 <th>Godkendt</th>
+                <th>BossKills</th>
+
             </tr>
         </thead>
         <tbody>
@@ -48,24 +50,32 @@ else
                             <button type="submit">Gem</button>
                         </form>
                     </td>
-                     <td>
-                    @(app.Approved ? "Ja" : "Nej")
-                     <form method="post" asp-page-handler="ToggleApproval">
-                         <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
-                            <select name="Approved">
-                                @if (app.Approved)
+
+                    <!-- Approval status & form -->
+                    <td>
+                        @(app.Approved ? "Ja" : "Nej")
+                        <form method="post" asp-page-handler="ToggleApproval" onsubmit="return confirm('Are you sure you want to approve this application?');">
+                            <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
+                            <input type="hidden" name="Approved" value="true" />
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                    </td>
+
+                    <!-- Boss Kills -->
+                    <td>
+                        @if (app.BossKills != null && app.BossKills.Any())
+                        {
+                            <ul style="margin-bottom: 0;">
+                                @foreach (var kill in app.BossKills.OrderByDescending(k => k.KillCount))
                                 {
-                                    <option value="true" selected>Ja</option>
-                                    <option value="false">Nej</option>
+                                    <li>@kill.BossSlug: @kill.KillCount</li>
                                 }
-                                else
-                                {
-                                    <option value="true">Ja</option>
-                                    <option value="false" selected>Nej</option>
-                                }
-                            </select>
-                        <button type="submit">Update status</button>
-                    </form>
+                            </ul>
+                        }
+                        else
+                        {
+                            <span><em>No boss kill info.</em></span>
+                        }
                     </td>
                 </tr>
             }

@@ -1,0 +1,34 @@
+﻿@page
+@model WoWGMS.Pages.ViewApprovedApplicationsModel
+@{
+    ViewData["Title"] = "Approved Applications";
+}
+
+<h2>Approved Applications</h2>
+
+@if (Model.Applications?.Count == 0)
+{
+    <p>No approved applications found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Discord Name</th>
+                <th>Submission Date</th>
+                <th>Processed By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model.Applications)
+            {
+                <tr>
+                    <td>@app.DiscordName</td>
+                    <td>@app.SubmissionDate.ToString("g")</td>
+                    <td>@app.ProcessedBy</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

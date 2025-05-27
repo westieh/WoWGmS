@@ -15,6 +15,7 @@ namespace WowGMSBackend.Interfaces
         Character? UpdateCharacter(int id, Character updated);
         Character? DeleteCharacter(int id);
         List<Character> GetCharactersByMemberId(int memberId);
-
+        List<Character> GetCharactersByRoster(int rosterId);
+        void AddBossKill(BossKill bossKill);
     }
 }

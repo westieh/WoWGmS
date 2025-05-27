@@ -27,13 +27,13 @@ namespace WowGMSBackend.DBContext
         public DbSet<BossRoster> BossRosters { get; set; }
         public DbSet<Character> Characters { get; set; }
         public DbSet<Member> Members { get; set; }
-
+        public DbSet<BossKill> BossKills { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<BossRoster>().HasKey(e => e.RosterId);
-            modelBuilder.Entity<Character>().HasKey(c => c.CharacterName);
+            
 
             modelBuilder.Entity<Application>()
                 .Property(a => a.ServerName)
@@ -46,8 +46,19 @@ namespace WowGMSBackend.DBContext
             modelBuilder.Entity<Application>()
                 .Property(a => a.Role)
                 .HasConversion<string>();
-            
-    
+            modelBuilder.Entity<BossKill>()
+                .HasOne(bk => bk.Application)
+                .WithMany(a => a.BossKills)
+                .HasForeignKey(bk => bk.ApplicationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BossKill>()
+                .HasOne(bk => bk.Character)
+                .WithMany(c => c.BossKills)
+                .HasForeignKey(bk => bk.CharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }

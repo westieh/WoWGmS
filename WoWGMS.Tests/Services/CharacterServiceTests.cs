@@ -121,9 +121,10 @@ namespace WoWGMS.Tests.Services
             _mockRepo.Setup(r => r.GetCharacter(1)).Returns(character);
 
             _service.IncrementBossKill(1, "onyxia");
+            var onyKill = character.BossKills.FirstOrDefault(bk => bk.BossSlug == "onyxia");
 
-            Assert.True(character.BossKills.ContainsKey("onyxia"));
-            Assert.Equal(1, character.BossKills["onyxia"]);
+            Assert.NotNull(onyKill);
+            Assert.Equal(1, onyKill.KillCount);
         }
         
 

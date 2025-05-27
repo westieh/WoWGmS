@@ -3,6 +3,7 @@ using WowGMSBackend.DBContext;
 using WowGMSBackend.MockData;
 using WowGMSBackend.Model;
 using WowGMSBackend.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WowGMSBackend.Repository
 {
@@ -17,12 +18,14 @@ namespace WowGMSBackend.Repository
 
         public List<Application> GetApplications()
         {
-            return _context.Applications.ToList();
+            return _context.Applications.Include(a => a.BossKills).ToList();
         }
 
         public Application? GetApplicationById(int id)
         {
-            return _context.Applications.FirstOrDefault(a => a.ApplicationId == id);
+            return _context.Applications
+                .Include(a => a.BossKills)  // ✅ Required
+                .FirstOrDefault(a => a.ApplicationId == id);
         }
 
         public void AddApplication(Application application)

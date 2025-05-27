@@ -1,0 +1,60 @@
+@page
+@model WoWGMS.Pages.Admin.ManageCharactersModel
+@using WowGMSBackend.Model
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Officer")]
+
+<h2>Manage Characters</h2>
+
+<table class="table table-bordered text-white">
+    <thead>
+        <tr>
+            <th>Character Name</th>
+            <th>Class</th>
+            <th>Role</th>
+            <th>Realm</th>
+            <th>Member</th>
+            <th>Boss Kills</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var character in Model.Characters)
+    {
+        <tr>
+            <td>@character.CharacterName</td>
+            <td>@character.Class</td>
+            <td>@character.Role</td>
+            <td>@character.RealmName</td>
+            <td>@character.Member?.Name</td>
+                <td>
+                    <form method="post" asp-page-handler="UpdateBossKills">
+                        <input type="hidden" name="CharacterId" value="@character.Id" />
+
+                        @if (character.BossKills != null && character.BossKills.Any())
+                        {
+                            @for (int i = 0; i < character.BossKills.Count; i++)
+                            {
+                                var kill = character.BossKills[i];
+                                <div class="mb-2">
+                                    <label style="display:block;">@kill.BossSlug</label>
+                                    <input type="hidden" name="BossKills[@i].BossSlug" value="@kill.BossSlug" />
+                                    <input type="number"
+                                           name="BossKills[@i].KillCount"
+                                           value="@kill.KillCount"
+                                           min="0"
+                                           class="form-control form-control-sm" />
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p><em>No boss kills</em></p>
+                        }
+
+                        <button type="submit" class="btn btn-primary btn-sm mt-2">Save</button>
+                    </form>
+                </td>
+        </tr>
+    }
+    </tbody>
+</table>

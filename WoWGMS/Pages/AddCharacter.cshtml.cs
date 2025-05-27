@@ -7,7 +7,7 @@ using WowGMSBackend.Model;
 
 namespace WoWGMS.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "Trialist,Raider,Officer")]
     public class AddCharacterModel : PageModel
     {
         

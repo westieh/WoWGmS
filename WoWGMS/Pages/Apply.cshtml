@@ -43,7 +43,18 @@
         <input asp-for="Application.Password" type="password" class="form-control" />
         <span asp-validation-for="Application.Password" class="text-danger"></span>
     </div>
-
+    <h4 style="color: white;">Boss Kill Experience</h4>
+    @foreach (var boss in Model.RaidBosses)
+    {
+        <div class="form-group">
+            <label class="form-label" style="color:white;">@boss.DisplayName</label>
+            <input type="number"
+                   class="form-control"
+                   name="BossKills[@boss.Slug]"
+                   min="0"
+                   value="0" />
+        </div>
+    }
     <button type="submit" class="btn btn-primary mt-2">Send Ansøgning</button>
 </form>
 
