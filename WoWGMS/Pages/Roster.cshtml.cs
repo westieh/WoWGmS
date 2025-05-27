@@ -5,7 +5,7 @@ using System.Linq;
 using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
 using WowGMSBackend.Service;
-
+using WowGMSBackend.Interfaces;
 namespace WoWGMS.Pages
 {
     public class RosterModel : PageModel
