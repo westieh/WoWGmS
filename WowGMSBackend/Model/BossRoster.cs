@@ -16,8 +16,10 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string RaidSlug { get; set; }
         public string BossDisplayName { get; set; }
 
+
         public string BossSlug { get; set; }   
         public DateTime CreationDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime InstanceTime { get; set; }
         public bool IsProcessed { get; set; } = false;
 

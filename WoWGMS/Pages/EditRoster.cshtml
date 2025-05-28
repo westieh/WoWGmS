@@ -1,0 +1,38 @@
+﻿@page "{id:int}"
+@model WoWGMS.Pages.EditRosterModel
+@{
+    ViewData["Title"] = "Edit Roster";
+}
+
+<h1>Edit Roster</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label>Instance Time</label>
+        <input asp-for="Roster.InstanceTime" class="form-control" type="datetime-local" />
+    </div>
+
+    <h3>Current Participants (@Model.Roster.Participants.Count / 20)</h3>
+    <ul>
+        @foreach (var participant in Model.Roster.Participants)
+        {
+            <li>
+                @participant.CharacterName
+                <button type="submit" formaction="?handler=Remove&participantId=@participant.Id" class="btn btn-danger btn-sm">Remove</button>
+            </li>
+        }
+    </ul>
+
+    <h3>Add Eligible Characters</h3>
+    <ul>
+        @foreach (var character in Model.EligibleCharacters)
+        {
+            <li>
+                @character.CharacterName (@character.Role) - Bosskills: @Model.BossKillCounts[character.Id]
+                <button type="submit" formaction="?handler=Add&characterId=@character.Id" class="btn btn-success btn-sm">Add</button>
+            </li>
+        }
+    </ul>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

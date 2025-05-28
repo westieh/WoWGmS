@@ -1,4 +1,5 @@
 ﻿@page
+@using WoWGMS.Helpers
 @model WoWGMS.Pages.EventModel
 @{
     ViewData["Title"] = "Raid Events";
@@ -17,7 +18,7 @@ else
         <div class="card mb-4">
             <div class="card-header">
                 <h4>@roster.BossDisplayName</h4>
-                <small>@roster.InstanceTime.ToString("g")</small>
+                <small>@(roster.InstanceTime.ToDisplayShort())</small>
             </div>
             <div class="card-body">
                 <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
