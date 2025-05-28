@@ -4,62 +4,39 @@
     ViewData["Title"] = "Raid Events";
 }
 
-<h1>Raid Events</h1>
+<h1 class="text-center mb-4">Raid Rosters</h1>
 
 @if (!Model.BossRosters.Any())
 {
-    <p>No events available.</p>
+    <div class="alert alert-info text-center">No rosters available.</div>
 }
 else
 {
     foreach (var roster in Model.BossRosters)
     {
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>@roster.BossDisplayName</h4>
-                <small>@roster.InstanceTime.ToString("g")</small>
+        <div class="card mb-4 shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">@roster.GetBoss()?.DisplayName</h5>
+                <small>@roster.InstanceTime.ToString("g") | Raid: @roster.RaidSlug</small>
             </div>
             <div class="card-body">
                 <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
 
                 @if (roster.Participants != null && roster.Participants.Any())
                 {
-                    <ul>
+                    <ul class="list-group list-group-flush">
                         @foreach (var p in roster.Participants)
                         {
-                            <li>@p.CharacterName (@p.RealmName) - @p.Class / @p.Role</li>
+                            <li class="list-group-item">
+                                @p.CharacterName (@p.RealmName) – @p.Class / @p.Role
+                            </li>
                         }
                     </ul>
                 }
                 else
                 {
-                    <p><em>No participants yet.</em></p>
+                    <p class="text-muted"><em>No participants.</em></p>
                 }
-
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#interestForm-@roster.RosterId" aria-expanded="false" aria-controls="interestForm-@roster.RosterId">
-                    Show Interest
-                </button>
-
-                <div class="collapse mt-3" id="interestForm-@roster.RosterId">
-                    <form method="post" asp-page-handler="SignUp">
-                        <input type="hidden" name="SelectedRosterId" value="@roster.RosterId" />
-
-                        <div class="form-group">
-                            <label for="SelectedCharacterId-@roster.RosterId">Select Your Character:</label>
-                            <select id="SelectedCharacterId-@roster.RosterId" name="SelectedCharacterId" class="form-control" required>
-                                <option value="">-- Select Character --</option>
-                                @foreach (var character in Model.MyCharacters)
-                                {
-                                    <option value="@character.Id">
-                                        @character.CharacterName (@character.Class / @character.Role)
-                                    </option>
-                                }
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-success mt-2">Confirm Interest</button>
-                    </form>
-                </div>
             </div>
         </div>
     }
