@@ -1,5 +1,5 @@
 ﻿@page
-@using WoWGMS.Helpers
+
 @model WoWGMS.Pages.EventModel
 @{
     ViewData["Title"] = "Raid Events";
@@ -15,7 +15,7 @@ else
 {
     foreach (var roster in Model.BossRosters)
     {
-            </div>
+        <div>
             <div class="card-body">
                 <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
 
