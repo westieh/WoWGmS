@@ -12,5 +12,4 @@ namespace WowGMSBackend.Interfaces
         Member? ChangeMemberRank(int actingMemberId, int targetMemberId, Rank newRank);
         Member? ValidateLogin(string name, string password);
     }
-
 }

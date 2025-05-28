@@ -3,6 +3,7 @@ using System.Linq;
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Model;
 using WowGMSBackend.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WowGMSBackend.Repository
 {
@@ -57,7 +58,9 @@ namespace WowGMSBackend.Repository
 
         public List<Member> GetMembers()
         {
-            return _context.Members.ToList();
+           return _context.Members
+                .Include(m => m.Characters)
+                .ToList();
         }
     }
 }
