@@ -6,22 +6,56 @@
 
 <h1>Create Boss Roster</h1>
 
-<form method="post" asp-page-handler="CreateRoster">
+<!-- Select Raid -->
+<form method="post" asp-page-handler="SelectRaid">
     <div class="form-group">
-        <label>Raid Slug</label>
-        <input asp-for="NewRoster.RaidSlug" class="form-control" />
-        <span asp-validation-for="NewRoster.RaidSlug" class="text-danger"></span>
+        <label>Raid</label>
+        <select asp-for="SelectedRaidSlug" class="form-select" onchange="this.form.submit()">
+            <option value="">-- Select Raid --</option>
+            @foreach (var raid in Model.AllRaids)
+            {
+                <option value="@raid.Slug" selected="@(raid.Slug == Model.SelectedRaidSlug)">
+                    @raid.Name
+                </option>
+            }
+        </select>
     </div>
-    <div class="form-group">
-        <label>Boss Display Name</label>
-        <input asp-for="NewRoster.BossDisplayName" class="form-control" />
-        <span asp-validation-for="NewRoster.BossDisplayName" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary mt-2">Create Roster</button>
 </form>
+
+@if (!string.IsNullOrEmpty(Model.SelectedRaidSlug))
+{
+    <!-- Create Roster -->
+    <form method="post" asp-page-handler="CreateRoster">
+        <div class="form-group">
+            <label>Boss</label>
+            <select asp-for="SelectedBossSlug" class="form-select" required>
+                <option value="">-- Select Boss --</option>
+                @foreach (var boss in Model.BossesForSelectedRaid)
+                {
+                    <option value="@boss.Slug" selected="@(boss.Slug == Model.SelectedBossSlug)">
+                        @boss.DisplayName
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Creation Date</label>
+            <input asp-for="NewRoster.CreationDate" type="datetime-local" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Instance Time</label>
+            <input asp-for="NewRoster.InstanceTime" type="datetime-local" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Create Roster</button>
+    </form>
+}
 
 <hr />
 
+<!-- Display All Rosters -->
 <h2>All Boss Rosters</h2>
 @if (!Model.AllRosters.Any())
 {
