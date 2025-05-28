@@ -4,15 +4,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
-using WowGMSBackend.Service;
-
+using WowGMSBackend.Registry;
 
 namespace WoWGMS.Pages
 {
     [Authorize(Roles = "Trialist,Raider,Officer")]
     public class MemberPanelModel : PageModel
     {
-        
         private readonly ICharacterService _characterService;
         private readonly IMemberService _memberService;
         private readonly IBossKillService _bossKillService;
@@ -27,57 +25,55 @@ namespace WoWGMS.Pages
         [BindProperty]
         public Character Character { get; set; }
 
+        [BindProperty]
+        public Dictionary<string, int> BossKillInputs { get; set; } = new();
+
+        public List<Boss> AllBosses { get; set; } = new();
+
         public List<CharacterWithKill> CharactersForMember { get; set; } = new();
 
-
-        // Helper property to get the logged-in member's ID from claims
         private int? LoggedInMemberId
         {
             get
             {
                 var memberIdClaim = User.FindFirst("MemberId")?.Value;
-                if (int.TryParse(memberIdClaim, out var memberId))
-                    return memberId;
-                return null;
+                return int.TryParse(memberIdClaim, out var id) ? id : null;
             }
         }
 
         public IActionResult OnGet()
         {
             var memberId = LoggedInMemberId;
-            if (memberId == null)
-                return NotFound("MemberId claim missing.");
+            if (memberId == null) return NotFound("MemberId claim missing.");
 
-            var member = _memberService.GetMember(memberId.Value);
-            if (member == null)
-                return NotFound("Member not found.");
+            AllBosses = RaidRegistry.Raids.SelectMany(r => r.Bosses).ToList();
 
             CharactersForMember = _characterService
                 .GetCharactersByMemberId(memberId.Value)
-                .Select(c => new CharacterWithKill
+                .Select(c =>
+                {
+                    var kills = _bossKillService.GetBossKillsForCharacter(c.Id);
+                    var top = kills
+                        .GroupBy(k => k.BossSlug)
+                        .Select(g => new { Count = g.Sum(x => x.KillCount), Example = g.First() })
+                        .OrderByDescending(x => x.Count)
+                        .FirstOrDefault();
+
+                    return new CharacterWithKill
                     {
                         Character = c,
-                        HighestKill = _bossKillService.GetMostKilledBossForCharacter(c.Id)
-                    })
-    .               ToList();
+                        HighestKill = top?.Example,
+                        KillCount = top?.Count ?? 0
+                    };
+                }).ToList();
+
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid)
-            {
-                foreach (var kvp in ModelState)
-                {
-                    foreach (var error in kvp.Value.Errors)
-                    {
-                        Console.WriteLine($"Model error on '{kvp.Key}': {error.ErrorMessage}");
-                    }
-                }
+            AllBosses = RaidRegistry.Raids.SelectMany(r => r.Bosses).ToList();
 
-                Console.WriteLine("Exiting early due to invalid model state");
-                return Page();
-            }
             var memberId = LoggedInMemberId;
             if (memberId == null)
             {
@@ -85,29 +81,46 @@ namespace WoWGMS.Pages
                 return Page();
             }
 
-            var member = _memberService.GetMember(memberId.Value);
-            if (member == null)
-            {
-                ModelState.AddModelError(string.Empty, "Member not found.");
-                return Page();
-            }
-            
+            if (!ModelState.IsValid) return Page();
 
             Character.MemberId = memberId.Value;
-           
-
             _characterService.AddCharacter(Character);
 
-            TempData["SuccessMessage"] = "Character created successfully!";
+            // Re-fetch character if ID was not auto-populated
+            var savedCharacter = _characterService
+                    .GetCharactersByMemberId(memberId.Value)
+                    .OrderByDescending(c => c.Id)
+                    .FirstOrDefault(c =>
+        c.CharacterName == Character.CharacterName &&
+        c.RealmName == Character.RealmName &&
+        c.Class == Character.Class &&
+        c.Role == Character.Role);
 
+            if (savedCharacter == null)
+            {
+                ModelState.AddModelError(string.Empty, "Character could not be retrieved after creation.");
+                return Page();
+            }
+
+            var bossKills = BossKillInputs
+                .Where(kvp => kvp.Value > 0)
+                .Select(kvp => new BossKill
+                {
+                    BossSlug = kvp.Key,
+                    KillCount = kvp.Value
+                }).ToList();
+
+            _bossKillService.SetBossKillsForCharacter(savedCharacter.Id, bossKills);
+
+            TempData["SuccessMessage"] = "Character created successfully!";
             return RedirectToPage();
         }
+
         public class CharacterWithKill
         {
             public Character Character { get; set; }
             public BossKill? HighestKill { get; set; }
+            public int KillCount { get; set; }
         }
-
     }
-
 }

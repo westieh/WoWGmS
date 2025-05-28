@@ -12,6 +12,7 @@ namespace WowGMSBackend.Service
         {
             _bossKillRepo = bossKillRepo;
         }
+
         public BossKill? GetMostKilledBossForCharacter(int characterId)
         {
             return _bossKillRepo
@@ -21,11 +22,12 @@ namespace WowGMSBackend.Service
                 {
                     BossSlug = g.Key,
                     Count = g.Count(),
-                    ExampleKill = g.First()  // to preserve full BossKill reference
+                    ExampleKill = g.First()
                 })
                 .OrderByDescending(x => x.Count)
                 .FirstOrDefault()?.ExampleKill;
         }
+
 
         public void SetBossKillsForCharacter(int characterId, List<BossKill> kills)
         {
