@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
 using WowGMSBackend.Model;
-using WowGMSBackend.Repository;
-using WowGMSBackend.Service;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Registry;
 
@@ -30,20 +28,16 @@ namespace WoWGMS.Pages
         [BindProperty]
         public string SelectedBossSlug { get; set; }
 
-        [BindProperty]
-        public int rosterId { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int? RosterId { get; set; }
 
         [BindProperty]
         public int CharacterId { get; set; }
 
         [BindProperty]
-        public int characterId { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public int? RosterId { get; set; }
+        public int ParticipantId { get; set; }
 
         public BossRoster CreatedRoster { get; set; }
-
         public List<BossRoster> AllRosters { get; set; } = new();
         public List<Character> AllCharacters { get; set; } = new();
         public List<Raid> AllRaids { get; set; } = RaidRegistry.Raids;
@@ -51,8 +45,47 @@ namespace WoWGMS.Pages
 
         public void OnGet()
         {
+            if (NewRoster.InstanceTime == default)
+            {
+                NewRoster.InstanceTime = DateTime.Now;
+            }
+            AllRosters = _rosterRepo.GetAll().ToList();
             LoadBossOptions();
             LoadPageData();
+        }
+
+        public IActionResult OnPostCreateRoster()
+        {
+            if (string.IsNullOrEmpty(SelectedRaidSlug) || string.IsNullOrEmpty(SelectedBossSlug))
+            {
+                ModelState.AddModelError(string.Empty, "Missing raid or boss selection.");
+                LoadBossOptions();
+                LoadPageData();
+                return Page();
+            }
+
+            var boss = RaidRegistry.GetBossesForRaid(SelectedRaidSlug)
+                                   .FirstOrDefault(b => b.Slug == SelectedBossSlug);
+
+            if (boss == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid boss selected.");
+                LoadBossOptions();
+                LoadPageData();
+                return Page();
+            }
+
+            NewRoster.RaidSlug = SelectedRaidSlug;
+            NewRoster.BossSlug = boss.Slug;
+            NewRoster.BossDisplayName = boss.DisplayName;
+            NewRoster.CreationDate = DateTime.Now;
+
+            if (NewRoster.InstanceTime == default)
+                NewRoster.InstanceTime = DateTime.Now.AddHours(1);
+
+            _rosterRepo.Add(NewRoster);
+
+            return RedirectToPage();
         }
 
         public IActionResult OnPostSelectRaid()
@@ -62,106 +95,14 @@ namespace WoWGMS.Pages
             return Page();
         }
 
-        public IActionResult OnPostCreateRoster()
+        public IActionResult OnPostDeleteRoster(int id)
         {
-            if (!ModelState.IsValid || string.IsNullOrEmpty(SelectedRaidSlug) || string.IsNullOrEmpty(SelectedBossSlug))
-            {
-                foreach (var entry in ModelState)
-                {
-                    foreach (var error in entry.Value.Errors)
-                    {
-                        Console.WriteLine($"[ModelState] {entry.Key}: {error.ErrorMessage}");
-                    }
-                }
-
-                LoadBossOptions();
-                LoadPageData();
-                return Page();
-            }
-
-            var boss = RaidRegistry.GetBossesForRaid(SelectedRaidSlug)
-                .FirstOrDefault(b => b.Slug == SelectedBossSlug);
-
-            if (boss == null)
-            {
-                LoadBossOptions();
-                LoadPageData();
-                return Page();
-            }
-
-            NewRoster.RaidSlug = SelectedRaidSlug;
-            NewRoster.BossSlug = boss.Slug;
-            NewRoster.BossDisplayName = boss.DisplayName;
-            NewRoster.CreationDate = System.DateTime.Now;
-            NewRoster.InstanceTime = System.DateTime.Now;
-
-            try
-            {
-                var addedRoster = _rosterRepo.Add(NewRoster);
-                Console.WriteLine($"[EF] Roster created with ID {addedRoster.RosterId}");
-                RosterId = addedRoster.RosterId;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[EF ERROR] {ex.Message}");
-            }
-
-            NewRoster = new BossRoster();
-            LoadBossOptions();
-            LoadPageData();
-            return Page();
-        }
-
-        public IActionResult OnPostAddParticipant()
-        {
-            if (CharacterId == 0 || rosterId == 0)
-            {
-                LoadBossOptions();
-                LoadPageData();
-                return Page();
-            }
-
-            var roster = _rosterRepo.GetById(rosterId);
-            if (roster != null && !roster.Participants.Any(c => c.Id == CharacterId))
-            {
-                var character = _characterService.GetCharacter(CharacterId);
-                if (character != null)
-                {
-                    roster.Participants.Add(character);
-                    _rosterRepo.Update(roster);
-                }
-            }
-
-            RosterId = rosterId;
-            LoadBossOptions();
-            LoadPageData();
-            return Page();
-        }
-
-        public IActionResult OnPostRemoveParticipant()
-        {
-            if (rosterId == 0 || characterId == 0)
-            {
-                LoadBossOptions();
-                LoadPageData();
-                return Page();
-            }
-
-            var roster = _rosterRepo.GetById(rosterId);
+            var roster = _rosterRepo.GetById(id);
             if (roster != null)
             {
-                var participant = roster.Participants.FirstOrDefault(c => c.Id == characterId);
-                if (participant != null)
-                {
-                    roster.Participants.Remove(participant);
-                    _rosterRepo.Update(roster);
-                }
+                _rosterRepo.Delete(roster.RosterId);
             }
-
-            RosterId = rosterId;
-            LoadBossOptions();
-            LoadPageData();
-            return Page();
+            return RedirectToPage();
         }
 
         private void LoadPageData()

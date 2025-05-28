@@ -13,7 +13,10 @@ public class RosterService : IRosterService
     {
         _rosterRepo = rosterRepo;
     }
-
+    public IEnumerable<BossRoster> GetAllRosters()
+    {
+        return _rosterRepo.GetAll();
+    }
     public void AddCharacterToRoster(int rosterId, Character character)
     {
         var roster = _rosterRepo.GetById(rosterId);

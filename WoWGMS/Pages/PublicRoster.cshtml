@@ -1,0 +1,32 @@
+﻿@page "{id:int}"
+@model WoWGMS.Pages.PublicRosterModel
+@{
+    ViewData["Title"] = "Roster Overview";
+}
+
+<h1>Roster Overview</h1>
+
+<p><strong>Raid:</strong> @Model.Roster.RaidSlug</p>
+<p><strong>Boss:</strong> @Model.Roster.BossSlug</p>
+<p><strong>Instance Time:</strong> @Model.Roster.InstanceTime.ToString("f")</p>
+
+<h3>Participants (@Model.Roster.Participants.Count / 20)</h3>
+<table class="table table-dark table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Bosskills</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var character in Model.Roster.Participants)
+        {
+            <tr>
+                <td>@character.CharacterName</td>
+                <td>@character.Role</td>
+                <td>@Model.BossKillCounts.GetValueOrDefault(character.Id, 0)</td>
+            </tr>
+        }
+    </tbody>
+</table>
