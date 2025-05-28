@@ -7,7 +7,7 @@ namespace WoWGMS.Pages.Shared
 {
     public class GetAllMembersModel : PageModel
     {
-        private IMemberService _memberService;
+        private readonly IMemberService _memberService;
 
         public GetAllMembersModel(IMemberService memberService)
         {

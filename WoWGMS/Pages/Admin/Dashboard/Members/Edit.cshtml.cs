@@ -19,24 +19,35 @@ namespace WoWGMS.Pages.Admin.Dashboard.Members
         }
 
         [BindProperty]
-        public Member Member { get; set; }
+        public EditMemberViewModel Member { get; set; }
 
         public IActionResult OnGet(int id)
         {
-            Member = _memberService.GetMember(id);
-            if (Member == null)
-                return NotFound();
+            var member = _memberService.GetMember(id);
+            if (member == null) return NotFound();
+
+            Member = new EditMemberViewModel
+            {
+                MemberId = member.MemberId,
+                Name = member.Name,
+                Rank = member.Rank
+            };
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid)
-                return Page();
+            if (!ModelState.IsValid) return Page();
 
-            _memberService.UpdateMember(Member.MemberId, Member);
-            return RedirectToPage("/Admin/Dashboard/Index");
+            var existing = _memberService.GetMember(Member.MemberId);
+            if (existing == null) return NotFound();
+
+            existing.Name = Member.Name;
+            existing.Rank = Member.Rank;
+
+            _memberService.UpdateMember(existing.MemberId, existing);
+            return RedirectToPage("/Shared/GetAllMembers");
         }
     }
 }

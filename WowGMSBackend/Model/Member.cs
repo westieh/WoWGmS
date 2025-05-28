@@ -16,6 +16,8 @@ namespace WowGMSBackend.Model
         [Required]
         public Rank Rank { get; set; }
 
+        public List<Character> Characters { get; set; } = new();
+
         public Member() { }
 
         public Member(int memberId, string name, string password, Rank rank)
