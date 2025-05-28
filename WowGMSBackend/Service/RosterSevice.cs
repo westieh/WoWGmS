@@ -80,5 +80,8 @@ public class RosterService : IRosterService
     {
         return _rosterRepo.Update(updated);
     }
-
+    public void Delete(int id)
+    {
+        _rosterRepo.Delete(id);
+    }
 }

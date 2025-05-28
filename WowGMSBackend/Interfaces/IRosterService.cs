@@ -12,5 +12,7 @@ namespace WowGMSBackend.Interfaces
         IEnumerable<BossRoster> GetUnprocessedRostersBefore(DateTime utcNow);
         BossRoster? Update(BossRoster updated);
 
+        void Delete(int id);
+
     }
 }
