@@ -75,5 +75,10 @@ namespace WowGMSBackend.Service
             target.Rank = newRank;
             return _memberRepo.UpdateMember(target.MemberId, target);
         }
+        public Member? GetMemberByName(string name)
+        {
+            return _memberRepo.GetMembers()
+                .FirstOrDefault(m => m.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

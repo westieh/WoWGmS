@@ -42,15 +42,24 @@ public class ViewApplicationsModel : PageModel
         {
             if (Approved && !appToUpdate.Approved)
             {
+                var officer = _memberService.GetMemberByName(User.Identity.Name);
+                if (officer != null)
+                {
+                    appToUpdate.ProcessedBy = officer;
+                    appToUpdate.Note = Note;
+                    _applicationService.ApproveApplication(appToUpdate);
+                }
                 // Approve the application
                 // Member Created via Applicationservice
-                
+
                 _applicationService.ApproveApplication(appToUpdate);
 
                 
             }
             else if (!Approved && appToUpdate.Approved)
             {
+                
+                appToUpdate.ProcessedBy = null;
                 // Un-approve if needed (optional logic)
                 appToUpdate.Approved = false;
             }

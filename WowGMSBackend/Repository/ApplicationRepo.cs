@@ -18,7 +18,8 @@ namespace WowGMSBackend.Repository
 
         public List<Application> GetApplications()
         {
-            return _context.Applications.Include(a => a.BossKills).ToList();
+            return _context.Applications.Include(a => a.BossKills)
+                .Include(a => a.ProcessedBy).ToList();
         }
 
         public Application? GetApplicationById(int id)
