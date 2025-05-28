@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
     {
         [Key]
         public int RosterId { get; set; }
-        [Required]
+        
         public List<Character> Participants { get; set; } = new List<Character>();
 
         public string RaidSlug { get; set; }

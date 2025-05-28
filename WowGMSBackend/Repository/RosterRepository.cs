@@ -34,7 +34,7 @@ namespace WowGMSBackend.Repository
 
         public BossRoster Add(BossRoster roster)
         {
-            roster.CreationDate = DateTime.Now;
+           
             _context.BossRosters.Add(roster);
             _context.SaveChanges();
             return roster;
