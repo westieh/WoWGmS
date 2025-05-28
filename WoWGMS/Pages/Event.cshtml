@@ -13,27 +13,30 @@
 }
 else
 {
-    foreach (var roster in Model.BossRosters)
+    @foreach (var roster in Model.BossRosters)
     {
-        <div>
+        <div class="card bg-dark text-white mb-3">
+            <div class="card-header">
+                <strong>Raid:</strong> @roster.RaidSlug<br />
+                <strong>Instance Time:</strong> @roster.InstanceTime.ToString("f")
+            </div>
             <div class="card-body">
-                <p><strong>Processed:</strong> @(roster.IsProcessed ? "Yes" : "No")</p>
-
-                @if (roster.Participants != null && roster.Participants.Any())
+                @if (roster.Participants == null || !roster.Participants.Any())
+                {
+                    <p>No participants.</p>
+                }
+                else
                 {
                     <ul class="list-group list-group-flush">
                         @foreach (var p in roster.Participants)
                         {
-                            <li class="list-group-item">
+                            <li class="list-group-item bg-dark text-white">
                                 @p.CharacterName (@p.RealmName) – @p.Class / @p.Role
                             </li>
                         }
                     </ul>
                 }
-                else
-                {
-                    <p class="text-muted"><em>No participants.</em></p>
-                }
+                <a asp-page="/PublicRoster" asp-route-id="@roster.RosterId" class="btn btn-info mt-2">View</a>
             </div>
         </div>
     }
