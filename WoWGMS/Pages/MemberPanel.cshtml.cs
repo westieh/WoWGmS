@@ -8,6 +8,7 @@ using WowGMSBackend.Registry;
 
 namespace WoWGMS.Pages
 {
+
     [Authorize(Roles = "Trialist,Raider,Officer")]
     public class MemberPanelModel : PageModel
     {
@@ -21,7 +22,8 @@ namespace WoWGMS.Pages
             _memberService = memberService;
             _bossKillService = bossKillService;
         }
-
+        [BindProperty(SupportsGet = true)]
+        public string SelectedBossSlug { get; set; }
         [BindProperty]
         public Character Character { get; set; }
 
@@ -43,16 +45,32 @@ namespace WoWGMS.Pages
 
         public IActionResult OnGet()
         {
+            Character ??= new Character();
             var memberId = LoggedInMemberId;
             if (memberId == null) return NotFound("MemberId claim missing.");
 
-            AllBosses = RaidRegistry.Raids.SelectMany(r => r.Bosses).ToList();
+            AllBosses = (RaidRegistry.Raids ?? new List<Raid>())
+                .Where(r => r?.Bosses != null)
+                .SelectMany(r => r.Bosses)
+                .Where(b => b != null && !string.IsNullOrEmpty(b.Slug) && !string.IsNullOrEmpty(b.DisplayName))
+                .ToList();
+
+            if (string.IsNullOrEmpty(SelectedBossSlug) &&
+                AllBosses.Any(b => b.Slug == "vexie-and-the-geargrinders"))
+            {
+                SelectedBossSlug = "vexie-and-the-geargrinders";
+            }
 
             CharactersForMember = _characterService
                 .GetCharactersByMemberId(memberId.Value)
                 .Select(c =>
                 {
                     var kills = _bossKillService.GetBossKillsForCharacter(c.Id);
+
+                    int killCount = !string.IsNullOrEmpty(SelectedBossSlug)
+                        ? kills.Where(k => k.BossSlug == SelectedBossSlug).Sum(k => k.KillCount)
+                        : kills.GroupBy(k => k.BossSlug).Select(g => g.Sum(x => x.KillCount)).DefaultIfEmpty(0).Max();
+
                     var top = kills
                         .GroupBy(k => k.BossSlug)
                         .Select(g => new { Count = g.Sum(x => x.KillCount), Example = g.First() })
@@ -63,7 +81,7 @@ namespace WoWGMS.Pages
                     {
                         Character = c,
                         HighestKill = top?.Example,
-                        KillCount = top?.Count ?? 0
+                        KillCount = killCount
                     };
                 }).ToList();
 
@@ -72,7 +90,11 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPost()
         {
-            AllBosses = RaidRegistry.Raids.SelectMany(r => r.Bosses).ToList();
+            AllBosses = (RaidRegistry.Raids ?? new List<Raid>())
+                .Where(r => r?.Bosses != null)
+                .SelectMany(r => r.Bosses)
+                .Where(b => b != null && !string.IsNullOrEmpty(b.Slug) && !string.IsNullOrEmpty(b.DisplayName))
+                .ToList();
 
             var memberId = LoggedInMemberId;
             if (memberId == null)
@@ -86,15 +108,14 @@ namespace WoWGMS.Pages
             Character.MemberId = memberId.Value;
             _characterService.AddCharacter(Character);
 
-            // Re-fetch character if ID was not auto-populated
             var savedCharacter = _characterService
-                    .GetCharactersByMemberId(memberId.Value)
-                    .OrderByDescending(c => c.Id)
-                    .FirstOrDefault(c =>
-        c.CharacterName == Character.CharacterName &&
-        c.RealmName == Character.RealmName &&
-        c.Class == Character.Class &&
-        c.Role == Character.Role);
+                .GetCharactersByMemberId(memberId.Value)
+                .OrderByDescending(c => c.Id)
+                .FirstOrDefault(c =>
+                    c.CharacterName == Character.CharacterName &&
+                    c.RealmName == Character.RealmName &&
+                    c.Class == Character.Class &&
+                    c.Role == Character.Role);
 
             if (savedCharacter == null)
             {
@@ -115,6 +136,7 @@ namespace WoWGMS.Pages
             TempData["SuccessMessage"] = "Character created successfully!";
             return RedirectToPage();
         }
+
 
         public class CharacterWithKill
         {
