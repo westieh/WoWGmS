@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,7 @@ namespace WowGMSBackend.Interfaces
         List<Character> GetCharactersByMemberId(int memberId);
         List<Character> GetCharactersByRoster(int rosterId);
         void AddBossKill(BossKill bossKill);
+        Character SaveChangesAndReturn(Character character);
+
     }
 }

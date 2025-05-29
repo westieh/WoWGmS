@@ -1,0 +1,51 @@
+@page
+@model WoWGMS.Pages.ManageCharactersModel
+@using WowGMSBackend.Model
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Officer")]
+
+<h2>Manage Characters</h2>
+
+<form method="get" class="mb-3">
+    <label for="SelectedBossSlug">Select Boss:</label>
+    <select asp-for="SelectedBossSlug"
+            asp-items="@(new SelectList(Model.AllBosses, "Slug", "DisplayName"))"
+            class="form-control"
+            onchange="this.form.submit()">
+        <option value="">-- Select Boss --</option>
+    </select>
+</form>
+
+@foreach (var character in Model.Characters)
+{
+    var kill = character.BossKills?.FirstOrDefault(k => k.BossSlug == Model.SelectedBossSlug);
+    var killCount = kill?.KillCount ?? 0;
+
+    <form method="post" asp-page-handler="UpdateKill" class="mb-3">
+        <input type="hidden" name="characterId" value="@character.Id" />
+        <input type="hidden" name="selectedBossSlug" value="@Model.SelectedBossSlug" />
+
+        <div class="card p-3 mb-2 bg-dark text-white">
+            <h5>@character.CharacterName (@character.Class / @character.Role / @character.RealmName)</h5>
+
+            <div class="form-group row align-items-center">
+                <label class="col-sm-3 col-form-label">Kill Count:</label>
+                <div class="col-sm-2">
+                    <input type="number" name="killCount" value="@killCount" class="form-control" min="0" />
+                </div>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                </div>
+                <div class="col-sm-3">
+                    <button formaction="?handler=DeleteCharacter"
+                            formmethod="post"
+                            name="id"
+                            value="@character.Id"
+                            class="btn btn-sm btn-danger">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+}

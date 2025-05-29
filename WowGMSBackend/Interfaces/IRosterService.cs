@@ -5,7 +5,7 @@ namespace WowGMSBackend.Interfaces
     public interface IRosterService
     {
         void AddCharacterToRoster(int rosterId, Character character);
-        void RemoveCharacterFromRoster(int rosterId, string characterName, string realmName);
+        void RemoveCharacterFromRoster(int rosterId, int characterId);
         bool IsCharacterUnique(BossRoster roster, Character character);
         bool CheckRosterBalance(BossRoster roster);
         void ProcessRoster(int rosterId);
@@ -17,6 +17,9 @@ namespace WowGMSBackend.Interfaces
         BossRoster? GetRosterById(int rosterId);
         List<BossRoster> GetRostersWithBosses();
         List<BossRoster> GetUpcomingRosters();
-
+        void UpdateRosterTime(int rosterId, DateTime newTime);
+        Character? GetCharacterById(int characterId);
+        List<Character> GetEligibleCharacters(BossRoster roster);
+        bool IsRosterAtCapacity(int rosterId);
     }
 }

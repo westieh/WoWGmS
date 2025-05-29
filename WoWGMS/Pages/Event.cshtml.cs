@@ -1,26 +1,25 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-
-namespace WoWGMS.Pages
+namespace WoWGMS.Pages;
+public class EventModel : PageModel
 {
-    public class EventModel : PageModel
+    private readonly IRosterService _rosterService;
+
+    public EventModel(IRosterService rosterService)
     {
-        private readonly IRosterService _rosterService;
+        _rosterService = rosterService;
+    }
 
-        public EventModel(IRosterService rosterService)
-        {
-            _rosterService = rosterService;
-        }
+    public Dictionary<BossRoster, List<Character>> UpcomingRostersGrouped { get; set; } = new();
 
-        public Dictionary<BossRoster, List<Character>> UpcomingRostersGrouped { get; set; } = new();
-        [BindProperty(SupportsGet = true)]
-        public int RosterIndex { get; set; } = 0;
+    [BindProperty(SupportsGet = true)]
+    public int RosterIndex { get; set; } = 0;
 
-        public void OnGet()
+    public IActionResult OnGet()
+    {
+        try
         {
             var allRosters = _rosterService.GetUpcomingRosters();
 
@@ -28,10 +27,27 @@ namespace WoWGMS.Pages
                 RosterIndex = 0;
 
             var selectedRoster = allRosters.ElementAtOrDefault(RosterIndex);
+
             if (selectedRoster != null)
-                UpcomingRostersGrouped = new Dictionary<BossRoster, List<Character>> { { selectedRoster, selectedRoster.Participants } };
+            {
+                UpcomingRostersGrouped = new Dictionary<BossRoster, List<Character>>
+                {
+                    { selectedRoster, selectedRoster.Participants }
+                };
+            }
             else
-                UpcomingRostersGrouped = new Dictionary<BossRoster, List<Character>>();
+            {
+                UpcomingRostersGrouped = new();
+                TempData["InfoMessage"] = "No upcoming rosters found.";
+            }
+
+            return Page();
+        }
+        catch (Exception)
+        {
+            ModelState.AddModelError(string.Empty, "Failed to load roster data.");
+            UpcomingRostersGrouped = new();
+            return Page();
         }
     }
 }

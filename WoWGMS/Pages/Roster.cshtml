@@ -4,7 +4,14 @@
 @{
     ViewData["Title"] = "Create & Manage Boss Roster";
 }
-
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
 <h1>Create Boss Roster</h1>
 
 <form method="post" asp-page-handler="CreateRoster">

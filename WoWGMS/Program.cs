@@ -44,7 +44,7 @@ builder.Services.AddScoped<IRosterRepository, RosterRepository>();
 builder.Services.AddHostedService<BossKillCheckerService>();
 
 builder.Services.AddScoped<IApplicationRepo, ApplicationRepo>();
-builder.Services.AddScoped<ICharacterQueryService, CharacterService>();
+
 builder.Services.AddScoped(typeof(IDBService<>), typeof(DbGenericService<>));
 builder.Services.AddDbContext<WowDbContext>(options =>
     options.UseSqlServer(

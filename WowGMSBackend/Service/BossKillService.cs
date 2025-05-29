@@ -2,18 +2,21 @@ using System.Collections.Generic;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 using WowGMSBackend.Registry;
+using WowGMSBackend.Repository;
 using WowGMSBackend.ViewModels;
 namespace WowGMSBackend.Service
 {
     public class BossKillService : IBossKillService
     {
         private readonly IBossKillRepo _bossKillRepo;
-        private readonly ICharacterQueryService _characterQueryService;
+        private readonly ICharacterRepo _characterRepo;
 
-        public BossKillService(IBossKillRepo bossKillRepo, ICharacterQueryService characterQueryService)
+
+        public BossKillService(IBossKillRepo bossKillRepo, ICharacterRepo characterRepo)
         {
             _bossKillRepo = bossKillRepo;
-            _characterQueryService = characterQueryService;
+            _characterRepo = characterRepo;
+
         }
 
         public BossKill? GetMostKilledBossForCharacter(int characterId)
@@ -42,9 +45,35 @@ namespace WowGMSBackend.Service
             }
         }
 
+
         public List<BossKill> GetBossKillsForCharacter(int characterId)
         {
             return _bossKillRepo.GetBossKillsByCharacterId(characterId);
+        }
+        public void SetOrUpdateSingleBossKill(int characterId, string bossSlug, int newKillCount)
+        {
+            var character = _characterRepo.GetCharacter(characterId);
+            if (character == null) return;
+
+            character.BossKills ??= new List<BossKill>();
+
+            var existingKill = character.BossKills.FirstOrDefault(k => k.BossSlug == bossSlug);
+
+            if (existingKill != null)
+            {
+                existingKill.KillCount = newKillCount;
+            }
+            else
+            {
+                character.BossKills.Add(new BossKill
+                {
+                    BossSlug = bossSlug,
+                    KillCount = newKillCount,
+                    CharacterId = characterId
+                });
+            }
+
+            _characterRepo.SaveChangesAndReturn(character); // reuses the safe save method
         }
 
         public void IncrementBossKill(int characterId, string bossSlug)
@@ -79,22 +108,13 @@ namespace WowGMSBackend.Service
             SetBossKillsForCharacter(characterId, kills);
         }
 
-        public MemberPanelViewModel GetPanelData(int memberId, string selectedBossSlug)
+        public List<Boss> GetAllBosses()
         {
-            var allBosses = (RaidRegistry.Raids ?? new List<Raid>())
+            return (RaidRegistry.Raids ?? new List<Raid>())
                 .Where(r => r?.Bosses != null)
                 .SelectMany(r => r.Bosses)
                 .Where(b => !string.IsNullOrEmpty(b.Slug) && !string.IsNullOrEmpty(b.DisplayName))
                 .ToList();
-
-            var characters = _characterQueryService.GetCharactersByMemberId(memberId);
-
-            return new MemberPanelViewModel
-            {
-                AllBosses = allBosses,
-                Characters = characters,
-                SelectedBossSlug = selectedBossSlug
-            };
         }
         public Dictionary<int, int> GetBossKillCountsForRoster(BossRoster roster)
         {

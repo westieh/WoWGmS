@@ -11,7 +11,8 @@ namespace WowGMSBackend.Interfaces
         BossKill? GetMostKilledBossForCharacter(int characterId);
         void IncrementBossKill(int characterId, string bossSlug);
         void TransferFromApplication(Application application, int characterId);
-        MemberPanelViewModel GetPanelData(int memberId, string selectedBossSlug);
         Dictionary<int, int> GetBossKillCountsForRoster(BossRoster roster);
+        List<Boss> GetAllBosses();
+        void SetOrUpdateSingleBossKill(int characterId, string bossSlug, int newKillCount);
     }
 }

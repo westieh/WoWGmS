@@ -1,4 +1,5 @@
-﻿using WowGMSBackend.Interfaces;
+﻿using System.Security.Claims;
+using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 
 using WowGMSBackend.Repository;
@@ -14,6 +15,11 @@ namespace WowGMSBackend.Service
             _memberRepo = memberRepo;
         }
 
+        public int? GetLoggedInMemberId(ClaimsPrincipal user)
+        {
+            var idClaim = user.FindFirst("MemberId")?.Value;
+            return int.TryParse(idClaim, out var id) ? id : null;
+        }
         public Member? ValidateLogin(string? name, string? password)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(password))

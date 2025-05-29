@@ -71,9 +71,23 @@ namespace WowGMSBackend.Service
             return _applicationRepo.GetApplications().Where(a => !a.Approved).ToList();
         }
 
-        public void SubmitApplication(Application application)
+        public void SubmitApplication(Application application, Dictionary<string, int> bossKills)
         {
+            application.Approved = false;
+            application.Note = null;
+            application.ProcessedBy = null;
             application.SubmissionDate = DateTime.Now;
+
+            application.BossKills = bossKills
+                .Where(kvp => kvp.Value > 0)
+                .Select(kvp => new BossKill
+                {
+                    BossSlug = kvp.Key,
+                    KillCount = kvp.Value,
+                    Application = application
+                })
+                .ToList();
+
             _applicationRepo.AddApplication(application);
         }
 

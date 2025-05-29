@@ -28,31 +28,42 @@ namespace WoWGMS.Pages.Admin
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var member = _memberService.ValidateLogin(Username, Password);
-
-            if (member != null)
+            try
             {
-                var claims = new List<Claim>
+                if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
                 {
-                    new Claim(ClaimTypes.Name, member.Name),
-                    new Claim(ClaimTypes.Role, member.Rank.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, member.MemberId.ToString()),
-                    new Claim("MemberId", member.MemberId.ToString())
-                };
+                    ErrorMessage = "Username and password are required.";
+                    return Page();
+                }
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
+                var member = _memberService.ValidateLogin(Username, Password);
 
-                await HttpContext.SignInAsync("MyCookieAuth", principal);
+                if (member != null)
+                {
+                    var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, member.Name),
+                new Claim(ClaimTypes.Role, member.Rank.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, member.MemberId.ToString()),
+                new Claim("MemberId", member.MemberId.ToString())
+            };
 
-                // Redirect to whatever page you want after login
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
 
+                    await HttpContext.SignInAsync("MyCookieAuth", principal);
+                    return RedirectToPage("/Index");
+                }
 
-                return RedirectToPage("/Index");
+                ErrorMessage = "Invalid username or password.";
+                return Page();
             }
-
-            ErrorMessage = "Invalid username or password.";
-            return Page();
+            catch (Exception ex)
+            {
+                ErrorMessage = "An error occurred during login. Please try again.";
+                // Log ex.Message if needed
+                return Page();
+            }
         }
     }
 }

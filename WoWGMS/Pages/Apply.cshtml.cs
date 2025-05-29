@@ -30,29 +30,23 @@ namespace WoWGMS.Pages
         public IActionResult OnPost()
         {
             RaidBosses = RaidRegistry.GetBossesForRaid("liberation-of-undermine");
+
             if (!ModelState.IsValid)
-            {
                 return Page();
+
+            try
+            {
+                _applicationService.SubmitApplication(Application, BossKills);
+                TempData["SuccessMessage"] = "Application submitted successfully!";
             }
-
-            // Set default values (just to be safe)
-            Application.Approved = false;
-            Application.Note = null;
-            Application.ProcessedBy = null;
-
-            Application.BossKills = BossKills
-                .Where(kvp => kvp.Value > 0)
-                .Select(kvp => new BossKill
-                    {
-                        BossSlug = kvp.Key,
-                        KillCount = kvp.Value,
-                        Application = Application
-                    })
-                    .ToList();
-            // Submit through service (ensures ID and timestamp are set)
-            _applicationService.SubmitApplication(Application);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Something went wrong while submitting your application.");
+                // Optionally log ex.Message
+            }
 
             return Page();
         }
+
     }
 }

@@ -17,17 +17,27 @@ namespace WoWGMS.Pages
         }
 
         public BossRoster Roster { get; set; }
-
         public Dictionary<int, int> BossKillCounts { get; set; } = new();
 
         public IActionResult OnGet(int id)
         {
-            Roster = _rosterRepo.GetById(id);
-            if (Roster == null) return NotFound();
+            try
+            {
+                Roster = _rosterRepo.GetById(id);
+                if (Roster == null)
+                {
+                    TempData["Error"] = "Roster not found.";
+                    return RedirectToPage("/Error");
+                }
 
-            BossKillCounts = _bossKillService.GetBossKillCountsForRoster(Roster);
-
-            return Page();
+                BossKillCounts = _bossKillService.GetBossKillCountsForRoster(Roster);
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An error occurred while loading the roster.";
+                return RedirectToPage("/Error");
+            }
         }
     }
 }

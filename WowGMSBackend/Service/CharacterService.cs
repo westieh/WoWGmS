@@ -11,56 +11,35 @@ using WowGMSBackend.ViewModels;
 
 namespace WowGMSBackend.Service
 {
-    public class CharacterService : ICharacterService, ICharacterQueryService
+    public class CharacterService : ICharacterService
     {
         private readonly ICharacterRepo _repo;
-        private readonly IBossKillRepo _bossKillRepo;
 
         public CharacterService(ICharacterRepo repo)
         {
             _repo = repo;
 
         }
-        public Dictionary<int, List<CharacterWithKill>> GetGroupedCharactersByBossSlug(string bossSlug)
-        {
-            var allChars = _repo.GetCharacters(); // or any method that loads boss kills
-            var withKills = allChars.Select(c =>
-            {
-                var kills = c.BossKills.Where(k => k.BossSlug == bossSlug).ToList();
-                return new CharacterWithKill
-                {
-                    Character = c,
-                    KillCount = kills.Sum(k => k.KillCount)
-                };
-            });
 
-            return withKills
-                .GroupBy(c => c.Character.MemberId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-        }
-        public Character CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId)
+        public void CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId)
         {
             character.MemberId = memberId;
-            var savedCharacter = AddCharacter(character);
+            character.BossKills ??= new List<BossKill>();
 
-            if (savedCharacter == null)
-                throw new Exception("Character could not be created.");
-
-            var bossKills = killInputs
-                .Where(kvp => kvp.Value > 0)
-                .Select(kvp => new BossKill
-                {
-                    BossSlug = kvp.Key,
-                    KillCount = kvp.Value,
-                    CharacterId = savedCharacter.Id
-                }).ToList();
-
-            _bossKillRepo.DeleteBossKillsForCharacter(savedCharacter.Id);
-            foreach (var kill in bossKills)
+            foreach (var kvp in killInputs)
             {
-                _bossKillRepo.AddBossKill(kill);
+                var bossSlug = kvp.Key;
+                var killCount = kvp.Value;
+
+                character.BossKills.Add(new BossKill
+                {
+                    BossSlug = bossSlug,
+                    KillCount = killCount,
+                    Character = character
+                });
             }
-            return savedCharacter;
+
+            _repo.AddCharacter(character);
         }
 
         public Character AddCharacter(Character character)
@@ -80,7 +59,19 @@ namespace WowGMSBackend.Service
 
         public Character? UpdateCharacter(int id, Character updated)
         {
-            return _repo.UpdateCharacter(id, updated);
+            var existing = _repo.GetCharacter(id);
+            if (existing == null) return null;
+
+            existing.CharacterName = updated.CharacterName;
+            existing.RealmName = updated.RealmName;
+            existing.Class = updated.Class;
+            existing.Role = updated.Role;
+            existing.MemberId = updated.MemberId;
+            existing.Member = updated.Member;
+
+            // ✅ DO NOT touch BossKills here
+
+            return _repo.SaveChangesAndReturn(existing);
         }
 
         public Character? DeleteCharacter(int id)

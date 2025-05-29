@@ -33,36 +33,48 @@ public class ViewApplicationsModel : PageModel
     public bool Approved { get; set; }
 
 
-    
+
     public IActionResult OnPostToggleApproval()
     {
-        var appToUpdate = _applicationService.GetApplicationById(ApplicationId);
-
-        if (appToUpdate != null)
+        try
         {
+            var appToUpdate = _applicationService.GetApplicationById(ApplicationId);
+
+            if (appToUpdate == null)
+            {
+                TempData["Error"] = "Application not found.";
+                return RedirectToPage();
+            }
+
             if (Approved && !appToUpdate.Approved)
             {
-                var officer = _memberService.GetMemberByName(User.Identity.Name);
-                if (officer != null)
+                var officer = _memberService.GetMemberByName(User.Identity?.Name);
+                if (officer == null)
                 {
-                    appToUpdate.ProcessedBy = officer;
-                    appToUpdate.Note = Note;
-                    _applicationService.ApproveApplication(appToUpdate);
+                    TempData["Error"] = "Officer not recognized.";
+                    return RedirectToPage();
                 }
-                // Approve the application
-                // Member Created via Applicationservice
+
+                appToUpdate.ProcessedBy = officer;
+                appToUpdate.Note = Note;
 
                 _applicationService.ApproveApplication(appToUpdate);
-
-                
+                TempData["Success"] = "Application approved and member created.";
             }
             else if (!Approved && appToUpdate.Approved)
             {
-                
-                appToUpdate.ProcessedBy = null;
-                // Un-approve if needed (optional logic)
                 appToUpdate.Approved = false;
+                appToUpdate.ProcessedBy = null;
+
+                // You might want to persist this change if applicable:
+                _applicationService.ApproveApplication(appToUpdate);
+
+                TempData["Success"] = "Application approval revoked.";
             }
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"An error occurred: {ex.Message}";
         }
 
         return RedirectToPage();

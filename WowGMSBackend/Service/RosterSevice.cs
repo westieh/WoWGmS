@@ -9,10 +9,24 @@ namespace WowGMSBackend.Service;
 public class RosterService : IRosterService
 {
     private readonly IRosterRepository _rosterRepo;
+    private readonly ICharacterService _characterService;
 
-    public RosterService(IRosterRepository rosterRepo)
+    private const int MaxParticipants = 20;
+    public List<Character> GetEligibleCharacters(BossRoster roster)
+    {
+        var existingIds = roster.Participants.Select(p => p.Id).ToHashSet();
+
+        var allCharacters = _characterService.GetCharacters();
+        var eligibleCharacters = allCharacters
+            .Where(c => !existingIds.Contains(c.Id))
+            .ToList();
+
+        return eligibleCharacters;
+    }
+    public RosterService(IRosterRepository rosterRepo, ICharacterService characterService)
     {
         _rosterRepo = rosterRepo;
+        _characterService = characterService;
     }
     public IEnumerable<BossRoster> GetAllRosters()
     {
@@ -29,18 +43,19 @@ public class RosterService : IRosterService
         roster.Participants.Add(character);
         _rosterRepo.Update(roster);
     }
-    public void RemoveCharacterFromRoster(int rosterId, string characterName, string realmName)
+    public Character? GetCharacterById(int characterId)
+    {
+        return _characterService.GetCharacter(characterId);
+    }
+    public void RemoveCharacterFromRoster(int rosterId, int participantId)
     {
         var roster = _rosterRepo.GetById(rosterId);
         if (roster == null) return;
 
-        var toRemove = roster.Participants.FirstOrDefault(c =>
-            c.CharacterName == characterName &&
-            c.RealmName.ToString() == realmName);
-
-        if (toRemove != null)
+        var participant = roster.Participants.FirstOrDefault(p => p.Id == participantId);
+        if (participant != null)
         {
-            roster.Participants.Remove(toRemove);
+            roster.Participants.Remove(participant);
             _rosterRepo.Update(roster);
         }
     }
@@ -123,6 +138,21 @@ public class RosterService : IRosterService
             .Where(r => r.InstanceTime >= DateTime.Now)
             .OrderBy(r => r.InstanceTime)
             .ToList();
+    }
+    public void UpdateRosterTime(int rosterId, DateTime newTime)
+    {
+        var roster = _rosterRepo.GetById(rosterId);
+        if (roster == null) return;
+        roster.InstanceTime = newTime;
+        _rosterRepo.Update(roster);
+    }
+
+    public bool IsRosterAtCapacity(int rosterId)
+    {
+        var roster = _rosterRepo.GetById(rosterId);
+        if (roster == null) return true; // block operation if roster doesn't exist
+
+        return roster.Participants.Count >= MaxParticipants;
     }
 
 }

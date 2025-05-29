@@ -17,9 +17,9 @@ namespace WowGMSBackend.Interfaces
         Character? DeleteCharacter(int id);
         void IncrementBossKill(int characterId, string bossSlug);
         List<Character> GetCharactersByMemberId(int memberId);
-        Dictionary<int, List<CharacterWithKill>> GetGroupedCharactersByBossSlug(string bossSlug);
+
         List<Character> GetAllCharactersWithMemberAndBossKills();
-        Character CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId);
+        void CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId);
 
         void AddBossKill(BossKill bossKill);
 

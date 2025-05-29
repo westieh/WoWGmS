@@ -8,16 +8,12 @@ namespace WoWGMS.Pages
 {
     public class EditRosterModel : PageModel
     {
-        private readonly IRosterRepository _rosterRepo;
-        private readonly ICharacterService _characterService;
-        private readonly IBossKillService _bossKillService;
+
         private readonly IRosterService _rosterService;
 
-        public EditRosterModel(IRosterRepository rosterRepo, ICharacterService characterService, IBossKillService bossKillService, IRosterService rosterService)
+        public EditRosterModel( IRosterService rosterService)
         {
-            _rosterRepo = rosterRepo;
-            _characterService = characterService;
-            _bossKillService = bossKillService;
+
             _rosterService = rosterService;
         }
 
@@ -25,43 +21,52 @@ namespace WoWGMS.Pages
         public BossRoster Roster { get; set; }
 
         public List<Character> EligibleCharacters { get; set; } = new();
-        public Dictionary<int, int> BossKillCounts { get; set; } = new();
 
         public IActionResult OnGet(int id)
         {
-            Roster = _rosterRepo.GetById(id);
+            Roster = _rosterService.GetRosterById(id);
             if (Roster == null) return NotFound();
 
-            LoadEligibleCharactersAndKills();
+            EligibleCharacters = _rosterService.GetEligibleCharacters(Roster);
             return Page();
         }
 
         public IActionResult OnPost(int id)
         {
-            var original = _rosterRepo.GetById(id);
-            if (original == null) return NotFound();
-
-            original.InstanceTime = Roster.InstanceTime;
-            _rosterRepo.Update(original);
-            return RedirectToPage("/Roster");
+            try
+            {
+                _rosterService.UpdateRosterTime(id, Roster.InstanceTime);
+                TempData["SuccessMessage"] = "Roster updated successfully.";
+                return RedirectToPage("/Roster");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to update the roster.");
+                return Page();
+            }
         }
 
         public IActionResult OnPostAdd(int id, int characterId)
         {
-            if (_rosterRepo.GetById(id)?.Participants.Count >= 20)
-                return RedirectToPage(new { id });
-
-            var character = _characterService.GetCharacter(characterId);
-            if (character == null)
-                return RedirectToPage(new { id });
-
             try
             {
+                var character = _rosterService.GetCharacterById(characterId);
+                if (character == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Character not found.");
+                    return RedirectToPage(new { id });
+                }
+
                 _rosterService.AddCharacterToRoster(id, character);
+                TempData["SuccessMessage"] = "Character added.";
             }
             catch (InvalidOperationException)
             {
-                // Character already in roster — ignore
+                // No need to show error; silently ignore duplicate
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Error adding character.");
             }
 
             return RedirectToPage(new { id });
@@ -69,33 +74,18 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPostRemove(int id, int participantId)
         {
-            var roster = _rosterRepo.GetById(id);
-            if (roster == null) return RedirectToPage(new { id });
-
-            var participant = roster.Participants.FirstOrDefault(p => p.Id == participantId);
-            if (participant != null)
+            try
             {
-                roster.Participants.Remove(participant);
-                _rosterRepo.Update(roster);
+                _rosterService.RemoveCharacterFromRoster(id, participantId);
+                TempData["SuccessMessage"] = "Participant removed.";
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to remove participant.");
             }
 
             return RedirectToPage(new { id });
         }
 
-        private void LoadEligibleCharactersAndKills()
-        {
-            var existingIds = Roster.Participants.Select(p => p.Id).ToHashSet();
-            EligibleCharacters = _characterService.GetCharacters()
-                .Where(c => !existingIds.Contains(c.Id))
-                .ToList();
-
-            foreach (var c in EligibleCharacters)
-            {
-                var kills = _bossKillService.GetBossKillsForCharacter(c.Id);
-                BossKillCounts[c.Id] = kills
-                    .Where(k => k.BossSlug == Roster.BossSlug)
-                    .Sum(k => k.KillCount);
-            }
-        }
     }
 }

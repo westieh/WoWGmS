@@ -74,18 +74,37 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPostSelectRaid()
         {
-            LoadBossOptions();
-            LoadPageData();
+            try
+            {
+                LoadBossOptions();
+                LoadPageData();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Failed to load raid data: {ex.Message}";
+            }
+
             return Page();
         }
-
         public IActionResult OnPostDeleteRoster(int id)
         {
-            var roster = _rosterService.GetRosterById(id);
-            if (roster != null)
+            try
             {
+                var roster = _rosterService.GetRosterById(id);
+                if (roster == null)
+                {
+                    TempData["Error"] = "Roster not found.";
+                    return RedirectToPage();
+                }
+
                 _rosterService.Delete(roster.RosterId);
+                TempData["Success"] = "Roster deleted successfully.";
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting roster: {ex.Message}";
+            }
+
             return RedirectToPage();
         }
 

@@ -29,7 +29,9 @@ namespace WowGMSBackend.Repository
 
         public Character? GetCharacter(int id)
         {
-            return _context.Characters.Include(c => c.Member).FirstOrDefault(c => c.Id == id);
+            return _context.Characters
+                .Include(c => c.BossKills)  // ✅ This is critical
+                .FirstOrDefault(c => c.Id == id);
         }
         public void AddBossKill(BossKill bossKill)
         {
@@ -76,6 +78,11 @@ namespace WowGMSBackend.Repository
             }
 
             return null;
+        }
+        public Character SaveChangesAndReturn(Character character)
+        {
+            _context.SaveChanges();
+            return character;
         }
 
         public Character? DeleteCharacter(int id)

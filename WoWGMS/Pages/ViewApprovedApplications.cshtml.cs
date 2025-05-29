@@ -22,10 +22,18 @@ namespace WoWGMS.Pages
 
         public void OnGet()
         {
-            Applications = _applicationService
-                .GetAllApplications()
-                .Where(a => a.Approved)
-                .ToList();
+            try
+            {
+                Applications = _applicationService
+                    .GetAllApplications()
+                    .Where(a => a.Approved)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Failed to load approved applications: {ex.Message}";
+                Applications = new List<Application>();
+            }
         }
     }
 }

@@ -27,8 +27,12 @@
     <ul>
         @foreach (var character in Model.EligibleCharacters)
         {
+            var killCount = character.BossKills
+            .Where(k => k.BossSlug == Model.Roster.BossSlug)
+            .Sum(k => k.KillCount);
+
             <li>
-                @character.CharacterName (@character.Role) - Bosskills: @Model.BossKillCounts[character.Id]
+                @character.CharacterName (@character.Role) - Bosskills: @killCount
                 <button type="submit" formaction="?handler=Add&characterId=@character.Id" class="btn btn-success btn-sm">Add</button>
             </li>
         }

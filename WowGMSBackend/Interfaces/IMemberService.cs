@@ -1,4 +1,5 @@
-﻿using WowGMSBackend.Model;
+﻿using System.Security.Claims;
+using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Interfaces
 {
@@ -12,6 +13,6 @@ namespace WowGMSBackend.Interfaces
         Member? ChangeMemberRank(int actingMemberId, int targetMemberId, Rank newRank);
         Member? ValidateLogin(string name, string password);
         Member? GetMemberByName(string name);
-
+        int? GetLoggedInMemberId(ClaimsPrincipal user);
     }
 }
