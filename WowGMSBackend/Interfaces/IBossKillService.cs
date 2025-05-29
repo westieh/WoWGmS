@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using WowGMSBackend.Model;
+using WowGMSBackend.ViewModels;
 
 namespace WowGMSBackend.Interfaces
 {
@@ -10,5 +11,7 @@ namespace WowGMSBackend.Interfaces
         BossKill? GetMostKilledBossForCharacter(int characterId);
         void IncrementBossKill(int characterId, string bossSlug);
         void TransferFromApplication(Application application, int characterId);
+        MemberPanelViewModel GetPanelData(int memberId, string selectedBossSlug);
+        Dictionary<int, int> GetBossKillCountsForRoster(BossRoster roster);
     }
 }

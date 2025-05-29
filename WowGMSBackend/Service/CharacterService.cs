@@ -7,18 +7,36 @@ using System.Threading.Tasks;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
+using WowGMSBackend.ViewModels;
 
 namespace WowGMSBackend.Service
 {
-    public class CharacterService : ICharacterService
+    public class CharacterService : ICharacterService, ICharacterQueryService
     {
         private readonly ICharacterRepo _repo;
-        private readonly IBossKillService _bossKillService;
+        private readonly IBossKillRepo _bossKillRepo;
 
-        public CharacterService(ICharacterRepo repo, IBossKillService bossKillService)
+        public CharacterService(ICharacterRepo repo)
         {
             _repo = repo;
-            _bossKillService = bossKillService;
+
+        }
+        public Dictionary<int, List<CharacterWithKill>> GetGroupedCharactersByBossSlug(string bossSlug)
+        {
+            var allChars = _repo.GetCharacters(); // or any method that loads boss kills
+            var withKills = allChars.Select(c =>
+            {
+                var kills = c.BossKills.Where(k => k.BossSlug == bossSlug).ToList();
+                return new CharacterWithKill
+                {
+                    Character = c,
+                    KillCount = kills.Sum(k => k.KillCount)
+                };
+            });
+
+            return withKills
+                .GroupBy(c => c.Character.MemberId)
+                .ToDictionary(g => g.Key, g => g.ToList());
         }
         public Character CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId)
         {
@@ -37,7 +55,11 @@ namespace WowGMSBackend.Service
                     CharacterId = savedCharacter.Id
                 }).ToList();
 
-            _bossKillService.SetBossKillsForCharacter(savedCharacter.Id, bossKills);
+            _bossKillRepo.DeleteBossKillsForCharacter(savedCharacter.Id);
+            foreach (var kill in bossKills)
+            {
+                _bossKillRepo.AddBossKill(kill);
+            }
             return savedCharacter;
         }
 

@@ -22,10 +22,7 @@ namespace WoWGMS.Pages
 
         public void OnGet()
         {
-            var allRosters = _rosterService.GetAllRosters()
-                .Where(r => r.InstanceTime >= DateTime.Now)
-                .OrderBy(r => r.InstanceTime)
-                .ToList();
+            var allRosters = _rosterService.GetUpcomingRosters();
 
             if (RosterIndex < 0 || RosterIndex >= allRosters.Count)
                 RosterIndex = 0;

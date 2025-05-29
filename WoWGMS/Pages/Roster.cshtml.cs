@@ -57,14 +57,6 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPostCreateRoster()
         {
-            if (string.IsNullOrEmpty(SelectedRaidSlug) || string.IsNullOrEmpty(SelectedBossSlug))
-            {
-                ModelState.AddModelError(string.Empty, "Missing raid or boss selection.");
-                LoadBossOptions();
-                LoadPageData();
-                return Page();
-            }
-
             try
             {
                 _rosterService.CreateRoster(NewRoster, SelectedRaidSlug, SelectedBossSlug);
@@ -79,6 +71,7 @@ namespace WoWGMS.Pages
 
             return RedirectToPage();
         }
+
         public IActionResult OnPostSelectRaid()
         {
             LoadBossOptions();

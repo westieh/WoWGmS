@@ -45,29 +45,26 @@ namespace WoWGMS.Pages
 
         public IActionResult OnGet()
         {
-
             if (string.IsNullOrEmpty(SelectedBossSlug))
             {
                 // Force navigation to the correct URL on initial page load
                 return RedirectToPage(new { SelectedBossSlug = "vexie-and-the-geargrinders" });
             }
+
             var memberId = LoggedInMemberId;
             if (memberId == null)
                 return NotFound("MemberId claim missing.");
 
-            AllBosses = (RaidRegistry.Raids ?? new List<Raid>())
-                .Where(r => r?.Bosses != null)
-                .SelectMany(r => r.Bosses)
-                .Where(b => !string.IsNullOrEmpty(b.Slug) && !string.IsNullOrEmpty(b.DisplayName))
-                .ToList();
+            var panelData = _bossKillService.GetPanelData(memberId.Value, SelectedBossSlug);
+
+            AllBosses = panelData.AllBosses;
+            CharactersForMember = panelData.Characters;
 
             if (string.IsNullOrEmpty(SelectedBossSlug) &&
                 AllBosses.Any(b => b.Slug == "vexie-and-the-geargrinders"))
             {
                 SelectedBossSlug = "vexie-and-the-geargrinders";
             }
-
-            CharactersForMember = _characterService.GetCharactersByMemberId(memberId.Value);
 
             return Page();
         }

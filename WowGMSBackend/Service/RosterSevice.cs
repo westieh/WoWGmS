@@ -94,6 +94,9 @@ public class RosterService : IRosterService
     }
     public void CreateRoster(BossRoster newRoster, string raidSlug, string bossSlug)
     {
+        if (string.IsNullOrEmpty(raidSlug) || string.IsNullOrEmpty(bossSlug))
+            throw new Exception("Missing raid or boss selection.");
+
         var boss = RaidRegistry.GetBossesForRaid(raidSlug)
                                .FirstOrDefault(b => b.Slug == bossSlug);
         if (boss == null)
@@ -109,4 +112,17 @@ public class RosterService : IRosterService
 
         _rosterRepo.Add(newRoster);
     }
+    public List<BossRoster> GetRostersWithBosses()
+    {
+        return _rosterRepo.GetAll().Where(r => r.BossDisplayName != null).ToList();
+    }
+
+    public List<BossRoster> GetUpcomingRosters()
+    {
+        return _rosterRepo.GetAll()
+            .Where(r => r.InstanceTime >= DateTime.Now)
+            .OrderBy(r => r.InstanceTime)
+            .ToList();
+    }
+
 }

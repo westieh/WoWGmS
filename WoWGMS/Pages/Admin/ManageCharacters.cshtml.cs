@@ -6,6 +6,7 @@ using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 using static WoWGMS.Pages.MemberPanelModel;
 using WowGMSBackend.Registry;
+using WowGMSBackend.ViewModels;
 
 namespace WoWGMS.Pages.Admin
 {
@@ -43,22 +44,7 @@ namespace WoWGMS.Pages.Admin
             if (string.IsNullOrEmpty(SelectedBossSlug))
                 SelectedBossSlug = "vexie-and-the-geargrinders";
 
-            var allChars = _characterService.GetAllCharactersWithMemberAndBossKills();
-
-            var withKills = allChars.Select(c =>
-            {
-                var kills = c.BossKills.Where(k => k.BossSlug == SelectedBossSlug).ToList();
-                return new CharacterWithKill
-                {
-                    Character = c,
-
-                    KillCount = kills.Sum(k => k.KillCount)
-                };
-            });
-
-            GroupedCharacters = withKills
-                .GroupBy(c => c.Character.MemberId)
-                .ToDictionary(g => g.Key, g => g.ToList());
+            GroupedCharacters = _characterService.GetGroupedCharactersByBossSlug(SelectedBossSlug);
         }
 
         public IActionResult OnPostDeleteCharacter(int id)
@@ -67,11 +53,7 @@ namespace WoWGMS.Pages.Admin
             return RedirectToPage(new { SelectedBossSlug });
         }
 
-        public class CharacterWithKill
-        {
-            public Character Character { get; set; }
-            public int KillCount { get; set; }
-        }
+
         public IActionResult OnPostUpdateKills(string selectedBossSlug)
         {
             if (string.IsNullOrEmpty(selectedBossSlug))

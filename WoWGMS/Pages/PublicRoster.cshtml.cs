@@ -25,13 +25,7 @@ namespace WoWGMS.Pages
             Roster = _rosterRepo.GetById(id);
             if (Roster == null) return NotFound();
 
-            foreach (var character in Roster.Participants)
-            {
-                var kills = _bossKillService.GetBossKillsForCharacter(character.Id);
-                BossKillCounts[character.Id] = kills
-                    .Where(k => k.BossSlug == Roster.BossSlug)
-                    .Sum(k => k.KillCount);
-            }
+            BossKillCounts = _bossKillService.GetBossKillCountsForRoster(Roster);
 
             return Page();
         }

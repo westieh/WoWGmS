@@ -10,12 +10,14 @@ namespace WoWGMS.Tests.Services
     public class CharacterServiceTests
     {
         private readonly Mock<ICharacterRepo> _mockRepo;
+        private readonly Mock<IBossKillService> _mockBossKillService;
         private readonly CharacterService _service;
 
         public CharacterServiceTests()
         {
             _mockRepo = new Mock<ICharacterRepo>();
-            _service = new CharacterService(_mockRepo.Object);
+            _mockBossKillService = new Mock<IBossKillService>();
+            _service = new CharacterService(_mockRepo.Object, _mockBossKillService.Object);
         }
 
         [Fact]

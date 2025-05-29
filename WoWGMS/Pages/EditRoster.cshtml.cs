@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
+using WowGMSBackend.Service;
 
 namespace WoWGMS.Pages
 {
@@ -10,12 +11,14 @@ namespace WoWGMS.Pages
         private readonly IRosterRepository _rosterRepo;
         private readonly ICharacterService _characterService;
         private readonly IBossKillService _bossKillService;
+        private readonly IRosterService _rosterService;
 
-        public EditRosterModel(IRosterRepository rosterRepo, ICharacterService characterService, IBossKillService bossKillService)
+        public EditRosterModel(IRosterRepository rosterRepo, ICharacterService characterService, IBossKillService bossKillService, IRosterService rosterService)
         {
             _rosterRepo = rosterRepo;
             _characterService = characterService;
             _bossKillService = bossKillService;
+            _rosterService = rosterService;
         }
 
         [BindProperty]
@@ -45,16 +48,20 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPostAdd(int id, int characterId)
         {
-            var roster = _rosterRepo.GetById(id);
-            if (roster == null || roster.Participants.Count >= 20) return RedirectToPage(new { id });
+            if (_rosterRepo.GetById(id)?.Participants.Count >= 20)
+                return RedirectToPage(new { id });
 
             var character = _characterService.GetCharacter(characterId);
-            if (character == null) return RedirectToPage(new { id });
+            if (character == null)
+                return RedirectToPage(new { id });
 
-            if (!roster.Participants.Any(c => c.Id == characterId))
+            try
             {
-                roster.Participants.Add(character);
-                _rosterRepo.Update(roster);
+                _rosterService.AddCharacterToRoster(id, character);
+            }
+            catch (InvalidOperationException)
+            {
+                // Character already in roster — ignore
             }
 
             return RedirectToPage(new { id });
