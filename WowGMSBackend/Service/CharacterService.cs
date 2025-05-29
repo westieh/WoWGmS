@@ -13,10 +13,32 @@ namespace WowGMSBackend.Service
     public class CharacterService : ICharacterService
     {
         private readonly ICharacterRepo _repo;
+        private readonly IBossKillService _bossKillService;
 
-        public CharacterService(ICharacterRepo repo)
+        public CharacterService(ICharacterRepo repo, IBossKillService bossKillService)
         {
             _repo = repo;
+            _bossKillService = bossKillService;
+        }
+        public Character CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId)
+        {
+            character.MemberId = memberId;
+            var savedCharacter = AddCharacter(character);
+
+            if (savedCharacter == null)
+                throw new Exception("Character could not be created.");
+
+            var bossKills = killInputs
+                .Where(kvp => kvp.Value > 0)
+                .Select(kvp => new BossKill
+                {
+                    BossSlug = kvp.Key,
+                    KillCount = kvp.Value,
+                    CharacterId = savedCharacter.Id
+                }).ToList();
+
+            _bossKillService.SetBossKillsForCharacter(savedCharacter.Id, bossKills);
+            return savedCharacter;
         }
 
         public Character AddCharacter(Character character)

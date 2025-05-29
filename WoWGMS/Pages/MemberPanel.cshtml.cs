@@ -32,7 +32,7 @@ namespace WoWGMS.Pages
 
         public List<Boss> AllBosses { get; set; } = new();
 
-        public List<CharacterWithKill> CharactersForMember { get; set; } = new();
+        public List<Character> CharactersForMember { get; set; } = new();
 
         private int? LoggedInMemberId
         {
@@ -45,14 +45,20 @@ namespace WoWGMS.Pages
 
         public IActionResult OnGet()
         {
-            Character ??= new Character();
+
+            if (string.IsNullOrEmpty(SelectedBossSlug))
+            {
+                // Force navigation to the correct URL on initial page load
+                return RedirectToPage(new { SelectedBossSlug = "vexie-and-the-geargrinders" });
+            }
             var memberId = LoggedInMemberId;
-            if (memberId == null) return NotFound("MemberId claim missing.");
+            if (memberId == null)
+                return NotFound("MemberId claim missing.");
 
             AllBosses = (RaidRegistry.Raids ?? new List<Raid>())
                 .Where(r => r?.Bosses != null)
                 .SelectMany(r => r.Bosses)
-                .Where(b => b != null && !string.IsNullOrEmpty(b.Slug) && !string.IsNullOrEmpty(b.DisplayName))
+                .Where(b => !string.IsNullOrEmpty(b.Slug) && !string.IsNullOrEmpty(b.DisplayName))
                 .ToList();
 
             if (string.IsNullOrEmpty(SelectedBossSlug) &&
@@ -61,29 +67,7 @@ namespace WoWGMS.Pages
                 SelectedBossSlug = "vexie-and-the-geargrinders";
             }
 
-            CharactersForMember = _characterService
-                .GetCharactersByMemberId(memberId.Value)
-                .Select(c =>
-                {
-                    var kills = _bossKillService.GetBossKillsForCharacter(c.Id);
-
-                    int killCount = !string.IsNullOrEmpty(SelectedBossSlug)
-                        ? kills.Where(k => k.BossSlug == SelectedBossSlug).Sum(k => k.KillCount)
-                        : kills.GroupBy(k => k.BossSlug).Select(g => g.Sum(x => x.KillCount)).DefaultIfEmpty(0).Max();
-
-                    var top = kills
-                        .GroupBy(k => k.BossSlug)
-                        .Select(g => new { Count = g.Sum(x => x.KillCount), Example = g.First() })
-                        .OrderByDescending(x => x.Count)
-                        .FirstOrDefault();
-
-                    return new CharacterWithKill
-                    {
-                        Character = c,
-                        HighestKill = top?.Example,
-                        KillCount = killCount
-                    };
-                }).ToList();
+            CharactersForMember = _characterService.GetCharactersByMemberId(memberId.Value);
 
             return Page();
         }
@@ -104,45 +88,22 @@ namespace WoWGMS.Pages
             }
 
             if (!ModelState.IsValid) return Page();
-
-            Character.MemberId = memberId.Value;
-            _characterService.AddCharacter(Character);
-
-            var savedCharacter = _characterService
-                .GetCharactersByMemberId(memberId.Value)
-                .OrderByDescending(c => c.Id)
-                .FirstOrDefault(c =>
-                    c.CharacterName == Character.CharacterName &&
-                    c.RealmName == Character.RealmName &&
-                    c.Class == Character.Class &&
-                    c.Role == Character.Role);
-
-            if (savedCharacter == null)
+            try
             {
-                ModelState.AddModelError(string.Empty, "Character could not be retrieved after creation.");
+                _characterService.CreateCharacterWithKills(Character, BossKillInputs, memberId.Value);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
 
-            var bossKills = BossKillInputs
-                .Where(kvp => kvp.Value > 0)
-                .Select(kvp => new BossKill
-                {
-                    BossSlug = kvp.Key,
-                    KillCount = kvp.Value
-                }).ToList();
-
-            _bossKillService.SetBossKillsForCharacter(savedCharacter.Id, bossKills);
 
             TempData["SuccessMessage"] = "Character created successfully!";
-            return RedirectToPage();
+            return RedirectToPage(new { SelectedBossSlug = this.SelectedBossSlug });
         }
 
 
-        public class CharacterWithKill
-        {
-            public Character Character { get; set; }
-            public BossKill? HighestKill { get; set; }
-            public int KillCount { get; set; }
-        }
+
     }
 }

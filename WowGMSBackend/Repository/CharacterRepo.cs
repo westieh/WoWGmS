@@ -22,15 +22,7 @@ namespace WowGMSBackend.Repository
         public Character AddCharacter(Character character)
         {
             _context.Characters.Add(character);
-            if (character.BossKills != null && character.BossKills.Any())
-            {
-                foreach (var kill in character.BossKills)
-                {
-                    kill.Character = character; // ensure FK is correct
-                }
 
-                _context.BossKills.AddRange(character.BossKills);
-            }
             _context.SaveChanges();
             return character;
         }
@@ -100,7 +92,10 @@ namespace WowGMSBackend.Repository
 
         public List<Character> GetCharactersByMemberId(int memberId)
         {
-            return _context.Characters.Where(c => c.MemberId == memberId).ToList();
+            return _context.Characters
+                .Include(c => c.BossKills) // ✅ ensures kill data is available
+                .Where(c => c.MemberId == memberId)
+                .ToList();
         }
 
 

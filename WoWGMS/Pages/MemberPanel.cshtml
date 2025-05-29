@@ -93,14 +93,23 @@
         <tbody>
             @foreach (var entry in Model.CharactersForMember)
             {
+                var killCount = Model.AllBosses != null && !string.IsNullOrEmpty(Model.SelectedBossSlug)
+                ? Model.BossKillInputs.TryGetValue(Model.SelectedBossSlug, out var count) ? count : 0
+                : 0;
+
                 <tr>
-                    <td>@entry.Character.CharacterName</td>
-                    <td>@entry.Character.RealmName</td>
-                    <td>@entry.Character.Class</td>
-                    <td>@entry.Character.Role</td>
-                    <td>@entry.KillCount</td>
+                    <td>@entry.CharacterName</td>
+                    <td>@entry.RealmName</td>
+                    <td>@entry.Class</td>
+                    <td>@entry.Role</td>
+                    <td>
+                        @(entry.BossKills?
+                            .Where(k => k.BossSlug == Model.SelectedBossSlug)
+                            .Sum(k => k.KillCount) ?? 0)
+                    </td>
                 </tr>
             }
+
         </tbody>
     </table>
 

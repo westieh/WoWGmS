@@ -18,6 +18,7 @@ namespace WowGMSBackend.Interfaces
         List<Character> GetCharactersByMemberId(int memberId);
 
         List<Character> GetAllCharactersWithMemberAndBossKills();
+        Character CreateCharacterWithKills(Character character, Dictionary<string, int> killInputs, int memberId);
 
         void AddBossKill(BossKill bossKill);
 

@@ -2,6 +2,7 @@
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
+using WowGMSBackend.Registry;
 using WowGMSBackend.Repository;
 
 namespace WowGMSBackend.Service;
@@ -86,5 +87,26 @@ public class RosterService : IRosterService
     public void Delete(int id)
     {
         _rosterRepo.Delete(id);
+    }
+    public BossRoster? GetRosterById(int rosterId)
+    {
+        return _rosterRepo.GetById(rosterId);
+    }
+    public void CreateRoster(BossRoster newRoster, string raidSlug, string bossSlug)
+    {
+        var boss = RaidRegistry.GetBossesForRaid(raidSlug)
+                               .FirstOrDefault(b => b.Slug == bossSlug);
+        if (boss == null)
+            throw new Exception("Invalid boss selected");
+
+        newRoster.RaidSlug = raidSlug;
+        newRoster.BossSlug = boss.Slug;
+        newRoster.BossDisplayName = boss.DisplayName;
+        newRoster.CreationDate = DateTime.Now;
+
+        if (newRoster.InstanceTime == default)
+            newRoster.InstanceTime = DateTime.Now.AddHours(1);
+
+        _rosterRepo.Add(newRoster);
     }
 }

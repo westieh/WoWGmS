@@ -5,17 +5,18 @@ using System.Linq;
 using WowGMSBackend.Model;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Registry;
+using WowGMSBackend.Service;
 
 namespace WoWGMS.Pages
 {
     public class RosterModel : PageModel
     {
-        private readonly IRosterRepository _rosterRepo;
+        private readonly IRosterService _rosterService;
         private readonly ICharacterService _characterService;
 
-        public RosterModel(IRosterRepository rosterRepo, ICharacterService characterService)
+        public RosterModel(IRosterService rosterService, ICharacterService characterService)
         {
-            _rosterRepo = rosterRepo;
+            _rosterService = rosterService;
             _characterService = characterService;
         }
 
@@ -49,7 +50,7 @@ namespace WoWGMS.Pages
             {
                 NewRoster.InstanceTime = DateTime.Now;
             }
-            AllRosters = _rosterRepo.GetAll().ToList();
+            AllRosters = _rosterService.GetAllRosters().ToList();
             LoadBossOptions();
             LoadPageData();
         }
@@ -64,30 +65,20 @@ namespace WoWGMS.Pages
                 return Page();
             }
 
-            var boss = RaidRegistry.GetBossesForRaid(SelectedRaidSlug)
-                                   .FirstOrDefault(b => b.Slug == SelectedBossSlug);
-
-            if (boss == null)
+            try
             {
-                ModelState.AddModelError(string.Empty, "Invalid boss selected.");
+                _rosterService.CreateRoster(NewRoster, SelectedRaidSlug, SelectedBossSlug);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 LoadBossOptions();
                 LoadPageData();
                 return Page();
             }
 
-            NewRoster.RaidSlug = SelectedRaidSlug;
-            NewRoster.BossSlug = boss.Slug;
-            NewRoster.BossDisplayName = boss.DisplayName;
-            NewRoster.CreationDate = DateTime.Now;
-
-            if (NewRoster.InstanceTime == default)
-                NewRoster.InstanceTime = DateTime.Now.AddHours(1);
-
-            _rosterRepo.Add(NewRoster);
-
             return RedirectToPage();
         }
-
         public IActionResult OnPostSelectRaid()
         {
             LoadBossOptions();
@@ -97,19 +88,19 @@ namespace WoWGMS.Pages
 
         public IActionResult OnPostDeleteRoster(int id)
         {
-            var roster = _rosterRepo.GetById(id);
+            var roster = _rosterService.GetRosterById(id);
             if (roster != null)
             {
-                _rosterRepo.Delete(roster.RosterId);
+                _rosterService.Delete(roster.RosterId);
             }
             return RedirectToPage();
         }
 
         private void LoadPageData()
         {
-            AllRosters = _rosterRepo.GetAll().ToList();
+            AllRosters = _rosterService.GetAllRosters().ToList();
             AllCharacters = _characterService.GetCharacters();
-            CreatedRoster = RosterId.HasValue ? _rosterRepo.GetById(RosterId.Value) : null;
+            CreatedRoster = RosterId.HasValue ? _rosterService.GetRosterById(RosterId.Value) : null;
         }
 
         private void LoadBossOptions()

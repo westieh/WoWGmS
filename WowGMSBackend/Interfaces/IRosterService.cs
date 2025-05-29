@@ -13,6 +13,8 @@ namespace WowGMSBackend.Interfaces
         BossRoster? Update(BossRoster updated);
         IEnumerable<BossRoster> GetAllRosters();
         void Delete(int id);
+        void CreateRoster(BossRoster roster, string raidSlug, string bossSlug);
+        BossRoster? GetRosterById(int rosterId);
 
     }
 }
