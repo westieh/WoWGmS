@@ -1,44 +1,76 @@
 ﻿@page
-
+@using WowGMSBackend.Model;
 @model WoWGMS.Pages.EventModel
 @{
-    ViewData["Title"] = "Raid Events";
+    ViewData["Title"] = "Upcoming Raids";
 }
+<div class="container mt-5" style="max-width: 900px;">
+<h1 class="text-center text-white mt-4 mb-5">Upcoming Raids</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <form method="get" asp-page="./Event">
+        <input type="hidden" name="RosterIndex" value="@(Model.RosterIndex - 1)" />
+        <button type="submit" class="btn btn-outline-light">&larr; Previous</button>
+    </form>
 
-<h1 class="text-center mb-4">Raid Rosters</h1>
-
-@if (!Model.BossRosters.Any())
-{
-    <div class="alert alert-info text-center">No rosters available.</div>
-}
-else
-{
-    @foreach (var roster in Model.BossRosters)
+    <form method="get" asp-page="./Event">
+        <input type="hidden" name="RosterIndex" value="@(Model.RosterIndex + 1)" />
+        <button type="submit" class="btn btn-outline-light">Next &rarr;</button>
+    </form>
+</div>
+<div class="container">
+    @foreach (var roster in Model.UpcomingRostersGrouped)
     {
-        <div></div>
-        <div class="card bg-dark text-white mb-3">
-            <div class="card-header">
-                <strong>Raid:</strong> @roster.RaidSlug<br />
-                <strong>Instance Time:</strong> @roster.InstanceTime.ToString("f")
+        <div class="bg-dark text-white rounded p-4 mb-5">
+            
+            <p class="text-center">
+                Raid week: @roster.Key.InstanceTime.ToString("dddd, dd MMMM yyyy")
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="border rounded p-2 mb-3">
+                        <h5 class="text-center">Tank</h5>
+                        <ul class="list-unstyled text-center">
+                            @foreach (var c in roster.Value.Where(x => x.Role == Role.Tank))
+                            {
+                                <li>@c.CharacterName</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="border rounded p-2">
+                        <h5 class="text-center">Healer</h5>
+                        <ul class="list-unstyled text-center">
+                            @foreach (var c in roster.Value.Where(x => x.Role == Role.Healer))
+                            {
+                                <li>@c.CharacterName</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border rounded p-2">
+                        <h5 class="text-center">Melee DPS</h5>
+                        <ul class="list-unstyled text-center">
+                            @foreach (var c in roster.Value.Where(x => x.Role == Role.MeleeDPS))
+                            {
+                                <li>@c.CharacterName</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="border rounded p-2">
+                        <h5 class="text-center">Ranged DPS</h5>
+                        <ul class="list-unstyled text-center">
+                            @foreach (var c in roster.Value.Where(x => x.Role == Role.RangedDPS))
+                            {
+                                <li>@c.CharacterName</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                @if (roster.Participants == null || !roster.Participants.Any())
-                {
-                    <p>No participants.</p>
-                }
-                else
-                {
-                    <ul class="list-group list-group-flush">
-                        @foreach (var p in roster.Participants)
-                        {
-                            <li class="list-group-item bg-dark text-white">
-                                @p.CharacterName (@p.RealmName) – @p.Class / @p.Role
-                            </li>
-                        }
-                    </ul>
-                }
-                <a asp-page="/PublicRoster" asp-route-id="@roster.RosterId" class="btn btn-info mt-2">View</a>
-            </div>
-       </div>
+        </div>
     }
-}
+    </div>
+</div>

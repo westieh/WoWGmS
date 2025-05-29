@@ -1,65 +1,48 @@
 ﻿@page
-@model IndexModel
+@model WoWGMS.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Welcome";
 }
 
-<div class="text-center">
-    <img src="~/img/TheShadowstalkersBanner.png" alt="The Shadowstalkers Banner" class="img-fluid shadow banner-img" />
-</div>
+<div class="container py-5">
+    <h1 class="display-3 text-center text-light mb-5">Welcome to The Shadowstalkers</h1>
 
-<div class="text-white mt-4 p-4 bg-dark rounded-3 shadow">
-    <h1 class="display-5 fw-bold text-center">Welcome to The Shadowstalkers</h1>
-    <p class="lead text-center">Guild Management System</p>
-</div>
-
-<div class="row mt-5">
-    <div class="col-md-4">
-        <a class="text-decoration-none" asp-page="/Event">
-            <div class="card bg-secondary text-white shadow-lg">
-                <div class="card-body text-center">
-                    <h4 class="card-title">Upcoming Rosters</h4>
-                    <p class="card-text">View and organize upcoming raid rosters.</p>
+    <div class="row g-4 justify-content-center">
+        <!-- Apply Card -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <a asp-page="/Apply" class="text-decoration-none w-100">
+                <div class="card bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden" style="height: 400px;">
+                    <div class="d-flex align-items-center justify-content-center h-100" style="background-color: red;">
+                        <!-- Placeholder background: replace with image -->
+                        <h2 class="text-center bg-dark bg-opacity-75 px-4 py-2 rounded">Apply</h2>
+                    </div>
                 </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-4">
-        <a class="text-decoration-none" asp-page="/Shared/GetAllMembers">
-            <div class="card bg-secondary text-white shadow-lg">
-                <div class="card-body text-center">
-                    <h4 class="card-title">Members</h4>
-                    <p class="card-text">Browse guild members by rank.</p>
+            </a>
+        </div>
+
+        <!-- Upcoming Raids Card -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <a asp-page="/Event" class="text-decoration-none w-100">
+                <div class="card bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden" style="height: 400px;">
+                    <div class="d-flex align-items-center justify-content-center h-100" style="background-color: orange;">
+                        <!-- Placeholder background: replace with image -->
+                        <h2 class="text-center bg-dark bg-opacity-75 px-4 py-2 rounded">Upcoming Raids</h2>
+                    </div>
                 </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-4">
-        <a class="text-decoration-none" asp-page="/Apply">
-            <div class="card bg-secondary text-white shadow-lg">
-                <div class="card-body text-center">
-                    <h4 class="card-title">Applications</h4>
-                    <p class="card-text">Review and approve new applications.</p>
+            </a>
+        </div>
+
+        <!-- About Us Card -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <a asp-page="/AboutUs" class="text-decoration-none w-100">
+                <div class="card bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden" style="height: 400px;">
+                    <div class="d-flex align-items-center justify-content-center h-100" style="background-color: pink;">
+                        <!-- Placeholder background: replace with image -->
+                        <h2 class="text-center bg-dark bg-opacity-75 px-4 py-2 rounded">About Us</h2>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
+    </div>
     </div>
 </div>
-
-<style>
-    body {
-        background-color: black;
-    }
-
-    .banner-img {
-        max-height: 300px;
-        object-fit: contain;
-        margin-top: 20px;
-        border-radius: 10px;
-    }
-
-    .card:hover {
-        background-color: black;
-        transition: background-color 0.3s;
-    }
-</style>

@@ -1,24 +1,40 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WoWGMS.Pages
 {
     public class EventModel : PageModel
     {
-        private readonly IRosterRepository _rosterRepo;
+        private readonly IRosterService _rosterService;
 
-        public EventModel(IRosterRepository rosterRepo)
+        public EventModel(IRosterService rosterService)
         {
-            _rosterRepo = rosterRepo;
+            _rosterService = rosterService;
         }
 
-        public List<Character> MyCharacters { get; set; } = new();
-        public List<BossRoster> BossRosters { get; set; } = new();
+        public Dictionary<BossRoster, List<Character>> UpcomingRostersGrouped { get; set; } = new();
+        [BindProperty(SupportsGet = true)]
+        public int RosterIndex { get; set; } = 0;
 
         public void OnGet()
         {
-            BossRosters = _rosterRepo.GetAll().ToList();
+            var allRosters = _rosterService.GetAllRosters()
+                .Where(r => r.InstanceTime >= DateTime.Now)
+                .OrderBy(r => r.InstanceTime)
+                .ToList();
+
+            if (RosterIndex < 0 || RosterIndex >= allRosters.Count)
+                RosterIndex = 0;
+
+            var selectedRoster = allRosters.ElementAtOrDefault(RosterIndex);
+            if (selectedRoster != null)
+                UpcomingRostersGrouped = new Dictionary<BossRoster, List<Character>> { { selectedRoster, selectedRoster.Participants } };
+            else
+                UpcomingRostersGrouped = new Dictionary<BossRoster, List<Character>>();
         }
     }
 }
