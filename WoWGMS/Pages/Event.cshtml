@@ -15,6 +15,7 @@ else
 {
     @foreach (var roster in Model.BossRosters)
     {
+        <div></div>
         <div class="card bg-dark text-white mb-3">
             <div class="card-header">
                 <strong>Raid:</strong> @roster.RaidSlug<br />
@@ -38,6 +39,6 @@ else
                 }
                 <a asp-page="/PublicRoster" asp-route-id="@roster.RosterId" class="btn btn-info mt-2">View</a>
             </div>
-       
+       </div>
     }
 }
