@@ -6,7 +6,7 @@ using System.Linq;
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
-
+namespace WoWGMS.Tests.Repositories;
 public class CharacterRepositoryTests
 {
     private WowDbContext GetInMemoryContext()
@@ -146,5 +146,63 @@ public class CharacterRepositoryTests
         var all = repo.GetAllCharacters();
 
         Assert.Equal(2, all.Count);
+    }
+
+    [Fact]
+    public void AddBossKill_ShouldInsertKill()
+    {
+        using var context = GetInMemoryContext();
+        var repo = new CharacterRepo(context);
+
+        var kill = new BossKill { BossSlug = "boss-slug", CharacterId = 1, KillCount = 3 };
+        repo.AddBossKill(kill);
+
+        Assert.Single(context.BossKills);
+        Assert.Equal("boss-slug", context.BossKills.First().BossSlug);
+    }
+
+    [Fact]
+    public void GetCharacters_ShouldIncludeRelatedData()
+    {
+        using var context = GetInMemoryContext();
+        var member = CreateTestMember();
+        var character = CreateTestCharacter(1);
+        character.Member = member;
+        character.BossKills.Add(new BossKill { BossSlug = "test-boss", KillCount = 1 });
+        context.Characters.Add(character);
+        context.SaveChanges();
+
+        var repo = new CharacterRepo(context);
+        var result = repo.GetCharacters();
+
+        Assert.Single(result);
+        Assert.Equal("test-boss", result[0].BossKills.First().BossSlug);
+        Assert.Equal("TestUser", result[0].Member.Name);
+    }
+
+
+
+    [Fact]
+    public void GetCharactersByRoster_ShouldReturnCorrectlyJoinedCharacters()
+    {
+        using var context = GetInMemoryContext();
+        var character = new Character { CharacterName = "RosterChar" };
+
+        var roster = new BossRoster
+        {
+            BossDisplayName = "Test Boss",
+            BossSlug = "test-boss",
+            RaidSlug = "test-raid",
+            Participants = new List<Character> { character }
+        };
+
+        context.Characters.Add(character);
+        context.BossRosters.Add(roster);
+        context.SaveChanges();
+
+        var repo = new CharacterRepo(context);
+        var result = repo.GetCharactersByRoster(roster.RosterId);
+        Assert.Single(result);
+        Assert.Equal("RosterChar", result[0].CharacterName);
     }
 }

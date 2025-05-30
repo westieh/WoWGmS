@@ -3,19 +3,19 @@ using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 using WowGMSBackend.Registry;
 using WowGMSBackend.Repository;
-using WowGMSBackend.ViewModels;
+
 namespace WowGMSBackend.Service
 {
     public class BossKillService : IBossKillService
     {
         private readonly IBossKillRepo _bossKillRepo;
-        private readonly ICharacterRepo _characterRepo;
+        private readonly ICharacterService _characterService;
 
 
-        public BossKillService(IBossKillRepo bossKillRepo, ICharacterRepo characterRepo)
+        public BossKillService(IBossKillRepo bossKillRepo, ICharacterService characterService)
         {
             _bossKillRepo = bossKillRepo;
-            _characterRepo = characterRepo;
+            _characterService = characterService;
 
         }
 
@@ -52,7 +52,7 @@ namespace WowGMSBackend.Service
         }
         public void SetOrUpdateSingleBossKill(int characterId, string bossSlug, int newKillCount)
         {
-            var character = _characterRepo.GetCharacter(characterId);
+            var character = _characterService.GetCharacter(characterId);
             if (character == null) return;
 
             character.BossKills ??= new List<BossKill>();
@@ -73,7 +73,7 @@ namespace WowGMSBackend.Service
                 });
             }
 
-            _characterRepo.SaveChangesAndReturn(character); // reuses the safe save method
+            _characterService.UpdateCharacter(characterId, character); 
         }
 
         public void IncrementBossKill(int characterId, string bossSlug)

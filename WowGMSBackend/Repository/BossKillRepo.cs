@@ -15,6 +15,7 @@ namespace WowGMSBackend.Repository
             _context = context;
         }
 
+
         public void AddBossKill(BossKill bossKill)
         {
             _context.BossKills.Add(bossKill);

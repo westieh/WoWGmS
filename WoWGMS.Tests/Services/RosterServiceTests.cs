@@ -13,14 +13,14 @@ namespace WoWGMS.Tests.Services
     public class RosterServiceTests
     {
         private readonly Mock<IRosterRepository> _mockRepo;
-        private readonly RosterService _service;
         private readonly Mock<ICharacterService> _characterService;
+        private readonly RosterService _service;
 
         public RosterServiceTests()
         {
             _mockRepo = new Mock<IRosterRepository>();
-            _service = new RosterService(_mockRepo.Object);
             _characterService = new Mock<ICharacterService>();
+            _service = new RosterService(_mockRepo.Object, _characterService.Object);
         }
 
         [Fact]
@@ -49,27 +49,29 @@ namespace WoWGMS.Tests.Services
 
             _mockRepo.Setup(r => r.GetById(2)).Returns(roster);
 
-            _service.RemoveCharacterFromRoster(2, "CharB", "TwistingNether");
+            _service.RemoveCharacterFromRoster(2, charToRemove.Id);
 
             Assert.Empty(roster.Participants);
             _mockRepo.Verify(r => r.Update(roster), Times.Once);
         }
+
         [Fact]
         public void CheckRosterBalance_ShouldReturnTrue_WhenAllRolesPresent()
         {
             var roster = new BossRoster
             {
                 Participants = new List<Character>
-            {
-                new Character("T1", Class.Warrior, Role.Tank, ServerName.Aegwynn),
-                new Character("H1", Class.Mage, Role.Healer, ServerName.Aegwynn),
-                new Character("M1", Class.Rogue, Role.MeleeDPS, ServerName.Aegwynn),
-                new Character("R1", Class.Hunter, Role.RangedDPS, ServerName.Aegwynn)
-            }
+                {
+                    new Character("T1", Class.Warrior, Role.Tank, ServerName.Aegwynn),
+                    new Character("H1", Class.Mage, Role.Healer, ServerName.Aegwynn),
+                    new Character("M1", Class.Rogue, Role.MeleeDPS, ServerName.Aegwynn),
+                    new Character("R1", Class.Hunter, Role.RangedDPS, ServerName.Aegwynn)
+                }
             };
 
             Assert.True(_service.CheckRosterBalance(roster));
         }
+
         [Fact]
         public void CheckRosterBalance_ShouldReturnFalse_WhenOneRoleIsMissing()
         {
@@ -86,7 +88,7 @@ namespace WoWGMS.Tests.Services
             var result = _service.CheckRosterBalance(roster);
             Assert.False(result);
         }
-        
+
         [Fact]
         public void ProcessRoster_ShouldIncrementBossKills_AndMarkAsProcessed()
         {
@@ -96,7 +98,6 @@ namespace WoWGMS.Tests.Services
                 RosterId = 10,
                 RaidSlug = "liberation-of-undermine",
                 BossDisplayName = "Vexie and the Geargrinders",
-                
                 InstanceTime = DateTime.UtcNow.AddHours(-1),
                 IsProcessed = false,
                 Participants = new List<Character> { character }
@@ -110,8 +111,6 @@ namespace WoWGMS.Tests.Services
 
             var expectedSlug = RaidRegistry
                 .GetBossByDisplayName("liberation-of-undermine", "Vexie and the Geargrinders")?.Slug;
-            Console.WriteLine("Expected Slug: " + expectedSlug);
-            Console.WriteLine("Character BossKills Slugs: " + string.Join(",", character.BossKills.Select(bk => bk.BossSlug)));
 
             Assert.NotNull(expectedSlug);
             var kill = character.BossKills.FirstOrDefault(bk => bk.BossSlug == expectedSlug);
@@ -135,6 +134,103 @@ namespace WoWGMS.Tests.Services
 
             Assert.Single(result);
             Assert.Equal(1, result[0].RosterId);
+        }
+
+        [Fact]
+        public void GetEligibleCharacters_ShouldReturnOnlyNonParticipants()
+        {
+            var existingChar = new Character { Id = 1 };
+            var newChar = new Character { Id = 2 };
+            var roster = new BossRoster { Participants = new List<Character> { existingChar } };
+            _characterService.Setup(s => s.GetCharacters()).Returns(new List<Character> { existingChar, newChar });
+            var service = new RosterService(_mockRepo.Object, _characterService.Object);
+            var result = service.GetEligibleCharacters(roster);
+            Assert.Single(result);
+            Assert.Equal(2, result[0].Id);
+        }
+
+        [Fact]
+        public void GetCharacterById_ShouldReturnCorrectCharacter()
+        {
+            var character = new Character { Id = 42 };
+            _characterService.Setup(s => s.GetCharacter(42)).Returns(character);
+            var service = new RosterService(_mockRepo.Object, _characterService.Object);
+            var result = service.GetCharacterById(42);
+            Assert.Equal(42, result?.Id);
+        }
+
+        [Fact]
+        public void Update_ShouldCallRepositoryAndReturnUpdatedRoster()
+        {
+            var updated = new BossRoster { RosterId = 3 };
+            _mockRepo.Setup(r => r.Update(updated)).Returns(updated);
+            var result = _service.Update(updated);
+            Assert.Equal(3, result?.RosterId);
+        }
+
+        [Fact]
+        public void Delete_ShouldInvokeRepositoryDelete()
+        {
+            _service.Delete(5);
+            _mockRepo.Verify(r => r.Delete(5), Times.Once);
+        }
+
+        [Fact]
+        public void GetRosterById_ShouldReturnExpectedRoster()
+        {
+            var expected = new BossRoster { RosterId = 6 };
+            _mockRepo.Setup(r => r.GetById(6)).Returns(expected);
+            var result = _service.GetRosterById(6);
+            Assert.Equal(6, result?.RosterId);
+        }
+
+        [Fact]
+        public void GetRostersWithBosses_ShouldFilterByBossName()
+        {
+            var rosters = new List<BossRoster>
+            {
+                new BossRoster { BossDisplayName = "BossA" },
+                new BossRoster { BossDisplayName = null }
+            };
+            _mockRepo.Setup(r => r.GetAll()).Returns(rosters);
+            var result = _service.GetRostersWithBosses();
+            Assert.Single(result);
+            Assert.Equal("BossA", result[0].BossDisplayName);
+        }
+
+        [Fact]
+        public void GetUpcomingRosters_ShouldReturnFutureSortedRosters()
+        {
+            var now = DateTime.Now;
+            var rosters = new List<BossRoster>
+            {
+                new BossRoster { InstanceTime = now.AddHours(1) },
+                new BossRoster { InstanceTime = now.AddHours(2) }
+            };
+            _mockRepo.Setup(r => r.GetAll()).Returns(rosters);
+            var result = _service.GetUpcomingRosters();
+            Assert.Equal(2, result.Count);
+            Assert.True(result[0].InstanceTime <= result[1].InstanceTime);
+        }
+
+        [Fact]
+        public void UpdateRosterTime_ShouldModifyInstanceTime()
+        {
+            var roster = new BossRoster { InstanceTime = DateTime.Now };
+            _mockRepo.Setup(r => r.GetById(1)).Returns(roster);
+            var newTime = DateTime.Now.AddDays(1);
+            _service.UpdateRosterTime(1, newTime);
+            Assert.Equal(newTime, roster.InstanceTime);
+            _mockRepo.Verify(r => r.Update(roster), Times.Once);
+        }
+
+        [Fact]
+        public void IsRosterAtCapacity_ShouldReturnTrue_IfParticipantsReachLimit()
+        {
+            var fullRoster = new BossRoster { Participants = Enumerable.Repeat(new Character(), 20).ToList() };
+            _mockRepo.Setup(r => r.GetById(1)).Returns(fullRoster);
+            var result = _service.IsRosterAtCapacity(1);
+            Assert.True(result);
         }
     }
 }

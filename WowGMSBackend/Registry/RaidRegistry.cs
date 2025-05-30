@@ -27,6 +27,7 @@ namespace WowGMSBackend.Registry
                 }
             }
 
+
         };
         public static Boss? GetBossByDisplayName(string raidSlug, string displayName)
         {

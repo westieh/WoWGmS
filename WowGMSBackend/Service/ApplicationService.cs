@@ -26,7 +26,30 @@ namespace WowGMSBackend.Service
         {
             _applicationRepo.AddApplication(application);
         }
+        public void AppendToNote(int applicationId, string additionalNote, string? author = null)
+        {
+            var app = _applicationRepo.GetApplicationById(applicationId);
+            if (app == null) throw new Exception("Application not found.");
 
+            if (string.IsNullOrWhiteSpace(additionalNote)) return;
+
+            var noteEntry = additionalNote.Trim();
+            if (!string.IsNullOrEmpty(author))
+            {
+                noteEntry = $"[{author}] {noteEntry}";
+            }
+
+            var separator = string.IsNullOrEmpty(app.Note) ? "" : " | ";
+            app.Note += $"{separator}{noteEntry}";
+
+            _applicationRepo.UpdateApplication(app);
+        }
+        public string? GetNoteByApplicationId(int applicationId)
+        {
+            var app = _applicationRepo.GetApplicationById(applicationId);
+            if (app == null) throw new Exception("Application not found.");
+            return app.Note;
+        }
         public void ApproveApplication(Application application)
         {
             if (application.Approved) return;
@@ -74,7 +97,7 @@ namespace WowGMSBackend.Service
         public void SubmitApplication(Application application, Dictionary<string, int> bossKills)
         {
             application.Approved = false;
-            application.Note = null;
+
             application.ProcessedBy = null;
             application.SubmissionDate = DateTime.Now;
 

@@ -6,6 +6,7 @@ using WowGMSBackend.Model;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Service;
 using WowGMSBackend.Repository;
+using System.Security.Claims;
 namespace WoWGMS.Tests.Services
 {
     public class MembersServiceTests
@@ -149,6 +150,27 @@ namespace WoWGMS.Tests.Services
             _mockMemberRepo.Setup(r => r.GetMember(2)).Returns(new Member { Rank = Rank.Trialist });
 
             var result = _memberService.ChangeMemberRank(1, 2, Rank.Raider);
+
+            Assert.Null(result);
+        }
+        [Fact]
+        public void GetLoggedInMemberId_ShouldReturnId_WhenClaimExists()
+        {
+            var claims = new List<Claim> { new Claim("MemberId", "42") };
+            var identity = new ClaimsIdentity(claims);
+            var user = new ClaimsPrincipal(identity);
+
+            var result = _memberService.GetLoggedInMemberId(user);
+
+            Assert.Equal(42, result);
+        }
+
+        [Fact]
+        public void GetLoggedInMemberId_ShouldReturnNull_WhenClaimMissingOrInvalid()
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity()); // no claims
+
+            var result = _memberService.GetLoggedInMemberId(user);
 
             Assert.Null(result);
         }

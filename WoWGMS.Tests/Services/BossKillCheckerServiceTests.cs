@@ -81,7 +81,7 @@ namespace WoWGMS.Tests.Services
 
             await service.CheckBossKills();
 
-            mockRosterService.Verify(s => s.ProcessRoster(1), Times.Once);
+            mockRosterService.Verify(s => s.Update(It.Is<BossRoster>(r => r.RosterId == 1)), Times.Once);
         }
 
         [Fact]
@@ -220,8 +220,8 @@ namespace WoWGMS.Tests.Services
 
             await service.CheckBossKills();
 
-            mockRosterService.Verify(s => s.ProcessRoster(1), Times.Once);
-            mockRosterService.Verify(s => s.ProcessRoster(2), Times.Once);
+            mockRosterService.Verify(s => s.Update(It.Is<BossRoster>(r => r.RosterId == 1)), Times.Once);
+            mockRosterService.Verify(s => s.Update(It.Is<BossRoster>(r => r.RosterId == 2)), Times.Once);
         }
     }
 }

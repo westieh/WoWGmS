@@ -5,7 +5,7 @@
     ViewData["Title"] = "Apply to Guild";
 }
 
-<h2 style="color: white;">Ansøgning</h2>
+<h2 style="color: white;">Application</h2>
 
 <form method="post">
     <div class="form-group">
@@ -37,6 +37,12 @@
         <select asp-for="Application.ServerName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
         <span asp-validation-for="Application.ServerName" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label for="Application_Note">Link to your Raider.IO profile</label>
+        <input asp-for="Application.Note" class="form-control" placeholder="https://raider.io/characters/eu/..." />
+        <span asp-validation-for="Application.Note" class="text-danger"></span>
+    </div>
+
 
     <div class="form-group">
         <label asp-for="Application.Password" style="color:white;"></label>

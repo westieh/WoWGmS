@@ -11,7 +11,8 @@ namespace WowGMSBackend.Interfaces
         List<Application> GetPendingApplications();
         void AddApplication(Application application);
         Application? GetApplicationById(int id);
-        
+        void AppendToNote(int applicationId, string additionalNote, string? author = null);
+        string? GetNoteByApplicationId(int applicationId);
 
     }
 }

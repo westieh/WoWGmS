@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WowGMSBackend.Interfaces;
 using WowGMSBackend.Model;
 using WowGMSBackend.Repository;
-using WowGMSBackend.ViewModels;
+
 
 namespace WowGMSBackend.Service
 {
@@ -56,22 +56,9 @@ namespace WowGMSBackend.Service
         {
             return _repo.GetCharacters();
         }
-
         public Character? UpdateCharacter(int id, Character updated)
         {
-            var existing = _repo.GetCharacter(id);
-            if (existing == null) return null;
-
-            existing.CharacterName = updated.CharacterName;
-            existing.RealmName = updated.RealmName;
-            existing.Class = updated.Class;
-            existing.Role = updated.Role;
-            existing.MemberId = updated.MemberId;
-            existing.Member = updated.Member;
-
-            // ✅ DO NOT touch BossKills here
-
-            return _repo.SaveChangesAndReturn(existing);
+            return _repo.UpdateCharacter(id, updated);
         }
 
         public Character? DeleteCharacter(int id)

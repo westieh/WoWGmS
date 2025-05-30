@@ -18,7 +18,7 @@ namespace WowGMSBackend.Interfaces
         List<Character> GetCharactersByMemberId(int memberId);
         List<Character> GetCharactersByRoster(int rosterId);
         void AddBossKill(BossKill bossKill);
-        Character SaveChangesAndReturn(Character character);
+
 
     }
 }

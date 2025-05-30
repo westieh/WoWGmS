@@ -51,10 +51,11 @@ else
                     <td>@app.Class</td>
                     <td>@app.Role</td>
                     <td>
-                        <form method="post" asp-page-handler="UpdateNote">
+                        <div>@app.Note</div>
+                        <form method="post" asp-page-handler="UpdateNote" class="mt-1">
                             <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
-                            <input type="text" name="Note" value="@app.Note" />
-                            <button type="submit">Gem</button>
+                            <input type="text" name="Note" class="form-control form-control-sm d-inline w-75" placeholder="Append note..." />
+                            <button type="submit" class="btn btn-sm btn-primary">Append</button>
                         </form>
                     </td>
 

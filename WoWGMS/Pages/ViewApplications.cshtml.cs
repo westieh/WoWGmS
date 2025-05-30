@@ -32,7 +32,27 @@ public class ViewApplicationsModel : PageModel
     [BindProperty]
     public bool Approved { get; set; }
 
+    public IActionResult OnPostUpdateNote()
+    {
+        var application = _applicationService.GetApplicationById(ApplicationId);
+        if (application == null)
+        {
+            TempData["Error"] = "Application not found.";
+            return RedirectToPage();
+        }
 
+        if (!string.IsNullOrWhiteSpace(Note))
+        {
+            _applicationService.AppendToNote(ApplicationId, Note.Trim());
+            TempData["Success"] = "Note successfully appended.";
+        }
+        else
+        {
+            TempData["Error"] = "Note input was empty.";
+        }
+
+        return RedirectToPage();
+    }
 
     public IActionResult OnPostToggleApproval()
     {

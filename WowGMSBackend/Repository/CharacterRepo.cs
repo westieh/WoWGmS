@@ -48,42 +48,19 @@ namespace WowGMSBackend.Repository
 
         public Character? UpdateCharacter(int id, Character updated)
         {
-            var existing = _context.Characters
-                .Include(c => c.BossKills)  // ✅ Include the collection
-                .FirstOrDefault(c => c.Id == id);
+            var existing = _context.Characters.FirstOrDefault(c => c.Id == id);
+            if (existing == null) return null;
 
-            if (existing != null)
-            {
-                existing.CharacterName = updated.CharacterName;
-                existing.RealmName = updated.RealmName;
-                existing.Class = updated.Class;
-                existing.Role = updated.Role;
-                existing.MemberId = updated.MemberId;
-                existing.Member = updated.Member;
-
-                // ✅ Replace BossKills cleanly
-                existing.BossKills.Clear();
-                foreach (var kill in updated.BossKills)
-                {
-                    existing.BossKills.Add(new BossKill
-                    {
-                        BossSlug = kill.BossSlug,
-                        KillCount = kill.KillCount,
-                        CharacterId = existing.Id
-                    });
-                }
-
-                _context.SaveChanges();
-                return existing;
-            }
-
-            return null;
-        }
-        public Character SaveChangesAndReturn(Character character)
-        {
+            existing.CharacterName = updated.CharacterName;
+            existing.RealmName = updated.RealmName;
+            existing.Class = updated.Class;
+            existing.Role = updated.Role;
+            existing.MemberId = updated.MemberId;
+            existing.Member = updated.Member;
             _context.SaveChanges();
-            return character;
+            return existing;
         }
+
 
         public Character? DeleteCharacter(int id)
         {

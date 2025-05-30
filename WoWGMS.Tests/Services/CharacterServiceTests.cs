@@ -17,7 +17,7 @@ namespace WoWGMS.Tests.Services
         {
             _mockRepo = new Mock<ICharacterRepo>();
             _mockBossKillService = new Mock<IBossKillService>();
-            _service = new CharacterService(_mockRepo.Object, _mockBossKillService.Object);
+            _service = new CharacterService(_mockRepo.Object);
         }
 
         [Fact]

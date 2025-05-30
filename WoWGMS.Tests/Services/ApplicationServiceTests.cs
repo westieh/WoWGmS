@@ -25,6 +25,116 @@ namespace WoWGMS.Tests.Services
         }
 
         [Fact]
+        public void AppendToNote_AppendsTextWithoutAuthor_WhenNoteAlreadyExists()
+        {
+            // Arrange
+            var mockRepo = new Mock<IApplicationRepo>();
+            var app = new Application
+            {
+                ApplicationId = 1,
+                Note = "Initial note"
+            };
+
+            mockRepo.Setup(r => r.GetApplicationById(1)).Returns(app);
+
+            var service = new ApplicationService(
+                 null, mockRepo.Object, null, null);
+
+            // Act
+            service.AppendToNote(1, "Additional note");
+
+            // Assert
+            Assert.Equal("Initial note | Additional note", app.Note);
+            mockRepo.Verify(r => r.UpdateApplication(app), Times.Once);
+        }
+
+        [Fact]
+        public void AppendToNote_AppendsTextWithAuthor_WhenNoteAlreadyExists()
+        {
+            // Arrange
+            var mockRepo = new Mock<IApplicationRepo>();
+            var app = new Application
+            {
+                ApplicationId = 2,
+                Note = "Initial note"
+            };
+
+            mockRepo.Setup(r => r.GetApplicationById(2)).Returns(app);
+
+            var service = new ApplicationService(
+                 null, mockRepo.Object, null, null);
+
+            // Act
+            service.AppendToNote(2, "More info", "Admin");
+
+            // Assert
+            Assert.Equal("Initial note | [Admin] More info", app.Note);
+            mockRepo.Verify(r => r.UpdateApplication(app), Times.Once);
+        }
+
+        [Fact]
+        public void AppendToNote_SetsNote_WhenNoteIsInitiallyNull()
+        {
+            // Arrange
+            var mockRepo = new Mock<IApplicationRepo>();
+            var app = new Application
+            {
+                ApplicationId = 3,
+                Note = null
+            };
+
+            mockRepo.Setup(r => r.GetApplicationById(3)).Returns(app);
+
+            var service = new ApplicationService(
+                 null, mockRepo.Object, null, null);
+
+            // Act
+            service.AppendToNote(3, "First note");
+
+            // Assert
+            Assert.Equal("First note", app.Note);
+            mockRepo.Verify(r => r.UpdateApplication(app), Times.Once);
+        }
+
+        [Fact]
+        public void AppendToNote_ThrowsException_IfApplicationNotFound()
+        {
+            // Arrange
+            var mockRepo = new Mock<IApplicationRepo>();
+            mockRepo.Setup(r => r.GetApplicationById(99)).Returns((Application)null);
+
+            var service = new ApplicationService(
+                 null, mockRepo.Object, null, null);
+
+            // Act & Assert
+            var ex = Assert.Throws<Exception>(() => service.AppendToNote(99, "Test"));
+            Assert.Equal("Application not found.", ex.Message);
+        }
+
+        [Fact]
+        public void AppendToNote_DoesNothing_WhenNoteIsWhitespace()
+        {
+            // Arrange
+            var mockRepo = new Mock<IApplicationRepo>();
+            var app = new Application
+            {
+                ApplicationId = 4,
+                Note = "Something"
+            };
+
+            mockRepo.Setup(r => r.GetApplicationById(4)).Returns(app);
+
+            var service = new ApplicationService(
+                 null, mockRepo.Object, null, null);
+
+            // Act
+            service.AppendToNote(4, "   "); // whitespace only
+
+            // Assert
+            Assert.Equal("Something", app.Note); // unchanged
+            mockRepo.Verify(r => r.UpdateApplication(It.IsAny<Application>()), Times.Never);
+        }
+        [Fact]
         public void ApproveApplication_ShouldAddNewMemberAndCharacter_WhenApplicationIsApproved()
         {
             // Arrange
@@ -120,11 +230,23 @@ namespace WoWGMS.Tests.Services
                 Role = Role.Tank,
                 ServerName = ServerName.Aegwynn
             };
+
+            var bossKills = new Dictionary<string, int>
+                {
+                    { "boss1", 2 },
+                    { "boss2", 1 }
+                };
+
             _mockApplicationrepo.Setup(a => a.AddApplication(It.IsAny<Application>())).Verifiable();
+
             // Act
-            _service.SubmitApplication(application);
+            _service.SubmitApplication(application, bossKills);
+
             // Assert
-            _mockApplicationrepo.Verify(a => a.AddApplication(It.Is<Application>(a => a.SubmissionDate != default)), Times.Once);
+            _mockApplicationrepo.Verify(
+                a => a.AddApplication(It.Is<Application>(a => a.SubmissionDate != default)),
+                Times.Once
+            );
         }
         [Fact]
         public void GetAllApplications_ShouldReturnAllApplications()
