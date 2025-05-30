@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WowGMSBackend.Model
 {
+    /// <summary>
+    /// Represents the number of kills a character or application has for a specific boss.
+    /// </summary>
     public class BossKill
     {
         [Key]
@@ -17,11 +20,10 @@ namespace WowGMSBackend.Model
 
         [ForeignKey("Character")]
         public int? CharacterId { get; set; }
-
         public Character? Character { get; set; }
+
         [ForeignKey("Application")]
         public int? ApplicationId { get; set; }
         public Application? Application { get; set; }
-
     }
 }

@@ -1,19 +1,26 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata and title -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WoW</title>
+
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Site-specific CSS with cache busting -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
+        /* Page background and text color */
         body {
             background-color: black;
             color: #f0f0f0;
             font-family: "Segoe UI", sans-serif;
         }
 
+        /* Navigation link default and hover colors */
         a.nav-link {
             color: #ccc !important;
         }
@@ -22,17 +29,20 @@
                 color: white !important;
             }
 
+        /* Navigation header styling */
         header nav {
             background-color: black !important;
             border-bottom: 1px solid #444;
         }
 
+        /* Footer styling */
         footer {
             background-color: #black;
             color: #aaa;
             border-top: 1px solid #444;
         }
 
+        /* Container and card styling */
         .container, .card {
             background-color: black;
             border-radius: 10px;
@@ -45,10 +55,12 @@
             padding: 15px;
         }
 
+        /* Heading colors */
         h1, h2, h3 {
             color: white;
         }
 
+        /* Unordered list styling */
         ul {
             list-style: none;
             padding: 0;
@@ -63,6 +75,7 @@
             align-items: center;
         }
 
+        /* Button styling */
         button {
             background-color: #4e88ff;
             color: white;
@@ -75,13 +88,13 @@
                 background-color: #3a6edc;
             }
 
+        /* Member rank text */
         .member-rank {
             font-size: 0.9em;
             color: white;
         }
 
-        
-
+        /* Dropdown menu styling */
         .dropdown-menu {
             margin-top: 0.3rem;
             border-radius: 0.25rem;
@@ -91,21 +104,25 @@
 </head>
 <body>
     <header>
+        <!-- Navigation bar -->
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark">
             <div class="container">
+                <!-- Brand link -->
                 <a class="navbar-brand text-light" asp-area="" asp-page="/Index">WoW</a>
+
+                <!-- Mobile toggle button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Navigation links -->
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/Index">Home</a>
                         </li>
-                        @* <li class="nav-item">
-                            <a class="nav-link" asp-page="/CreateApplication">Apply</a>
-                        </li> *@
+                        @* Placeholder for future Apply link *@
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/Event">Todays Event</a>
                         </li>
@@ -124,9 +141,6 @@
                                 <a class="nav-link text-light" asp-page="ManageCharacters">Manage Characters</a>
                             </li>
                         }
-
-                            
-
                         @if (User.IsInRole("Trialist"))
                         {
                             <li class="nav-item">
@@ -139,8 +153,6 @@
                                 <a class="nav-link text-danger" asp-page="/roster">Manage Rosters</a>
                             </li>
                         }
-
-
                         @if (User.IsInRole("Officer"))
                         {
                             <li class="nav-item dropdown">
@@ -166,6 +178,7 @@
                         else
                         {
                             <li class="nav-item">
+                                <!-- Logout form -->
                                 <form method="post" asp-page="/Logout">
                                     <button type="submit" class="nav-link btn btn-link text-dark" style="cursor: pointer;">
                                         Logout (@User.Identity.Name)
@@ -173,25 +186,27 @@
                                 </form>
                             </li>
                         }
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
+    <!-- Main content container -->
     <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
+    <!-- Footer -->
     <footer class="footer text-center py-3">
         <div class="container">
             &copy; 2025 - WoW - <a class="text-light" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -199,6 +214,8 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<!-- Script to handle dropdown hover functionality -->
 <script>
     document.querySelectorAll('.nav-item.dropdown').forEach(function (dropdown) {
         dropdown.addEventListener('mouseenter', function () {

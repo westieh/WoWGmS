@@ -7,45 +7,43 @@ using WowGMSBackend.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure cookie authentication
 builder.Services.AddAuthentication("MyCookieAuth")
     .AddCookie("MyCookieAuth", options =>
     {
         options.LoginPath = "/Admin/Login";
     });
 
+// Configure authorization policies
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
-// Raider IO API
+
+// Configure Raider.IO API HTTP client
 builder.Services.AddHttpClient("RaiderIO", client =>
 {
     client.BaseAddress = new Uri("https://raider.io");
 });
 
-
-
-// Add services to the container.
+// Register application services and repositories
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IRosterService, RosterService>();
-
-builder.Services.AddScoped<IBossKillRepo, BossKillRepo>();
-
 builder.Services.AddScoped<IBossKillRepo, BossKillRepo>();
 builder.Services.AddScoped<IBossKillService, BossKillService>();
-
 builder.Services.AddScoped<IMemberRepo, MemberRepo>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<ICharacterRepo, CharacterRepo>();
-builder.Services.AddRazorPages();
 builder.Services.AddScoped<IMemberService, MemberService>();
-
 builder.Services.AddScoped<IRosterRepository, RosterRepository>();
+builder.Services.AddScoped<IApplicationRepo, ApplicationRepo>();
+builder.Services.AddScoped(typeof(IDBService<>), typeof(DbGenericService<>));
 builder.Services.AddHostedService<BossKillCheckerService>();
 
-builder.Services.AddScoped<IApplicationRepo, ApplicationRepo>();
+// Register Razor Pages
+builder.Services.AddRazorPages();
 
-builder.Services.AddScoped(typeof(IDBService<>), typeof(DbGenericService<>));
+// Configure database context
 builder.Services.AddDbContext<WowDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -54,7 +52,8 @@ builder.Services.AddDbContext<WowDbContext>(options =>
 );
 
 var app = builder.Build();
-// SEED TEST ADMIN USER
+
+// Seed test admin user if not existing
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<WowDbContext>();
@@ -64,18 +63,18 @@ using (var scope = app.Services.CreateScope())
         db.Members.Add(new Member
         {
             Name = "admin",
-            Password = "password123", // hash if needed
+            Password = "password123", // plaintext for now, hashing recommended
             Rank = Rank.Officer
         });
         db.SaveChanges();
     }
 }
-// Configure the HTTP request pipeline.
+
+// Configure middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseHsts(); // Enforce HTTPS Strict Transport Security
 }
 
 app.UseHttpsRedirection();
@@ -87,8 +86,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
 app.MapControllers();
 
 app.Run();
-

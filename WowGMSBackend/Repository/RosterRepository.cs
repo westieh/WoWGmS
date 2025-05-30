@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WowGMSBackend.DBContext;
 using WowGMSBackend.Interfaces;
-using WowGMSBackend.MockData;
 using WowGMSBackend.Model;
 
 namespace WowGMSBackend.Repository
 {
+    /// <summary>
+    /// Repository for managing BossRoster entities.
+    /// </summary>
     public class RosterRepository : IRosterRepository
     {
         private readonly WowDbContext _context;
@@ -20,11 +19,17 @@ namespace WowGMSBackend.Repository
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves all rosters including their participants.
+        /// </summary>
         public IEnumerable<BossRoster> GetAll()
         {
             return _context.BossRosters.Include(r => r.Participants).ToList();
         }
 
+        /// <summary>
+        /// Retrieves a specific roster by its ID.
+        /// </summary>
         public BossRoster? GetById(int id)
         {
             return _context.BossRosters
@@ -32,14 +37,19 @@ namespace WowGMSBackend.Repository
                 .FirstOrDefault(r => r.RosterId == id);
         }
 
+        /// <summary>
+        /// Adds a new roster to the database.
+        /// </summary>
         public BossRoster Add(BossRoster roster)
         {
-           
             _context.BossRosters.Add(roster);
             _context.SaveChanges();
             return roster;
         }
 
+        /// <summary>
+        /// Updates an existing roster.
+        /// </summary>
         public BossRoster? Update(BossRoster updated)
         {
             var existing = _context.BossRosters
@@ -61,6 +71,9 @@ namespace WowGMSBackend.Repository
             return null;
         }
 
+        /// <summary>
+        /// Deletes a roster by its ID.
+        /// </summary>
         public BossRoster? Delete(int id)
         {
             var roster = _context.BossRosters.Find(id);

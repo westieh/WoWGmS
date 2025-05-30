@@ -1,42 +1,51 @@
 ﻿@page "{id:int}"
 @model WoWGMS.Pages.EditRosterModel
 @{
+    // Sets the page title
     ViewData["Title"] = "Edit Roster";
 }
 
 <h1>Edit Roster</h1>
 
+<!-- Form for editing roster -->
 <form method="post">
     <div class="form-group">
+        <!-- Input field for setting the instance time -->
         <label>Instance Time</label>
         <input asp-for="Roster.InstanceTime" class="form-control" type="datetime-local" />
     </div>
 
+    <!-- Display current participants in the roster -->
     <h3>Current Participants (@Model.Roster.Participants.Count / 20)</h3>
     <ul>
         @foreach (var participant in Model.Roster.Participants)
         {
             <li>
                 @participant.CharacterName
+                <!-- Button to remove participant from roster -->
                 <button type="submit" formaction="?handler=Remove&participantId=@participant.Id" class="btn btn-danger btn-sm">Remove</button>
             </li>
         }
     </ul>
 
+    <!-- Section to add eligible characters to the roster -->
     <h3>Add Eligible Characters</h3>
     <ul>
         @foreach (var character in Model.EligibleCharacters)
         {
+            // Calculate total boss kills for the selected boss
             var killCount = character.BossKills
             .Where(k => k.BossSlug == Model.Roster.BossSlug)
             .Sum(k => k.KillCount);
 
             <li>
                 @character.CharacterName (@character.Role) - Bosskills: @killCount
+                <!-- Button to add character to the roster -->
                 <button type="submit" formaction="?handler=Add&characterId=@character.Id" class="btn btn-success btn-sm">Add</button>
             </li>
         }
     </ul>
 
+    <!-- Save button to submit the form -->
     <button type="submit" class="btn btn-primary">Save</button>
 </form>

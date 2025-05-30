@@ -1,5 +1,6 @@
 ﻿namespace WowGMSBackend.Model
 {
+    // Enumeration representing the different playable classes in the game
     public enum Class
     {
         Mage,

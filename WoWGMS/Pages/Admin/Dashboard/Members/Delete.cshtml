@@ -1,17 +1,30 @@
-﻿@page "{id:int}"
+﻿@page "{id:int}"        
+<!-- Route constraint: expects an integer id -->
 @model WoWGMS.Pages.Admin.Dashboard.Members.DeleteModel
+
 @{
     ViewData["Title"] = "Delete Member";
 }
 
-<h2>Delete Member</h2>
+<h1>Delete Member</h1>
 
-<div>
-    <p>Are you sure you want to delete <strong>@Model.Member.Name</strong>?</p>
+<!-- Display any error messages in a Bootstrap-styled alert -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@modelError.ErrorMessage</p>
+        }
+    </div>
+}
 
-    <form method="post">
-        <input type="hidden" asp-for="Member.MemberId" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="../Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+<!-- Confirmation prompt -->
+<p>Are you sure you want to delete the member <strong>@Model.Member.Name</strong>?</p>
+
+<!-- Form to confirm deletion -->
+<form method="post">
+    <input type="hidden" asp-for="Member.MemberId" /> <!-- Hidden field to pass the member ID -->
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-page="/Shared/GetAllMembers" class="btn btn-secondary">Cancel</a> <!-- Cancel link -->
+</form>

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WowGMSBackend.Model
+﻿namespace WowGMSBackend.Model
 {
+    // Enum listing supported World of Warcraft server names.
+    // Used to restrict character/server selection to predefined, valid server options.
     public enum ServerName
     {
         Aegwynn,
@@ -89,7 +85,7 @@ namespace WowGMSBackend.Model
         Ysera,
         Ysondre,
         ZirkelDesCenarius,
-        Разувий,
+        Разувий,              // Russian servers
         ПиратскаяБухта,
         КорольЛич,
         Азурегос,

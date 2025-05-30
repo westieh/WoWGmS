@@ -9,20 +9,28 @@ namespace WoWGMS.Pages.Shared
     {
         private readonly IMemberService _memberService;
 
+        // Constructor injecting the member service
         public GetAllMembersModel(IMemberService memberService)
         {
             _memberService = memberService;
         }
 
+        // List to store officers
         public List<Member>? Officers { get; private set; }
+
+        // List to store raiders
         public List<Member>? Raiders { get; private set; }
+
+        // List to store trialists
         public List<Member>? Trialists { get; private set; }
 
+        // Handles GET requests to the page
         public void OnGet()
         {
-            // Hent alle medlemmer
+            // Fetch all members
             var members = _memberService.GetMembers();
-            // Opdel medlemmerne baseret på deres rang
+
+            // Filter and assign members based on their rank
             Officers = members.Where(m => m.Rank == Rank.Officer).ToList();
             Raiders = members.Where(m => m.Rank == Rank.Raider).ToList();
             Trialists = members.Where(m => m.Rank == Rank.Trialist).ToList();

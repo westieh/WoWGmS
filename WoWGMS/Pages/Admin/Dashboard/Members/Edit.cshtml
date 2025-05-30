@@ -1,25 +1,41 @@
-﻿@page "{id:int}"
+﻿@page "{id:int}"        
+<!-- Route constraint expects an integer id -->
 @model WoWGMS.Pages.Admin.Dashboard.Members.EditModel
+
 @{
     ViewData["Title"] = "Edit Member";
 }
 
-<h2>Edit Member</h2>
+<h1>Edit Member</h1>
 
+<!-- Display any model validation errors -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@modelError.ErrorMessage</p>
+        }
+    </div>
+}
+
+<!-- Edit form -->
 <form method="post">
+    <!-- Hidden field to hold the MemberId -->
     <input type="hidden" asp-for="Member.MemberId" />
 
     <div class="form-group">
-        <label>Name</label>
+        <label asp-for="Member.Name"></label>
         <input asp-for="Member.Name" class="form-control" />
+        <span asp-validation-for="Member.Name" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Rank</label>
-        <select asp-for="Member.Rank" class="form-control" asp-items="Html.GetEnumSelectList<WowGMSBackend.Model.Rank>()">
-            <option value="">-- Select Rank --</option>
-        </select>
+        <label asp-for="Member.Rank"></label>
+        <select asp-for="Member.Rank" class="form-control" asp-items="Html.GetEnumSelectList<WowGMSBackend.Model.Rank>()"></select>
+        <span asp-validation-for="Member.Rank" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-page="../Index" class="btn btn-secondary">Cancel</a>
+    <a asp-page="/Shared/GetAllMembers" class="btn btn-secondary">Cancel</a> <!-- Link to cancel editing -->
 </form>

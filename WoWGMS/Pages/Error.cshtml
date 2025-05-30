@@ -1,6 +1,7 @@
 ﻿@page
 @model ErrorModel
 @{
+    // Sets the page title
     ViewData["Title"] = "Error";
 }
 
@@ -9,6 +10,7 @@
 
 @if (Model.ShowRequestId)
 {
+    <!-- Display the request ID if available -->
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
@@ -16,6 +18,7 @@
 
 <h3>Development Mode</h3>
 <p>
+    <!-- Informational message about enabling Development mode for debugging -->
     Swapping to the <strong>Development</strong> environment displays detailed information about the error that occurred.
 </p>
 <p>

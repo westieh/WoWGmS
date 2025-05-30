@@ -6,6 +6,7 @@
 
 <h2>Manage Characters</h2>
 
+<!-- Form to select a boss to filter kill counts -->
 <form method="get" class="mb-3">
     <label for="SelectedBossSlug">Select Boss:</label>
     <select asp-for="SelectedBossSlug"
@@ -18,25 +19,31 @@
 
 @foreach (var character in Model.Characters)
 {
+    // Get kill count for selected boss, default to 0 if none found
     var kill = character.BossKills?.FirstOrDefault(k => k.BossSlug == Model.SelectedBossSlug);
     var killCount = kill?.KillCount ?? 0;
 
+    <!-- Form to update kill count for a character -->
     <form method="post" asp-page-handler="UpdateKill" class="mb-3">
         <input type="hidden" name="characterId" value="@character.Id" />
         <input type="hidden" name="selectedBossSlug" value="@Model.SelectedBossSlug" />
 
         <div class="card p-3 mb-2 bg-dark text-white">
+            <!-- Character information -->
             <h5>@character.CharacterName (@character.Class / @character.Role / @character.RealmName)</h5>
 
             <div class="form-group row align-items-center">
                 <label class="col-sm-3 col-form-label">Kill Count:</label>
                 <div class="col-sm-2">
+                    <!-- Input field for kill count -->
                     <input type="number" name="killCount" value="@killCount" class="form-control" min="0" />
                 </div>
                 <div class="col-sm-3">
+                    <!-- Save button for kill count -->
                     <button type="submit" class="btn btn-sm btn-success">Save</button>
                 </div>
                 <div class="col-sm-3">
+                    <!-- Delete button to remove character -->
                     <button formaction="?handler=DeleteCharacter"
                             formmethod="post"
                             name="id"

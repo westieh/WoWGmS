@@ -2,57 +2,69 @@
 @model ApplyModel
 @using WowGMSBackend.Model
 @{
+    // Sets the page title
     ViewData["Title"] = "Apply to Guild";
 }
 
 <h2 style="color: white;">Application</h2>
 
+<!-- Application form -->
 <form method="post">
     <div class="form-group">
+        <!-- Discord Name input -->
         <label asp-for="Application.DiscordName" style="color:white;"></label>
         <input asp-for="Application.DiscordName" class="form-control" />
         <span asp-validation-for="Application.DiscordName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
+        <!-- Character Name input -->
         <label asp-for="Application.CharacterName" style="color:white;"></label>
         <input asp-for="Application.CharacterName" class="form-control" />
         <span asp-validation-for="Application.CharacterName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
+        <!-- Class dropdown selection -->
         <label asp-for="Application.Class" style="color:white;"></label>
         <select asp-for="Application.Class" asp-items="Html.GetEnumSelectList<Class>()" class="form-control"></select>
         <span asp-validation-for="Application.Class" class="text-danger"></span>
     </div>
 
     <div class="form-group">
+        <!-- Role dropdown selection -->
         <label asp-for="Application.Role" style="color:white;"></label>
         <select asp-for="Application.Role" asp-items="Html.GetEnumSelectList<Role>()" class="form-control"></select>
         <span asp-validation-for="Application.Role" class="text-danger"></span>
     </div>
 
     <div class="form-group">
+        <!-- Server Name dropdown selection -->
         <label asp-for="Application.ServerName" style="color:white;"></label>
         <select asp-for="Application.ServerName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
         <span asp-validation-for="Application.ServerName" class="text-danger"></span>
     </div>
+
     <div class="form-group">
+        <!-- Raider.IO profile link input -->
         <label for="Application_Note">Link to your Raider.IO profile</label>
         <input asp-for="Application.Note" class="form-control" placeholder="https://raider.io/characters/eu/..." />
         <span asp-validation-for="Application.Note" class="text-danger"></span>
     </div>
 
-
     <div class="form-group">
+        <!-- Password input -->
         <label asp-for="Application.Password" style="color:white;"></label>
         <input asp-for="Application.Password" type="password" class="form-control" />
         <span asp-validation-for="Application.Password" class="text-danger"></span>
     </div>
+
+    <!-- Section for boss kill experience -->
     <h4 style="color: white;">Boss Kill Experience</h4>
     @foreach (var boss in Model.RaidBosses)
     {
         <div class="form-group">
+            <!-- Input for number of kills per boss -->
             <label class="form-label" style="color:white;">@boss.DisplayName</label>
             <input type="number"
                    class="form-control"
@@ -61,9 +73,12 @@
                    value="0" />
         </div>
     }
+
+    <!-- Submit button -->
     <button type="submit" class="btn btn-primary mt-2">Send Ansøgning</button>
 </form>
 
 @section Scripts {
+    <!-- Validation scripts partial -->
     <partial name="_ValidationScriptsPartial" />
 }

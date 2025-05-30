@@ -1,14 +1,19 @@
 ﻿@page
 @model WoWGMS.Pages.IndexModel
 @{
+    // Sets the page title
     ViewData["Title"] = "Welcome";
 }
 
 <div class="container py-5">
+    <!-- Welcome header -->
     <h1 class="display-3 text-center text-light mb-5">Welcome to The Shadowstalkers</h1>
+
+    <!-- Guild banner image -->
     <div class="text-center mb-4">
         <img src="~/img/TheShadowstalkersBanner.png" alt="The Shadowstalkers Banner" class="img-fluid rounded shadow" style="max-height: 200px;" />
     </div>
+
     <div class="row g-4 justify-content-center">
         <!-- Apply Card -->
         <div class="col-12 col-md-4 d-flex justify-content-center">
@@ -36,6 +41,5 @@
                 </div>
             </a>
         </div>
-    </div>
     </div>
 </div>

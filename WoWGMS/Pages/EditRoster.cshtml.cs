@@ -8,29 +8,33 @@ namespace WoWGMS.Pages
 {
     public class EditRosterModel : PageModel
     {
-
         private readonly IRosterService _rosterService;
 
-        public EditRosterModel( IRosterService rosterService)
+        // Constructor injecting the roster service
+        public EditRosterModel(IRosterService rosterService)
         {
-
             _rosterService = rosterService;
         }
 
+        // Binds the roster model to the page
         [BindProperty]
         public BossRoster Roster { get; set; }
 
+        // List of eligible characters for the roster
         public List<Character> EligibleCharacters { get; set; } = new();
 
+        // Handles GET requests, loads roster and eligible characters
         public IActionResult OnGet(int id)
         {
             Roster = _rosterService.GetRosterById(id);
-            if (Roster == null) return NotFound();
+            if (Roster == null)
+                return NotFound();
 
             EligibleCharacters = _rosterService.GetEligibleCharacters(Roster);
             return Page();
         }
 
+        // Handles POST request to update roster time
         public IActionResult OnPost(int id)
         {
             try
@@ -46,6 +50,7 @@ namespace WoWGMS.Pages
             }
         }
 
+        // Handles adding a character to the roster
         public IActionResult OnPostAdd(int id, int characterId)
         {
             try
@@ -62,7 +67,7 @@ namespace WoWGMS.Pages
             }
             catch (InvalidOperationException)
             {
-                // No need to show error; silently ignore duplicate
+                // Silently ignore duplicate additions
             }
             catch (Exception)
             {
@@ -72,6 +77,7 @@ namespace WoWGMS.Pages
             return RedirectToPage(new { id });
         }
 
+        // Handles removing a character from the roster
         public IActionResult OnPostRemove(int id, int participantId)
         {
             try
@@ -86,6 +92,5 @@ namespace WoWGMS.Pages
 
             return RedirectToPage(new { id });
         }
-
     }
 }

@@ -2,6 +2,7 @@
 @using WowGMSBackend.Model
 @model WoWGMS.Pages.MemberPanelModel
 @{
+    // Sets the page title
     ViewData["Title"] = "Create Character";
     Layout = "_Layout";
 }
@@ -9,39 +10,45 @@
 <h2>Create a New Character</h2>
 
 @{
+    // Retrieve success message from TempData
     var success = TempData["SuccessMessage"] as string;
 }
 @if (!string.IsNullOrEmpty(success))
 {
+    <!-- Display success alert if available -->
     <div class="alert alert-success">@success</div>
 }
 
+<!-- Form to create a new character -->
 <form method="post">
-    
-
     <div class="form-group">
+        <!-- Character name input -->
         <label asp-for="Character.CharacterName"></label>
         <input asp-for="Character.CharacterName" class="form-control" />
         <span asp-validation-for="Character.CharacterName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
+        <!-- Realm selection dropdown -->
         <label asp-for="Character.RealmName" style="color:white;"></label>
         <select asp-for="Character.RealmName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
         <span asp-validation-for="Character.RealmName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
+        <!-- Class selection dropdown -->
         <label asp-for="Character.Class"></label>
         <select asp-for="Character.Class" class="form-control" asp-items="Html.GetEnumSelectList<Class>()"></select>
     </div>
 
     <div class="form-group">
+        <!-- Role selection dropdown -->
         <label asp-for="Character.Role"></label>
         <select asp-for="Character.Role" class="form-control" asp-items="Html.GetEnumSelectList<Role>()"></select>
     </div>
 
     <div class="form-group">
+        <!-- Boss kills input fields -->
         <label>Boss Kills</label>
         @foreach (var boss in Model.AllBosses)
         {
@@ -58,6 +65,7 @@
         }
     </div>
 
+    <!-- Submit button to add character -->
     <button type="submit" class="btn btn-primary mt-3">Add Character</button>
 </form>
 
@@ -65,6 +73,7 @@
 
 <h3>Your Characters</h3>
 
+<!-- Form to select boss for filtering kills -->
 <form method="get" class="mb-3">
     <label for="SelectedBossSlug">Select Boss</label>
     <select asp-for="SelectedBossSlug"
@@ -77,6 +86,7 @@
 
 @if (Model.CharactersForMember != null && Model.CharactersForMember.Any())
 {
+    <!-- Display member's characters in a table -->
     <table class="table table-dark table-bordered">
         <thead>
             <tr>
@@ -94,6 +104,7 @@
         <tbody>
             @foreach (var entry in Model.CharactersForMember)
             {
+                // Calculate kill count based on selected boss or highest
                 int killCount = string.IsNullOrEmpty(Model.SelectedBossSlug)
                 ? (entry.BossKills?.OrderByDescending(k => k.KillCount).FirstOrDefault()?.KillCount ?? 0)
                 : (entry.BossKills?.Where(k => k.BossSlug == Model.SelectedBossSlug).Sum(k => k.KillCount) ?? 0);
@@ -111,9 +122,11 @@
 }
 else
 {
+    <!-- Message if no characters exist -->
     <p>You don't have any characters yet.</p>
 }
 
 @section Scripts {
+    <!-- Validation scripts partial -->
     <partial name="_ValidationScriptsPartial" />
 }

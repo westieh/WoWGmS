@@ -8,6 +8,7 @@ using WowGMSBackend.DBContext;
 
 public class MemberRepositoryTests
 {
+    // Creates an in-memory database context for testing
     private WowDbContext GetInMemoryContext()
     {
         var options = new DbContextOptionsBuilder<WowDbContext>()
@@ -32,9 +33,11 @@ public class MemberRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new MemberRepo(context);
 
+        // Act
         var member = CreateTestMember();
         var result = repo.AddMember(member);
 
+        // Assert
         Assert.Equal(member.Name, result.Name);
         Assert.Single(context.Members);
     }
@@ -45,12 +48,15 @@ public class MemberRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new MemberRepo(context);
 
+        // Arrange
         var member = CreateTestMember("Alice");
         context.Members.Add(member);
         context.SaveChanges();
 
+        // Act
         var fetched = repo.GetMember(member.MemberId);
 
+        // Assert
         Assert.NotNull(fetched);
         Assert.Equal("Alice", fetched.Name);
     }
@@ -61,13 +67,16 @@ public class MemberRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new MemberRepo(context);
 
+        // Arrange
         var original = CreateTestMember("OldName", "pass", Rank.Trialist);
         context.Members.Add(original);
         context.SaveChanges();
 
+        // Act
         var updated = CreateTestMember("NewName", "pass", Rank.Officer);
         var result = repo.UpdateMember(original.MemberId, updated);
 
+        // Assert
         Assert.NotNull(result);
         Assert.Equal("NewName", result.Name);
         Assert.Equal(Rank.Officer, result.Rank);
@@ -79,12 +88,15 @@ public class MemberRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new MemberRepo(context);
 
+        // Arrange
         var member = CreateTestMember("DeleteMe");
         context.Members.Add(member);
         context.SaveChanges();
 
+        // Act
         var removed = repo.DeleteMember(member.MemberId);
 
+        // Assert
         Assert.Equal("DeleteMe", removed.Name);
         Assert.Empty(context.Members);
     }
@@ -95,13 +107,17 @@ public class MemberRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new MemberRepo(context);
 
+        // Arrange
         context.Members.AddRange(
             CreateTestMember("One"),
             CreateTestMember("Two")
         );
         context.SaveChanges();
 
+        // Act
         var members = repo.GetMembers();
+
+        // Assert
         Assert.Equal(2, members.Count);
     }
 }

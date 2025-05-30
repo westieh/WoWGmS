@@ -8,9 +8,11 @@
     {
         <li class="list-group-item d-flex justify-content-between align-items-start">
             <div>
+                <!-- Display officer name -->
                 <strong>@officer.Name</strong>
                 @if (officer.Characters != null && officer.Characters.Any())
                 {
+                    <!-- Display list of officer's characters -->
                     <ul class="mb-0">
                         @foreach (var character in officer.Characters)
                         {
@@ -20,12 +22,14 @@
                 }
                 else
                 {
+                    <!-- Message if no characters registered -->
                     <div class="text-muted">No characters registered.</div>
                 }
             </div>
 
             @if (User.IsInRole("Officer") || User.IsInRole("Admin"))
             {
+                <!-- Edit/Delete buttons for officers -->
                 <div class="btn-group" role="group">
                     <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@officer.MemberId" class="btn btn-sm btn-primary">Edit</a>
                     <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@officer.MemberId" class="btn btn-sm btn-danger">Delete</a>
@@ -41,9 +45,11 @@
     {
         <li class="list-group-item d-flex justify-content-between align-items-start">
             <div>
+                <!-- Display raider name -->
                 <strong>@raider.Name</strong>
                 @if (raider.Characters != null && raider.Characters.Any())
                 {
+                    <!-- Display list of raider's characters -->
                     <ul class="mb-0">
                         @foreach (var character in raider.Characters)
                         {
@@ -53,12 +59,14 @@
                 }
                 else
                 {
+                    <!-- Message if no characters registered -->
                     <div class="text-muted">No characters registered.</div>
                 }
             </div>
 
             @if (User.IsInRole("Officer") || User.IsInRole("Admin"))
             {
+                <!-- Edit/Delete buttons for raiders -->
                 <div class="btn-group" role="group">
                     <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@raider.MemberId" class="btn btn-sm btn-primary">Edit</a>
                     <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@raider.MemberId" class="btn btn-sm btn-danger">Delete</a>
@@ -72,31 +80,35 @@
 <ul class="list-group">
     @foreach (var trialist in Model.Trialists)
     {
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-                <div>
-                    <strong>@trialist.Name</strong>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div>
+                <!-- Display trialist name -->
+                <strong>@trialist.Name</strong>
                 @if (trialist.Characters != null && trialist.Characters.Any())
                 {
-                            <ul class="mb-0">
+                    <!-- Display list of trialist's characters -->
+                    <ul class="mb-0">
                         @foreach (var character in trialist.Characters)
                         {
-                                        <li>@character.CharacterName (@character.Class, @character.Role, @character.RealmName)</li>
+                            <li>@character.CharacterName (@character.Class, @character.Role, @character.RealmName)</li>
                         }
-                            </ul>
+                    </ul>
                 }
                 else
                 {
-                            <div class="text-muted">No characters registered.</div>
+                    <!-- Message if no characters registered -->
+                    <div class="text-muted">No characters registered.</div>
                 }
-                </div>
+            </div>
 
             @if (User.IsInRole("Officer") || User.IsInRole("Admin"))
             {
-                        <div class="btn-group" role="group">
-                            <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@trialist.MemberId" class="btn btn-sm btn-primary">Edit</a>
-                            <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@trialist.MemberId" class="btn btn-sm btn-danger">Delete</a>
-                        </div>
+                <!-- Edit/Delete buttons for trialists -->
+                <div class="btn-group" role="group">
+                    <a asp-page="/Admin/Dashboard/Members/Edit" asp-route-id="@trialist.MemberId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-page="/Admin/Dashboard/Members/Delete" asp-route-id="@trialist.MemberId" class="btn btn-sm btn-danger">Delete</a>
+                </div>
             }
-            </li>
+        </li>
     }
 </ul>

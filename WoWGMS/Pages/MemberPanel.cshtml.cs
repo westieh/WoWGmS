@@ -11,6 +11,7 @@ namespace WoWGMS.Pages
         private readonly IMemberService _memberService;
         private readonly IBossKillService _bossKillService;
 
+        // Constructor injecting character, member, and boss kill services
         public MemberPanelModel(ICharacterService characterService, IMemberService memberService, IBossKillService bossKillService)
         {
             _characterService = characterService;
@@ -18,19 +19,25 @@ namespace WoWGMS.Pages
             _bossKillService = bossKillService;
         }
 
+        // Bound property for selected boss slug (supports GET)
         [BindProperty(SupportsGet = true)]
         public string SelectedBossSlug { get; set; }
 
+        // Bound property for character input
         [BindProperty]
         public Character Character { get; set; }
 
+        // Bound property for boss kill input mappings
         [BindProperty]
         public Dictionary<string, int> BossKillInputs { get; set; } = new();
 
-
+        // List of all bosses
         public List<Boss> AllBosses { get; set; } = new();
+
+        // List of characters belonging to the logged-in member
         public List<Character> CharactersForMember { get; set; } = new();
 
+        // Handles GET requests to load member characters and boss list
         public IActionResult OnGet()
         {
             try
@@ -54,6 +61,7 @@ namespace WoWGMS.Pages
             }
         }
 
+        // Handles POST requests to create a new character with associated boss kills
         public IActionResult OnPost()
         {
             AllBosses = _bossKillService.GetAllBosses();

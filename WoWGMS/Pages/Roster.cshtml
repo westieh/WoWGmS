@@ -2,20 +2,27 @@
 
 @model WoWGMS.Pages.RosterModel
 @{
+    // Sets the page title
     ViewData["Title"] = "Create & Manage Boss Roster";
 }
+
 @if (TempData["Error"] != null)
 {
+    <!-- Display error alert if available -->
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
 @if (TempData["Success"] != null)
 {
+    <!-- Display success alert if available -->
     <div class="alert alert-success">@TempData["Success"]</div>
 }
+
 <h1>Create Boss Roster</h1>
 
+<!-- Form to create a new boss roster -->
 <form method="post" asp-page-handler="CreateRoster">
     <div class="form-group mb-3">
+        <!-- Raid selection dropdown -->
         <label>Raid</label>
         <select asp-for="SelectedRaidSlug" class="form-select" asp-items="@(new SelectList(Model.AllRaids, "Slug", "Name"))" onchange="this.form.submit()">
             <option value="">-- Select Raid --</option>
@@ -25,6 +32,7 @@
     @if (Model.BossesForSelectedRaid.Any())
     {
         <div class="form-group mb-3">
+            <!-- Boss selection dropdown -->
             <label>Boss</label>
             <select asp-for="SelectedBossSlug" class="form-select" asp-items="@(new SelectList(Model.BossesForSelectedRaid, "Slug", "DisplayName"))" required>
                 <option value="">-- Select Boss --</option>
@@ -33,11 +41,13 @@
     }
 
     <div class="form-group mb-3">
+        <!-- Instance time input -->
         <label>Instance Time</label>
         <input asp-for="NewRoster.InstanceTime" type="datetime-local" class="form-control" required />
         <span asp-validation-for="NewRoster.InstanceTime" class="text-danger"></span>
     </div>
 
+    <!-- Submit button to create roster -->
     <button type="submit" class="btn btn-primary">Create Roster</button>
 
     <div asp-validation-summary="All" class="text-danger mt-3"></div>
@@ -46,6 +56,8 @@
 <hr />
 
 <h2>Existing Rosters</h2>
+
+<!-- Table displaying existing rosters -->
 <table class="table table-dark table-bordered">
     <thead>
         <tr>
@@ -59,16 +71,19 @@
         @foreach (var roster in Model.AllRosters)
         {
             <tr>
+                <!-- Display raid slug -->
                 <td>@roster.RaidSlug</td>
+                <!-- Display boss name -->
                 <td>@roster.BossDisplayName</td>
+                <!-- Display participants -->
                 <td>
                     @foreach (var participant in roster.Participants)
                     {
                         <span>@participant.CharacterName</span>
-
                         <br />
                     }
                 </td>
+                <!-- Action buttons: Edit, Delete, View -->
                 <td>
                     <a href="/EditRoster/@roster.RosterId" class="btn btn-sm btn-warning">Edit</a>
                     <form method="post" asp-page-handler="DeleteRoster" asp-route-id="@roster.RosterId" style="display:inline;">

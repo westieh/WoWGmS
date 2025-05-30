@@ -1,9 +1,15 @@
 ﻿@page
 @model WoWGMS.Pages.Admin.LoginModel
 @{
+    // Render a simple login form
     <form method="post">
+        <!-- Input for username -->
         <input name="Username" placeholder="Username" />
+
+        <!-- Input for password -->
         <input name="Password" placeholder="Password" type="password" />
+
+        <!-- Submit button for login -->
         <button type="submit">Login</button>
     </form>
 }

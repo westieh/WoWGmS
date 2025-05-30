@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WowGMSBackend.Model
 {
+    /// <summary>
+    /// Represents a boss entity with a display name and a unique slug identifier.
+    /// </summary>
     public class Boss
     {
         public string DisplayName { get; set; }

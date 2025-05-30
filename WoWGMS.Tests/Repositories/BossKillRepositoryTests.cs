@@ -8,6 +8,7 @@ using WowGMSBackend.Repository;
 
 public class BossKillRepositoryTests
 {
+    // Creates an in-memory database context for testing
     private WowDbContext GetInMemoryContext()
     {
         var options = new DbContextOptionsBuilder<WowDbContext>()
@@ -22,9 +23,11 @@ public class BossKillRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new BossKillRepo(context);
 
+        // Act
         var kill = new BossKill { CharacterId = 1, BossSlug = "slug-a", KillCount = 2 };
         repo.AddBossKill(kill);
 
+        // Assert
         Assert.Single(context.BossKills);
         Assert.Equal("slug-a", context.BossKills.First().BossSlug);
     }
@@ -35,6 +38,7 @@ public class BossKillRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new BossKillRepo(context);
 
+        // Arrange
         context.BossKills.AddRange(
             new BossKill { CharacterId = 1, BossSlug = "a" },
             new BossKill { CharacterId = 1, BossSlug = "b" },
@@ -42,8 +46,10 @@ public class BossKillRepositoryTests
         );
         context.SaveChanges();
 
+        // Act
         repo.DeleteBossKillsForCharacter(1);
 
+        // Assert
         Assert.Single(context.BossKills);
         Assert.Equal(2, context.BossKills.First().CharacterId);
     }
@@ -54,6 +60,7 @@ public class BossKillRepositoryTests
         using var context = GetInMemoryContext();
         var repo = new BossKillRepo(context);
 
+        // Arrange
         context.BossKills.AddRange(
             new BossKill { CharacterId = 1, BossSlug = "a" },
             new BossKill { CharacterId = 1, BossSlug = "b" },
@@ -61,9 +68,10 @@ public class BossKillRepositoryTests
         );
         context.SaveChanges();
 
+        // Act
         var result = repo.GetBossKillsByCharacterId(1);
 
+        // Assert
         Assert.Equal(2, result.Count);
     }
-
 }

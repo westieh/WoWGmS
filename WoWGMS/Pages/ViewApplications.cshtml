@@ -1,15 +1,20 @@
 ﻿@page
 @model ViewApplicationsModel
 @using WowGMSBackend.Model
+
 @if (TempData["Error"] != null)
 {
+    <!-- Display error alert if available -->
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
 @if (TempData["Success"] != null)
 {
+    <!-- Display success alert if available -->
     <div class="alert alert-success">@TempData["Success"]</div>
 }
+
 <style>
+    /* Styling for table and form elements */
     table, th, td {
         color: white;
     }
@@ -23,34 +28,37 @@
 
 @if (Model.Applications == null || !Model.Applications.Any())
 {
+    <!-- Message if no applications exist -->
     <p style="color:white;">Der er endnu ingen ansøgninger.</p>
 }
 else
 {
+    <!-- Table to display submitted applications -->
     <table class="table">
         <thead>
             <tr>
                 <th>Discord</th>
                 <th>Character</th>
-                    <th>RealmName</th>
+                <th>RealmName</th>
                 <th>Class</th>
                 <th>Role</th>
                 <th>Note</th>
                 <th>Godkendt</th>
                 <th>BossKills</th>
-
             </tr>
         </thead>
         <tbody>
             @foreach (var app in Model.Applications)
             {
                 <tr>
+                    <!-- Display application details -->
                     <td>@app.DiscordName</td>
                     <td>@app.CharacterName</td>
                     <td>@app.ServerName</td>
                     <td>@app.Class</td>
                     <td>@app.Role</td>
                     <td>
+                        <!-- Display and append notes -->
                         <div>@app.Note</div>
                         <form method="post" asp-page-handler="UpdateNote" class="mt-1">
                             <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
@@ -59,7 +67,7 @@ else
                         </form>
                     </td>
 
-                    <!-- Approval status & form -->
+                    <!-- Approval status and approval form -->
                     <td>
                         @(app.Approved ? "Ja" : "Nej")
                         <form method="post" asp-page-handler="ToggleApproval" onsubmit="return confirm('Are you sure you want to approve this application?');">
@@ -69,7 +77,7 @@ else
                         </form>
                     </td>
 
-                    <!-- Boss Kills -->
+                    <!-- Boss Kills listing -->
                     <td>
                         @if (app.BossKills != null && app.BossKills.Any())
                         {
