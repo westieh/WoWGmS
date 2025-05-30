@@ -21,7 +21,7 @@ namespace WoWGMS.Pages
         [BindProperty]
         public Dictionary<string, int> BossKills { get; set; } = new();
 
-        public List<Boss> RaidBosses { get; set; } = new();
+        public List<Boss> RaidBosses { get; set; } = new(); 
         public void OnGet()
         {
             RaidBosses = RaidRegistry.GetBossesForRaid("liberation-of-undermine");

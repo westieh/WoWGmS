@@ -27,6 +27,7 @@ namespace WoWGMS.Pages
         [BindProperty]
         public Dictionary<string, int> BossKillInputs { get; set; } = new();
 
+
         public List<Boss> AllBosses { get; set; } = new();
         public List<Character> CharactersForMember { get; set; } = new();
 

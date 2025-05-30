@@ -26,8 +26,8 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Character.RealmName"></label>
-        <input asp-for="Character.RealmName" class="form-control" />
+        <label asp-for="Character.RealmName" style="color:white;"></label>
+        <select asp-for="Character.RealmName" asp-items="Html.GetEnumSelectList<ServerName>()" class="form-control"></select>
         <span asp-validation-for="Character.RealmName" class="text-danger"></span>
     </div>
 
